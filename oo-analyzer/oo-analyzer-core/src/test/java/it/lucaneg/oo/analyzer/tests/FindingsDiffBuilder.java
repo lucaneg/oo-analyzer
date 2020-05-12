@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.lucaneg.logutils.EnrichedLogger;
-import it.luceng.oo.analyzer.core.JsonAnalysisReport.JsonFinding;
+import it.lucaneg.oo.analyzer.core.JsonAnalysisReport.JsonFinding;
 
 public class FindingsDiffBuilder {
 	

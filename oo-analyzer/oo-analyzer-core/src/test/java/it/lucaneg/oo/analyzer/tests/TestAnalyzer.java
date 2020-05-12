@@ -7,11 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
-import it.lucaneg.oo.api.analyzer.checks.Finding;
-import it.lucaneg.oo.api.analyzer.program.Program;
-import it.luceng.oo.analyzer.cli.CLI;
-import it.luceng.oo.analyzer.core.Analyzer;
-import it.luceng.oo.analyzer.options.AnalysisOptions;
+import it.lucaneg.oo.analyzer.cli.CLI;
+import it.lucaneg.oo.analyzer.core.Analyzer;
+import it.lucaneg.oo.analyzer.options.AnalysisOptions;
+import it.lucaneg.oo.sdk.analyzer.checks.Finding;
+import it.lucaneg.oo.sdk.analyzer.program.Program;
 
 public class TestAnalyzer extends Analyzer {
 	

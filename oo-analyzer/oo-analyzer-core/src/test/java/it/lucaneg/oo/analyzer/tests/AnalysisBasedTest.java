@@ -11,12 +11,12 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import it.lucaneg.oo.api.analyzer.checks.Finding;
-import it.luceng.oo.analyzer.analyses.AnalysisFactory;
-import it.luceng.oo.analyzer.checks.ChecksFactory;
-import it.luceng.oo.analyzer.core.ExitCode;
-import it.luceng.oo.analyzer.core.JsonAnalysisReport;
-import it.luceng.oo.analyzer.options.AnalysisOptions;
+import it.lucaneg.oo.analyzer.analyses.AnalysisFactory;
+import it.lucaneg.oo.analyzer.checks.ChecksFactory;
+import it.lucaneg.oo.analyzer.core.ExitCode;
+import it.lucaneg.oo.analyzer.core.JsonAnalysisReport;
+import it.lucaneg.oo.analyzer.options.AnalysisOptions;
+import it.lucaneg.oo.sdk.analyzer.checks.Finding;
 
 public abstract class AnalysisBasedTest {
 	protected List<Finding> runAnalysis(String analysis) {

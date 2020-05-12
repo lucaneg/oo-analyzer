@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import it.lucaneg.oo.analyzer.core.JsonAnalysisReport;
 import it.lucaneg.oo.analyzer.tests.AnalysisBasedTest;
-import it.lucaneg.oo.api.analyzer.checks.Finding;
-import it.luceng.oo.analyzer.core.JsonAnalysisReport;
+import it.lucaneg.oo.sdk.analyzer.checks.Finding;
 
 public class StringAnalysesBaseTest extends AnalysisBasedTest {
 	
