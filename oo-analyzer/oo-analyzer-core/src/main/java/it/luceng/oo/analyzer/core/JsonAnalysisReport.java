@@ -3,6 +3,7 @@ package it.luceng.oo.analyzer.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.lucaneg.oo.api.analyzer.checks.Finding;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +16,10 @@ public class JsonAnalysisReport {
 		this.findings = new ArrayList<>();
 	}
 	
-	public JsonAnalysisReport(List<JsonFinding> findings) {
+	public JsonAnalysisReport(List<Finding> findings) {
 		this();
-		this.findings.addAll(findings);
+        for (Finding finding : findings)
+        	this.findings.add(new JsonFinding(finding.getFilename(), finding.getLine(), finding.getCol(), finding.getProducer(), finding.getMessage()));
 	}
 	
 	public void addFinding(JsonFinding finding) {

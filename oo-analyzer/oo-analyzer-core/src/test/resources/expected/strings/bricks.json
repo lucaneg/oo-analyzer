@@ -1,0 +1,45 @@
+{
+  "findings" : [ {
+    "filename" : "strings.java",
+    "line" : 7,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  }, {
+    "filename" : "strings.java",
+    "line" : 9,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  }, {
+    "filename" : "strings.java",
+    "line" : 71,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  }, {
+    "filename" : "strings.java",
+    "line" : 73,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  }, {
+    "filename" : "strings.java",
+    "line" : 74,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  }, {
+    "filename" : "strings.java",
+    "line" : 77,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  }, {
+    "filename" : "strings.java",
+    "line" : 78,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert never holds"
+  } ]
+}

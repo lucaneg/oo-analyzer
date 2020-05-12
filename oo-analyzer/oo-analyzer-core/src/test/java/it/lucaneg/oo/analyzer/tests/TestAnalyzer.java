@@ -1,27 +1,19 @@
 package it.lucaneg.oo.analyzer.tests;
 
 import java.net.URL;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
-import it.lucaneg.logutils.EnrichedLogger;
-import it.lucaneg.oo.api.analyzer.analyses.Analysis;
-import it.lucaneg.oo.api.analyzer.checks.Check;
 import it.lucaneg.oo.api.analyzer.checks.Finding;
+import it.lucaneg.oo.api.analyzer.program.Program;
 import it.luceng.oo.analyzer.cli.CLI;
-import it.luceng.oo.analyzer.core.ExitCode;
-import it.luceng.oo.analyzer.core.FileParser;
-import it.luceng.oo.analyzer.core.ModelBuilder;
+import it.luceng.oo.analyzer.core.Analyzer;
 import it.luceng.oo.analyzer.options.AnalysisOptions;
 
-public class TestAnalyzer {
+public class TestAnalyzer extends Analyzer {
 	
 	static {
 		LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
@@ -37,66 +29,23 @@ public class TestAnalyzer {
 		}	
 	}
 	
-	private static final EnrichedLogger logger = new EnrichedLogger(TestAnalyzer.class);
-	
-	private final AnalysisOptions options;
-	
-	private final SortedSet<Finding> findings;
+	private List<Finding> findings;
 	
 	public TestAnalyzer(AnalysisOptions options) {
-		this.options = options;
-		this.findings = new TreeSet<>();
+		super(options);
 	}
 	
-	public AnalysisOptions getOptions() {
-		return options;
+	@Override
+	protected void postAnalyses(Program program) {
+		// do nothing: we do not dump graphs
 	}
 	
-	public ExitCode run() {
-		// first, we parse the code
-		FileParser fileParser = new FileParser(options);
-		ExitCode ret = fileParser.parseInputs();
-		if (ret != ExitCode.SUCCESS)
-			return ret;
-		
-		// then, we build the model
-		ModelBuilder modelBuilder = new ModelBuilder();
-		ret = modelBuilder.buildModel(fileParser.getParsedClasses());
-		if (ret != ExitCode.SUCCESS)
-			return ret;
-		
-		// then, we run the analyses
-		logger.mkTimerLogger("Executing analyses").execAction(() -> {
-			for (Analysis<?, ?> toRun : options.getAnalyses()) {
-				toRun.run(modelBuilder.getProgram());
-			}
-		});
-			
-		
-		// at last, we run the checks
-		logger.mkTimerLogger("Executing checks").execAction(() -> {
-			for (Check toRun : options.getChecks()) 
-				toRun.run(modelBuilder.getProgram(), options.getAnalyses());
-		});
-		
-		// time to dump the findings
-		Set<Finding> collect = options.getChecks()
-				.stream()
-				.filter(Check::foundSomething)
-				.flatMap(c -> c.getFindings().stream())
-				.sorted()
-				.collect(Collectors.toSet());
-		if (!collect.isEmpty())
-			logger.info("There are " + collect.size() + " findings:\n\n" + StringUtils.join(collect, "\n") + "\n");
-		else 
-			logger.info("None of the executed checks found something");
-		
-		findings.addAll(collect);
-		
-		return ExitCode.SUCCESS;
+	@Override
+	protected void postChecks(List<Finding> findings) {
+		this.findings = findings;
 	}
 	
-	public SortedSet<Finding> getFindings() {
+	public List<Finding> getFindings() {
 		return findings;
 	}
 }

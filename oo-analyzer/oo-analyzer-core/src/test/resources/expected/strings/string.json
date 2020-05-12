@@ -1,0 +1,57 @@
+{
+  "findings" : [ {
+    "filename" : "strings.java",
+    "line" : 7,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 9,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 20,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 32,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 71,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 73,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 74,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 77,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 78,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to string analysis, this assert might not hold"
+  } ]
+}

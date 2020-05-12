@@ -1,0 +1,99 @@
+{
+  "findings" : [ {
+    "filename" : "strings.java",
+    "line" : 5,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 7,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 8,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 9,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 10,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 20,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 32,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 44,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 59,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 70,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 71,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 72,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 73,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 74,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 77,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 78,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to stringSuffix analysis, this assert might not hold"
+  } ]
+}

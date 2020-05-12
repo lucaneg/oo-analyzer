@@ -7,33 +7,34 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import it.lucaneg.logutils.EnrichedLogger;
-import it.lucaneg.oo.api.analyzer.checks.Finding;
+import it.luceng.oo.analyzer.core.JsonAnalysisReport.JsonFinding;
 
 public class FindingsDiffBuilder {
 	
 	private static final EnrichedLogger logger = new EnrichedLogger(FindingsDiffBuilder.class);
 
-	private final Collection<Finding> expected;
-	private final Collection<Finding> actual;
+	private final Collection<JsonFinding> expected;
+	private final Collection<JsonFinding> actual;
 
-	private final Collection<Finding> onlyExpected = new ArrayList<>();
-	private final Collection<Finding> onlyActual = new ArrayList<>();
-	private final Map<Finding, Finding> common = new HashMap<>();
+	private final Collection<JsonFinding> onlyExpected = new ArrayList<>();
+	private final Collection<JsonFinding> onlyActual = new ArrayList<>();
+	private final Map<JsonFinding, JsonFinding> common = new HashMap<>();
 
-	public FindingsDiffBuilder(Collection<Finding> expected, Collection<Finding> actual) {
+	public FindingsDiffBuilder(List<JsonFinding> expected, List<JsonFinding> actual) {
 		this.expected = expected;
 		this.actual = actual;
 	}
 
-	public void computeDiff(Comparator<Finding> compararator) {
-		Deque<Finding> expectedQueue = new ArrayDeque<Finding>();
-		Deque<Finding> actualQueue = new ArrayDeque<Finding>();
+	public void computeDiff(Comparator<JsonFinding> compararator) {
+		Deque<JsonFinding> expectedQueue = new ArrayDeque<>();
+		Deque<JsonFinding> actualQueue = new ArrayDeque<>();
 
-		Finding[] expectedArray = expected.toArray(new Finding[expected.size()]);
-		Finding[] actualArray = actual.toArray(new Finding[actual.size()]);
+		JsonFinding[] expectedArray = expected.toArray(new JsonFinding[expected.size()]);
+		JsonFinding[] actualArray = actual.toArray(new JsonFinding[actual.size()]);
 		Arrays.sort(expectedArray, compararator);
 		Arrays.sort(actualArray, compararator);
 		expectedQueue.addAll(Arrays.asList(expectedArray));
@@ -42,9 +43,9 @@ public class FindingsDiffBuilder {
 		computeQueueDiff(expectedQueue, actualQueue, compararator);
 	}
 
-	private void computeQueueDiff(Deque<Finding> expectedQueue, Deque<Finding> actualQueue, Comparator<Finding> matcher) {
-		Finding currentExp = null;
-		Finding currentAct = null;
+	private void computeQueueDiff(Deque<JsonFinding> expectedQueue, Deque<JsonFinding> actualQueue, Comparator<JsonFinding> matcher) {
+		JsonFinding currentExp = null;
+		JsonFinding currentAct = null;
 
 		while (!(expectedQueue.isEmpty() && actualQueue.isEmpty())) {
 			currentExp = expectedQueue.peek();
@@ -94,29 +95,29 @@ public class FindingsDiffBuilder {
 		int i = 1;
 
 		logger.warn("Warnings only in the expected set (" + onlyExpected.size() + ")");
-		for (Finding f : onlyExpected) 
+		for (JsonFinding f : onlyExpected) 
 			logger.warn("#" + i++ + "\t" + f);
 		
 		logger.warn("Warnings only in the actual set (" + onlyActual.size() + ")");
-		for (Finding f : onlyActual) 
+		for (JsonFinding f : onlyActual) 
 			logger.warn("#" + i++ + "\t" + f);
 
 		if (!deltasOnly) {
 			logger.warn("Common Warnings (" + common.size() + "):");
-			for (Map.Entry<Finding, Finding> pair : common.entrySet())
+			for (Map.Entry<JsonFinding, JsonFinding> pair : common.entrySet())
 				logger.warn("#" + i++ + " - " + pair.getKey());
 		}
 	}
 
-	public Collection<Finding> getOnlyActual() {
+	public Collection<JsonFinding> getOnlyActual() {
 		return onlyActual;
 	}
 
-	public Collection<Finding> getOnlyExpected() {
+	public Collection<JsonFinding> getOnlyExpected() {
 		return onlyExpected;
 	}
 
-	public Map<Finding, Finding> getCommon() {
+	public Map<JsonFinding, JsonFinding> getCommon() {
 		return common;
 	}
 }
