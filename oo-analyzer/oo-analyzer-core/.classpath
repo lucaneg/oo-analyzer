@@ -32,7 +32,7 @@
 	<classpathentry kind="src" path="/oo-analyzer-sdk"/>
 	<classpathentry kind="src" path="/java-subset-parser"/>
 	<classpathentry kind="src" path="/logutils"/>
-	<classpathentry kind="lib" path="C:/opt/eclipse/workspaces/oo-analyzer/oo-analyzer/oo-analyzer-core/custom-libs/automaton-strings.jar">
+	<classpathentry kind="lib" path="C:/opt/gits/oo-analyzer/oo-analyzer/oo-analyzer-core/custom-libs/automaton-strings.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
