@@ -1,15 +1,26 @@
 package it.luceng.oo.analyzer.core;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 import it.lucaneg.logutils.EnrichedLogger;
 import it.lucaneg.oo.api.analyzer.analyses.Analysis;
 import it.lucaneg.oo.api.analyzer.checks.Check;
 import it.lucaneg.oo.api.analyzer.checks.Finding;
 import it.luceng.oo.analyzer.analyses.AnalysisDumper;
+import it.luceng.oo.analyzer.core.JsonAnalysisReport.JsonFinding;
 import it.luceng.oo.analyzer.options.AnalysisOptions;
 
 public class Analyzer {
@@ -48,10 +59,14 @@ public class Analyzer {
 		
 		// then, we run the analyses
 		logger.mkTimerLogger("Executing analyses").execAction(() -> {
-			for (Analysis<?, ?> toRun : options.getAnalyses()) {
+			for (Analysis<?, ?> toRun : options.getAnalyses())
 				toRun.run(modelBuilder.getProgram());
+		});
+		
+		// we dump the results of the analyses
+		logger.mkTimerLogger("Dumping analyses graphs").execAction(() -> {
+			for (Analysis<?, ?> toRun : options.getAnalyses())
 				AnalysisDumper.dumpDotFiles(modelBuilder.getProgram(), toRun, manager);
-			}
 		});
 			
 		
@@ -73,6 +88,39 @@ public class Analyzer {
 		else 
 			logger.info("None of the executed checks found something");
 		
+		try (Writer writer = manager.mkOutputFile("findings.json")) {
+			ObjectMapper mapper = new ObjectMapper();
+	        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+	        
+	        JsonAnalysisReport original = new JsonAnalysisReport();
+	        for (Finding finding : collect)
+	        	original.addFinding(new JsonFinding(finding.getFilename(), finding.getLine(), finding.getCol(), finding.getProducer(), finding.getMessage()));
+	        
+	        mapper.writeValue(writer, original);
+		} catch (IOException e) {
+			logger.error("Unable to dump findings file", e);
+		}
+		
 		return ExitCode.SUCCESS;
+	}
+	
+	public static void main(String[] args) throws JsonSyntaxException, JsonIOException, FileNotFoundException, JsonMappingException, JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+
+        JsonAnalysisReport original = new JsonAnalysisReport();
+        original.getFindings().add(new JsonFinding("a", 1, 2, "ff", "uuu"));
+        original.getFindings().add(new JsonFinding("a", 1, 78, "fa;djsgfbaf", "adfadf"));
+        original.getFindings().add(new JsonFinding("d", 44, 2, "ffdfaaf", "llllll"));
+        original.getFindings().add(new JsonFinding("a", 15639, 2, "ffxxxx", "qpiruwt"));
+        System.out.println(original);
+        
+        
+        String str = mapper.writeValueAsString(original);
+        System.out.println(str);
+        
+        JsonAnalysisReport readValue = mapper.readValue(str, JsonAnalysisReport.class);
+		
+		System.out.println(readValue);
 	}
 }

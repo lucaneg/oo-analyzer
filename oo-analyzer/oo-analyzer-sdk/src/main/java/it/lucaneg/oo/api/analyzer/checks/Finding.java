@@ -1,10 +1,13 @@
 package it.lucaneg.oo.api.analyzer.checks;
 
+import lombok.Getter;
+
 /**
  * A finding is a problem discovered by a check in the program to analyze.
  * 
  * @author Luca Negrini
  */
+@Getter
 public abstract class Finding implements Comparable<Finding> {
 
 	private final String filename;

@@ -1,81 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry output="bin/main" kind="src" path="src/main/java">
+	<classpathentry kind="src" output="bin/main" path="src/main/java">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry output="bin/main" kind="src" path="src/main/resources">
+	<classpathentry kind="src" output="bin/main" path="src/main/resources">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry output="bin/main" kind="src" path="src/main/antlr">
+	<classpathentry kind="src" output="bin/main" path="src/main/antlr">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="output" path="bin/default"/>
-	<classpathentry output="bin/main" kind="src" path="build/generated-src/antlr/main">
+	<classpathentry kind="src" output="bin/main" path="build/generated-src/antlr/main">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11/"/>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry kind="src" path="/logutils"/>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4/4.8-1/291aa61e26745ca29162a321635519f013712224/antlr4-4.8-1-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4/4.8-1/14abdbb9d8c6c5ca06147c67a17ebedaa3dac121/antlr4-4.8-1.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.12/3110c9b1b80ffe971becf5bd9445f096b6aa8a71/lombok-1.18.12-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.12/48e4e5d60309ebd833bc528dcf77668eab3cd72c/lombok-1.18.12.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.8-1/57eb50176be55f02c469010597bd7b6c1f954aab/antlr4-runtime-4.8-1-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.8-1/2d0456a791f3a95916c8c23b3bea3a90eea24720/antlr4-runtime-4.8-1.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.3/f5c1c1b500028db7d102067b8e0f3e15f685cbec/ST4-4.3-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.3/92f2c1ad8d84abcbeead6cf7f2c53a04166293c2/ST4-4.3.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.5.2/5214ea45dd20d3a2e4caa6f1ad2248ad107e0daf/antlr-runtime-3.5.2-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.5.2/cd9cd41361c155f3af0f653009dcecb08d8b4afd/antlr-runtime-3.5.2.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.3/98d31576a54fd48dabf1fcf67a311dd9f0e4f66e/org.abego.treelayout.core-1.0.3-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.3/457216e8e6578099ae63667bb1e4439235892028/org.abego.treelayout.core-1.0.3.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.0.4/ef782abad0d3f1d30644c4023a6bbc6fe371e23a/javax.json-1.0.4-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.0.4/3178f73569fd7a1e5ffc464e680f7a8cc784b85a/javax.json-1.0.4.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/61.1/df1b5d109cd3734abc5ea028b48c67b5a1a44365/icu4j-61.1-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/61.1/28d33b5e44e72edcc66a5da7a34a42147f38d987/icu4j-61.1.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.13.0/abf3c43c21ff2e2fcbd63fc87c67592b4e673cec/log4j-core-2.13.0-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.13.0/57b8b57dac4c87696acb4b8457fd8cbf4273d40d/log4j-core-2.13.0.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.13.0/b0c01c8e58bd572bed5fcc09c3b11c425fd56831/log4j-api-2.13.0-sources.jar" kind="lib" path="C:/Users/NegriniL/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.13.0/adaee84c60e0705cf39df8b9fedfab100d3faf2/log4j-api-2.13.0.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="output" path="bin/default"/>
 </classpath>
