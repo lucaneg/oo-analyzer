@@ -1,0 +1,26 @@
+plugins {
+    id 'java-library'
+    id 'antlr'
+    id 'io.freefair.lombok' version '5.0.1'
+}
+
+dependencies {
+    api project(':logutils')
+    antlr 'org.antlr:antlr4:4.8-1'
+    implementation 'org.projectlombok:lombok:1.18.12'
+}
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += ["-visitor", "-no-listener"]
+    
+    doLast {
+    	copy {
+      		from 'build/generated-src/antlr/main/'
+      		include '*.*'
+      		into 'build/generated-src/antlr/main/it/lucaneg/antlr'
+    	}
+   		project.delete fileTree('build/generated-src/antlr/main').include('*.*')
+  	}
+}
+

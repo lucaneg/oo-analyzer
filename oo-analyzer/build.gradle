@@ -1,0 +1,27 @@
+allprojects {
+	group = 'it.lucaneg'
+	//vesion '1.0'
+	
+	repositories {
+		mavenCentral()
+	    jcenter()
+	}
+}
+
+subprojects {
+	apply plugin: 'eclipse'
+	task allDeps(type: DependencyReportTask) {}
+}
+
+/*build.dependsOn(copyLibs)
+task copyLibs(type: Copy) {
+	into "$buildDir/libs"
+    from configurations.implementation
+}*/
+
+/*jar {
+    manifest {
+        attributes("Implementation-Title": project.name,
+                   "Implementation-Version": project.version)
+    }
+}*/
