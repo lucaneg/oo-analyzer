@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'io.freefair.lombok' version '5.0.1'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 repositories {
@@ -28,4 +29,20 @@ dependencies {
 		testImplementation 'junit:junit:4.12'
 }
 
-mainClassName = 'it.luceng.oo.analyzer.cli.CLI'
+jar {
+	from('oo-lib/') {
+    	include('*.java')
+    	into('oo-lib/')
+   	}
+}
+
+shadowJar {
+	baseName = 'oo-analyzer'
+	classifier = ''
+	from('oo-lib/') {
+    	include('*.java')
+    	into('oo-lib/')
+   	}
+}
+
+mainClassName = 'it.lucaneg.oo.analyzer.cli.CLI'
