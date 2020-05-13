@@ -39,7 +39,7 @@ public class Command extends Statement {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		return expression.toString();
 	}
 }

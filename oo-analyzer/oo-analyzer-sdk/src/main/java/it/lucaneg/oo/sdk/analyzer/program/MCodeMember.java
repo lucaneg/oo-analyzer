@@ -1,5 +1,7 @@
 package it.lucaneg.oo.sdk.analyzer.program;
 
+import org.apache.commons.lang3.StringUtils;
+
 import it.lucaneg.oo.ast.types.Type;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -55,7 +57,7 @@ public abstract class MCodeMember extends MClassMember {
 
 	@Override
 	public String toString() {
-		return returnType + " " + getDefiningClass().getName() + "::" + name + "(" + parameters + ")";
+		return returnType + " " + getDefiningClass().getName() + "::" + name + "(" + StringUtils.join(parameters, ", ") + ")";
 	}
 
 	/**

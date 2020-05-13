@@ -40,7 +40,7 @@ public class FieldWrite extends Assignment {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		return field.toString() + " = " + getExpression().toString();
 	}
 }

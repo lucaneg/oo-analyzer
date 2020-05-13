@@ -46,7 +46,7 @@ public class LocalDeclaration extends Statement implements ILocalWrite {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		return variable.getType() + " " + variable.getName() + " = " + expression.toString();
 	}
 }

@@ -27,7 +27,7 @@ public class Skip extends Statement {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		return "skip";
 	}
 }

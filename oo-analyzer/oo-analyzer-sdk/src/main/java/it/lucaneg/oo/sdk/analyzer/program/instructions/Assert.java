@@ -39,7 +39,7 @@ public class Assert extends Statement {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		return "assert " + assertion;
 	}
 }

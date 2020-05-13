@@ -39,7 +39,7 @@ public class Return extends Statement {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		if (returned != null)
 			return "return " + returned;
 		else

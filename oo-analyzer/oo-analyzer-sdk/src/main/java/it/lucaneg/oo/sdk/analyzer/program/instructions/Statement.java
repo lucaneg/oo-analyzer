@@ -12,6 +12,11 @@ import lombok.Getter;
 public abstract class Statement {
 
 	/**
+	 * The index of the statement inside the method 
+	 */
+	private int index;
+	
+	/**
 	 * The line where this statement happens
 	 */
 	private final int line;
@@ -44,6 +49,7 @@ public abstract class Statement {
 		this.position = position;
 		this.container = container;
 		this.variables = variables;
+		this.index = 1;
 	}
 
 	/**
@@ -55,7 +61,24 @@ public abstract class Statement {
 	public String getFileName() {
 		return container.getFileName();
 	}
+	
+	/**
+	 * Shifts the index of this statement by the given amount.
+	 * 
+	 * @param amount the amount
+	 */
+	public final void moveIndexBy(int amount) {
+		index += amount;
+	}
 
 	@Override
-	public abstract String toString();
+	public final String toString() {
+		return index + ". " + toStringAux();
+	}
+	
+	/**
+	 * Yields the actual string representation of this statment.
+	 * @return
+	 */
+	protected abstract String toStringAux();
 }

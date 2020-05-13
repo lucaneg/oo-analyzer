@@ -41,7 +41,7 @@ public class ArrayStore extends Assignment {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringAux() {
 		String result = arraySpot.getArray().toString();
 		for (Index ind : arraySpot.getIndexes())
 			result += "[" + ind.toString() + "]";

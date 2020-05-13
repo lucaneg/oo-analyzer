@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -139,7 +140,9 @@ public abstract class Graph<T> {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 
-		for (T v : edges.keySet()) {
+		TreeSet<T> orderedKeys = new TreeSet<>((t, u) -> t.toString().compareTo(u.toString()));
+		orderedKeys.addAll(edges.keySet());
+		for (T v : orderedKeys) {
 			builder.append(v.toString() + ": [");
 			for (T w : edges.get(v))
 				builder.append(w.toString() + ", ");

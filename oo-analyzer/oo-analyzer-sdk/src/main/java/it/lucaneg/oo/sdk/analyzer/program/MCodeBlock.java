@@ -73,8 +73,10 @@ public class MCodeBlock extends Graph<Statement> {
 		if (start == null)
 			start = statement;
 
-		if (end != null)
+		if (end != null) {
+			statement.moveIndexBy(end.getIndex());
 			addEdge(end, statement);
+		}
 
 		end = statement;
 	}
@@ -100,14 +102,17 @@ public class MCodeBlock extends Graph<Statement> {
 
 		// add all the true block
 		edges.putAll(ifTrue.edges);
+		ifTrue.edges.keySet().forEach(s -> s.moveIndexBy(branch.getIndex()));
 		addEdge(branch, ifTrue.start);
 
 		// add all the false block
 		edges.putAll(ifFalse.edges);
+		ifFalse.edges.keySet().forEach(s -> s.moveIndexBy(ifTrue.end.getIndex()));
 		addEdge(branch, ifFalse.start);
 
 		// add the joining skip
 		addVertex(join);
+		join.moveIndexBy(ifFalse.end.getIndex());
 
 		// connect the blocks to the skip
 		addEdge(ifTrue.end, join);
@@ -143,6 +148,7 @@ public class MCodeBlock extends Graph<Statement> {
 
 		// add all the loop body
 		edges.putAll(loopBody.edges);
+		loopBody.edges.keySet().forEach(s -> s.moveIndexBy(branch.getIndex()));
 		addEdge(branch, loopBody.start);
 
 		// close the loop
@@ -150,6 +156,7 @@ public class MCodeBlock extends Graph<Statement> {
 
 		// add the joining skip
 		addVertex(join);
+		join.moveIndexBy(loopBody.end.getIndex());
 
 		// connect the branch to the skip
 		addEdge(branch, join);
@@ -183,6 +190,7 @@ public class MCodeBlock extends Graph<Statement> {
 		} else {
 			edges.putAll(other.edges);
 			branches.putAll(other.branches);
+			other.edges.keySet().forEach(s -> s.moveIndexBy(end.getIndex()));
 			addEdge(end, other.start);
 			end = other.end;
 		}

@@ -39,7 +39,7 @@ public class LocalAssignment extends Assignment implements ILocalWrite {
 	}
 
 	@Override
-	public String toString() {
-		return variable.getName() + " := " + getExpression().toString();
+	public String toStringAux() {
+		return variable.getName() + " = " + getExpression().toString();
 	}
 }
