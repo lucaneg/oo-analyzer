@@ -1,5 +1,12 @@
 package it.lucaneg.oo.sdk.analyzer.program;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.ast.types.VoidType;
 import lombok.EqualsAndHashCode;
 
@@ -24,6 +31,7 @@ public class MConstructor extends MCodeMember {
 	
 	@Override
 	public String toStringForFileName() {
-		return getDefiningClass().getName() + "___constructor(" + getParameters() + ")";
+		List<Type> parameters = Arrays.stream(getParameters()).map(p -> p.getType()).collect(Collectors.toList());
+		return getDefiningClass().getName() + "___constructor(" + StringUtils.join(parameters, ",") + ")";
 	}
 }

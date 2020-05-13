@@ -1,5 +1,11 @@
 package it.lucaneg.oo.sdk.analyzer.program;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import it.lucaneg.oo.ast.types.Type;
 import lombok.EqualsAndHashCode;
 
@@ -26,6 +32,7 @@ public final class MMethod extends MCodeMember {
 
 	@Override
 	public String toStringForFileName() {
-		return getDefiningClass().getName() + "___" + getName() + "(" + getParameters() + ")" + getReturnType();
+		List<Type> parameters = Arrays.stream(getParameters()).map(p -> p.getType()).collect(Collectors.toList());
+		return getDefiningClass().getName() + "___" + getName() + "(" + StringUtils.join(parameters, ",") + ")" + getReturnType();
 	}
 }
