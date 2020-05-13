@@ -70,4 +70,8 @@ class String {
 	String replace(String toReplace, String str) {
 		return "";
 	}
+	
+	int indexOf(String sub) {
+		return 0;
+	}
 }
