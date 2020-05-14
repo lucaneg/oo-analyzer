@@ -1,39 +1,39 @@
 class StringUtilsAbbreviate {
-	String doAbbreviate() {
+	void doAbbreviate() {
 		String stm = "this is an example string";
 		int max = 10;
-		if (stm.length() <= max)
-			return stm;
-		else { 
+		if (stm.length() > max) {
 			int lim = max - 3;
 			stm = stm.substring(0, lim);
 			stm = stm.concat("...");
-			return stm;
 		}
+		
+		assert (stm.endsWith("..."));
+		assert (stm.endsWith("string"));
 	}
 	
-	String doNotAbbreviate() {
+	void doNotAbbreviate() {
 		String stm = "this is an example string";
 		int max = 100;
-		if (stm.length() <= max)
-			return stm;
-		else { 
+		if (stm.length() > max) {
 			int lim = max - 3;
 			stm = stm.substring(0, lim);
 			stm = stm.concat("...");
-			return stm;
 		}
+		
+		assert (stm.endsWith("..."));
+		assert (stm.endsWith("string"));
 	}
 	
-	String abbreviate(String stm) {
+	void abbreviate(String stm) {
 		int max = 10;
-		if (stm.length() <= max)
-			return stm;
-		else { 
+		if (stm.length() > max) {
 			int lim = max - 3;
 			stm = stm.substring(0, lim);
 			stm = stm.concat("...");
-			return stm;
 		}
+		
+		assert (stm.endsWith("..."));
+		assert (stm.endsWith("string"));
 	}
 }

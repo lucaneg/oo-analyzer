@@ -1,5 +1,5 @@
 class EclipseToString {
-	String dump(Person[] people) {
+	void toString(Person[] people) {
 		String result = "People: {\n";
 		
 		for (int i = 0; i < this.length(people); i = i + 1) {
@@ -20,6 +20,9 @@ class EclipseToString {
 		}
 		result = result.concat("}");
 		
-		return result;
+		assert(result.startsWith("People"));
+		assert(result.endsWith("}"));
+		assert(result.contains("age="));
+		assert(result.contains("surely not contained"));
 	}
 }
