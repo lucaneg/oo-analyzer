@@ -72,22 +72,62 @@ public class BricksEnvironment extends BaseStringEnvironment<BricksLattice, Bric
 	protected BricksLattice evalReplace(BricksLattice receiver, BricksLattice first, BricksLattice second) {
 		if (receiver.isTop() || first.isTop() || second.isTop())
 			return latticeTop();
-		// TODO
+
+		if (first.containsTop())
+			return latticeTop();
+		
 		return latticeTop();
+//		for (int i = 0; i < receiver.getBricks().size() - first.getBricks().size(); i++)
+//			if (receiver.getBricks().get(i).equals(first.getBricks().get(0))) {
+//				for (int j = 1; j < first.getBricks().size(); j++)
+//					if (!receiver.getBricks().get(i + j).equals(first.getBricks().get(j)))
+//						// we stop at the first non-matching brick
+//						break;
+//				
+//				// we reached the end of the search bricks, time to replace
+//				List<Brick> res = new ArrayList<>();
+//				for (int j = 0; j < i; j++)
+//					res.add(receiver.getBricks().get(j));
+//				res.addAll(second.getBricks());
+//				for (int j = i + second.getBricks().size(); j < receiver.getBricks().size(); j++)
+//					res.add(receiver.getBricks().get(j));
+//				receiver = new BricksLattice(res);
+//				i += second.getBricks().size();
+//			}
+//		
+//		return receiver;
 	}
 
 	@Override
 	protected Satisfiability satisfiesEndsWith(BricksLattice rec, BricksLattice par) {
-		if (par.inRelationWith(rec))
+		if (!par.inRelationWith(rec))
+			return Satisfiability.NOT_SATISFIED;
+		
+		if (rec.equals(par))
 			return Satisfiability.SATISFIED;
-		return Satisfiability.NOT_SATISFIED; // TODO
+
+		int parlen = par.getBricks().size();
+		int reclen = rec.getBricks().size();
+		for (int i = 0; i < par.getBricks().size(); i++)
+			if (!par.getBricks().get(parlen - 1 - i).equals(rec.getBricks().get(reclen - 1 - i)))
+				return Satisfiability.NOT_SATISFIED;
+		
+		return Satisfiability.SATISFIED;
 	}
 
 	@Override
 	protected Satisfiability satisfiesStartsWith(BricksLattice rec, BricksLattice par) {
-		if (par.inRelationWith(rec))
+		if (!par.inRelationWith(rec))
+			return Satisfiability.NOT_SATISFIED;
+		
+		if (rec.equals(par))
 			return Satisfiability.SATISFIED;
-		return Satisfiability.NOT_SATISFIED; // TODO
+
+		for (int i = 0; i < par.getBricks().size(); i++)
+			if (!par.getBricks().get(i).equals(rec.getBricks().get(i)))
+				return Satisfiability.NOT_SATISFIED;
+		
+		return Satisfiability.SATISFIED;
 	}
 
 	@Override

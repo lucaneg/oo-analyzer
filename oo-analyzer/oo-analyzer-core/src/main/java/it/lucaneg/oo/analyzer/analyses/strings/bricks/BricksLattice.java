@@ -233,6 +233,10 @@ public class BricksLattice extends AbstractLattice<BricksLattice> {
 	public static BricksLattice getTop() {
 		return TOP;
 	}
+	
+	public boolean containsTop() {
+		return bricks.parallelStream().anyMatch(b -> b == Brick.TOP);
+	}
 
 	@Override
 	protected BricksLattice lubAux(BricksLattice other) {

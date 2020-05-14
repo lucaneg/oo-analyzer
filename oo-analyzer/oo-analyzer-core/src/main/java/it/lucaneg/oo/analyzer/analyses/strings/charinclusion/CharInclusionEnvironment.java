@@ -1,5 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.strings.charinclusion;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -86,10 +87,9 @@ public class CharInclusionEnvironment extends BaseStringEnvironment<CharInclusio
 		if (rec.isTop() || par.isTop())
 			return Satisfiability.UNKNOWN;
 		
-		if (!rec.getIncludedChars().containsAll(par.getIncludedChars()))
-			return Satisfiability.NOT_SATISFIED;
-		
-		if (!rec.getPossiblyIncludedChars().containsAll(par.getPossiblyIncludedChars()))
+		Set<Character> includedChars = new HashSet<>(rec.getIncludedChars());
+		includedChars.retainAll(par.getIncludedChars());
+		if (!includedChars.isEmpty())
 			return Satisfiability.NOT_SATISFIED;
 		
 		return Satisfiability.UNKNOWN;
@@ -100,11 +100,11 @@ public class CharInclusionEnvironment extends BaseStringEnvironment<CharInclusio
 		if (rec.isTop() || par.isTop())
 			return Satisfiability.UNKNOWN;
 		
-		if (!rec.getIncludedChars().containsAll(par.getIncludedChars()))
+		Set<Character> includedChars = new HashSet<>(rec.getIncludedChars());
+		includedChars.retainAll(par.getIncludedChars());
+		if (!includedChars.isEmpty())
 			return Satisfiability.NOT_SATISFIED;
 		
-		if (!rec.getPossiblyIncludedChars().containsAll(par.getPossiblyIncludedChars()))
-			return Satisfiability.NOT_SATISFIED;
 		
 		return Satisfiability.UNKNOWN;
 	}
@@ -120,11 +120,11 @@ public class CharInclusionEnvironment extends BaseStringEnvironment<CharInclusio
 				// only case when we can return true
 			return Satisfiability.SATISFIED;
 		
-		if (!rec.getIncludedChars().containsAll(par.getIncludedChars()))
+		Set<Character> includedChars = new HashSet<>(rec.getIncludedChars());
+		includedChars.retainAll(par.getIncludedChars());
+		if (!includedChars.isEmpty())
 			return Satisfiability.NOT_SATISFIED;
 		
-		if (!rec.getPossiblyIncludedChars().containsAll(par.getPossiblyIncludedChars()))
-			return Satisfiability.NOT_SATISFIED;
 		
 		return Satisfiability.UNKNOWN;
 	}
@@ -135,9 +135,6 @@ public class CharInclusionEnvironment extends BaseStringEnvironment<CharInclusio
 			return Satisfiability.UNKNOWN;
 		
 		if (!rec.getIncludedChars().containsAll(par.getIncludedChars()))
-			return Satisfiability.NOT_SATISFIED;
-		
-		if (!rec.getPossiblyIncludedChars().containsAll(par.getPossiblyIncludedChars()))
 			return Satisfiability.NOT_SATISFIED;
 		
 		return Satisfiability.UNKNOWN;
