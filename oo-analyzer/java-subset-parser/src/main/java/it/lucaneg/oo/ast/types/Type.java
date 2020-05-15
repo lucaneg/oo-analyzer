@@ -11,6 +11,16 @@ public abstract class Type {
 	protected static final void setObjectType(ClassType objectType) {
 		Type.objectType = objectType;
 	}
+	
+	private static ClassType stringType;
+
+	public static final ClassType getStringType() {
+		return stringType;
+	}
+
+	protected static final void setStringType(ClassType stringType) {
+		Type.stringType = stringType;
+	}
 
 	protected Type() {}
 

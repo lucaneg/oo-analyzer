@@ -19,6 +19,8 @@ public final class ClassType extends ReferenceType {
 
 		if (name.equals("Object"))
 			setObjectType(this);
+		else if (name.equals("String"))
+			setStringType(this);
 	}
 
 	public final String getName() {
