@@ -12,6 +12,8 @@ import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
  */
 public class StringAnalysis extends BaseStringAnalysis<StringLattice, StringEnvironment> {
 
+	private static final int WIDENING_SIZE_THRESHOLD = 5;
+
 	@Override
 	public StringEnvironment mkEmptyEnvironment() {
 		return new StringEnvironment();
@@ -28,6 +30,6 @@ public class StringAnalysis extends BaseStringAnalysis<StringLattice, StringEnvi
 	}
 	
 	private boolean decide(StringLattice env) {
-		return !env.isTop() && !env.isBottom() && env.getString().size() > 5;
+		return !env.isTop() && !env.isBottom() && env.getString().size() > WIDENING_SIZE_THRESHOLD;
 	}
 }
