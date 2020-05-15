@@ -67,7 +67,10 @@ public class StringEnvironment extends BaseStringEnvironment<StringLattice, Stri
 		if (rec.getString().contains(par.getString()))
 			return Satisfiability.SATISFIED;
 		
-		return Satisfiability.UNKNOWN;
+		if (rec.getString().mayContain(par.getString()))
+			return Satisfiability.UNKNOWN;
+		
+		return Satisfiability.NOT_SATISFIED;
 	}
 	
 	@Override
@@ -75,7 +78,10 @@ public class StringEnvironment extends BaseStringEnvironment<StringLattice, Stri
 		if (rec.getString().endsWith(par.getString()))
 			return Satisfiability.SATISFIED;
 		
-		return Satisfiability.UNKNOWN;
+		if (rec.getString().mayEndWith(par.getString()))
+			return Satisfiability.UNKNOWN;
+		
+		return Satisfiability.NOT_SATISFIED;
 	}
 	
 	@Override
@@ -83,7 +89,10 @@ public class StringEnvironment extends BaseStringEnvironment<StringLattice, Stri
 		if (rec.getString().isEqualTo(par.getString()))
 			return Satisfiability.SATISFIED;
 		
-		return Satisfiability.UNKNOWN;
+		if (rec.getString().mayBeEqualTo(par.getString()))
+			return Satisfiability.UNKNOWN;
+		
+		return Satisfiability.NOT_SATISFIED;
 	}
 	
 	@Override
@@ -91,6 +100,9 @@ public class StringEnvironment extends BaseStringEnvironment<StringLattice, Stri
 		if (rec.getString().startsWith(par.getString()))
 			return Satisfiability.SATISFIED;
 		
-		return Satisfiability.UNKNOWN;
+		if (rec.getString().mayStartWith(par.getString()))
+			return Satisfiability.UNKNOWN;
+		
+		return Satisfiability.NOT_SATISFIED;
 	}
 }
