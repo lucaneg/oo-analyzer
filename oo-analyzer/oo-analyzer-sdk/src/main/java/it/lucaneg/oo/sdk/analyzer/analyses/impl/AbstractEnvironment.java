@@ -8,7 +8,6 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 
@@ -145,16 +144,6 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 	public final Iterator<Pair<MLocalVariable, L>> iterator() {
 		return approximations.entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue())).iterator();
 	}
-	
-	/**
-	 * Yields the default abstract value for a variable of the given type. This
-	 * method should always return bottom, except for the types that are targeted by
-	 * this analysis. On such types, this method should return top.
-	 * 
-	 * @param t the type
-	 * @return the appropriate default value
-	 */
-	protected abstract L defaultLatticeForType(Type t);
 	
 	/**
 	 * Yields the bottom element of the lattice.

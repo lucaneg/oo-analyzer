@@ -18,43 +18,44 @@ import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.ast.expression.logical.Or;
 import it.lucaneg.oo.ast.expression.typeCheck.Cast;
 import it.lucaneg.oo.ast.expression.typeCheck.TypeCheck;
+import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
+import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionSatisfiabilityEvaluator;
 
-public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>>
-		implements ExpressionSatisfiabilityEvaluator<L, E> {
+public abstract class AbstractExpressionSatisfiabilityEvaluator	implements ExpressionSatisfiabilityEvaluator {
 
 	@Override
-	public final Satisfiability satisfies(Expression e, E env) {
+	public final Satisfiability satisfies(Expression e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		if (e instanceof And)
-			return satisfies(((And) e).getLeft(), env).and(satisfies(((And) e).getRight(), env));
+			return satisfies(((And) e).getLeft(), env, evaluator).and(satisfies(((And) e).getRight(), env, evaluator));
 		else if (e instanceof Or)
-			return satisfies(((Or) e).getLeft(), env).or(satisfies(((Or) e).getRight(), env));
+			return satisfies(((Or) e).getLeft(), env, evaluator).or(satisfies(((Or) e).getRight(), env, evaluator));
 		else if (e instanceof Not)
-			return satisfies(((Not) e).getExpression(), env).negate();
+			return satisfies(((Not) e).getExpression(), env, evaluator).negate();
 		else if (e instanceof NewObject)
-			return satisfiesNewObject((NewObject) e, env);
+			return satisfiesNewObject((NewObject) e, env, evaluator);
 		else if (e instanceof NewArray)
-			return satisfiesNewArray((NewArray) e, env);
+			return satisfiesNewArray((NewArray) e, env, evaluator);
 		else if (e instanceof Minus)
-			return satisfiesMinus((Minus) e, env);
+			return satisfiesMinus((Minus) e, env, evaluator);
 		else if (e instanceof Call)
-			return satisfiesCall((Call) e, env);
+			return satisfiesCall((Call) e, env, evaluator);
 		else if (e instanceof Literal)
-			return satisfiesLiteral((Literal) e, env);
+			return satisfiesLiteral((Literal) e, env, evaluator);
 		else if (e instanceof Cast)
-			return satisfiesCast((Cast) e, env);
+			return satisfiesCast((Cast) e, env, evaluator);
 		else if (e instanceof TypeCheck)
-			return satisfiesTypeCheck((TypeCheck) e, env);
+			return satisfiesTypeCheck((TypeCheck) e, env, evaluator);
 		else if (e instanceof ArithmeticBinaryExpression)
-			return satisfiesArithmeticBinaryExpression((ArithmeticBinaryExpression) e, env);
+			return satisfiesArithmeticBinaryExpression((ArithmeticBinaryExpression) e, env, evaluator);
 		else if (e instanceof ComparisonBinaryExpression)
-			return satisfiesComparisonBinaryExpression((ComparisonBinaryExpression) e, env);
+			return satisfiesComparisonBinaryExpression((ComparisonBinaryExpression) e, env, evaluator);
 		else if (e instanceof ArrayAccess)
-			return satisfiesArrayAccess((ArrayAccess) e, env);
+			return satisfiesArrayAccess((ArrayAccess) e, env, evaluator);
 		else if (e instanceof FieldAccess)
-			return satisfiesFieldAccess((FieldAccess) e, env);
+			return satisfiesFieldAccess((FieldAccess) e, env, evaluator);
 		else if (e instanceof Variable)
-			return satisfiesVariable((Variable) e, env);
+			return satisfiesVariable((Variable) e, env, evaluator);
 		else
 			return Satisfiability.UNKNOWN;
 	}
@@ -66,7 +67,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesNewObject(NewObject e, E env) {
+	protected Satisfiability satisfiesNewObject(NewObject e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -77,7 +78,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesNewArray(NewArray e, E env) {
+	protected Satisfiability satisfiesNewArray(NewArray e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -88,7 +89,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesMinus(Minus e, E env) {
+	protected Satisfiability satisfiesMinus(Minus e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -99,7 +100,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesCall(Call e, E env) {
+	protected Satisfiability satisfiesCall(Call e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -110,7 +111,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesLiteral(Literal e, E env) {
+	protected Satisfiability satisfiesLiteral(Literal e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		if (e instanceof TrueLiteral)
 			return Satisfiability.SATISFIED;
 
@@ -127,7 +128,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesCast(Cast e, E env) {
+	protected Satisfiability satisfiesCast(Cast e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -137,7 +138,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param e the type check
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesTypeCheck(TypeCheck e, E env) {
+	protected Satisfiability satisfiesTypeCheck(TypeCheck e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -149,7 +150,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesArithmeticBinaryExpression(ArithmeticBinaryExpression e, E env) {
+	protected Satisfiability satisfiesArithmeticBinaryExpression(ArithmeticBinaryExpression e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -161,7 +162,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesComparisonBinaryExpression(ComparisonBinaryExpression e, E env) {
+	protected Satisfiability satisfiesComparisonBinaryExpression(ComparisonBinaryExpression e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -172,7 +173,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesArrayAccess(ArrayAccess e, E env) {
+	protected Satisfiability satisfiesArrayAccess(ArrayAccess e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -183,7 +184,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesFieldAccess(FieldAccess e, E env) {
+	protected Satisfiability satisfiesFieldAccess(FieldAccess e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -194,7 +195,7 @@ public abstract class AbstractExpressionSatisfiabilityEvaluator<L extends Abstra
 	 * @param env the environment
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesVariable(Variable e, E env) {
+	protected Satisfiability satisfiesVariable(Variable e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 }

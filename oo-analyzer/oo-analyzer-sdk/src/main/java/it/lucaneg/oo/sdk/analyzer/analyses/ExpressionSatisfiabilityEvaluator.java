@@ -7,7 +7,7 @@ import it.lucaneg.oo.ast.expression.Expression;
  * 
  * @author Luca Negrini
  */
-public interface ExpressionSatisfiabilityEvaluator<L extends Lattice<L>, E extends Environment<L, E>> {
+public interface ExpressionSatisfiabilityEvaluator {
 
 	/**
 	 * The satisfiability of an expression.
@@ -104,7 +104,7 @@ public interface ExpressionSatisfiabilityEvaluator<L extends Lattice<L>, E exten
 		 * @return the logical or between the two satisfiabilities
 		 */
 		public abstract Satisfiability or(Satisfiability other);
-		
+
 		public static Satisfiability fromBoolean(boolean bool) {
 			if (bool)
 				return SATISFIED;
@@ -115,11 +115,14 @@ public interface ExpressionSatisfiabilityEvaluator<L extends Lattice<L>, E exten
 	/**
 	 * Evaluates if an expression is satisfiable.
 	 * 
-	 * @param e the expression that needs to be satisfied
+	 * @param e         the expression that needs to be satisfied
+	 * @param env       an environment that contains information about local
+	 *                  variables
+	 * @param evaluator an object that can evaluate expressions
 	 * @return {@link Satisfiability#SATISFIED} if the expression is satisfied,
 	 *         {@link Satisfiability#NOT_SATISFIED} if the expression is not
 	 *         satisfied, {@link Satisfiability#UNKNOWN} if it was not possible to
 	 *         determine whether or not the expression is satisfiable
 	 */
-	Satisfiability satisfies(Expression e, E env);
+	Satisfiability satisfies(Expression e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator);
 }

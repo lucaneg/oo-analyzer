@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 
 /**
@@ -104,4 +105,14 @@ public interface Environment<L extends Lattice<L>, E extends Environment<L, E>>
 	 * @return
 	 */
 	E join(E other, BiFunction<L, L, L> elementJoiner);
+
+	/**
+	 * Yields the default abstract value for a variable of the given type. This
+	 * method should always return bottom, except for the types that are targeted by
+	 * this analysis. On such types, this method should return top.
+	 * 
+	 * @param t the type
+	 * @return the appropriate default value
+	 */
+	L defaultLatticeForType(Type t);
 }

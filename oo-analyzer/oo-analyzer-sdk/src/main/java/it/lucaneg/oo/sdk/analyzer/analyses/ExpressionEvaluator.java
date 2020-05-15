@@ -8,16 +8,17 @@ import it.lucaneg.oo.ast.expression.Expression;
  * 
  * @author Luca Negrini
  */
-public interface ExpressionEvaluator<L extends Lattice<L>, E extends Environment<L, E>> {
+public interface ExpressionEvaluator<L extends Lattice<L>> {
 
 	/**
 	 * Yields the approximation that is the result of evaluating the given
 	 * expression with the abstract information contained in the given environment.
 	 * 
 	 * @param e   the expression to evaluate
+	 * @param env an environment that knows about local variables
 	 * @param the environment that knows information about local variables
 	 *            approximation
 	 * @return the approximation of the expression
 	 */
-	L eval(Expression e, E env);
+	L eval(Expression e, Environment<?, ?> env);
 }
