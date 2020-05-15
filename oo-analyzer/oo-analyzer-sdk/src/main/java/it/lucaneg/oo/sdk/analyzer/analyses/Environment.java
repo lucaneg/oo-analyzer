@@ -5,7 +5,6 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import it.lucaneg.oo.ast.expression.Expression;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 
 /**
@@ -105,13 +104,4 @@ public interface Environment<L extends Lattice<L>, E extends Environment<L, E>>
 	 * @return
 	 */
 	E join(E other, BiFunction<L, L, L> elementJoiner);
-	
-	/**
-	 * Yields the approximation that is the result of evaluating the given
-	 * expression with the abstract information contained in this environment.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	L eval(Expression e);
 }

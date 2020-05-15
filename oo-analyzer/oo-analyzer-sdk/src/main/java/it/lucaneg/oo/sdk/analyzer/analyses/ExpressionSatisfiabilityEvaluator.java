@@ -7,7 +7,7 @@ import it.lucaneg.oo.ast.expression.Expression;
  * 
  * @author Luca Negrini
  */
-public interface ExpressionSatisfiabilityEvaluator {
+public interface ExpressionSatisfiabilityEvaluator<L extends Lattice<L>, E extends Environment<L, E>> {
 
 	/**
 	 * The satisfiability of an expression.
@@ -121,5 +121,5 @@ public interface ExpressionSatisfiabilityEvaluator {
 	 *         satisfied, {@link Satisfiability#UNKNOWN} if it was not possible to
 	 *         determine whether or not the expression is satisfiable
 	 */
-	Satisfiability satisfies(Expression e);
+	Satisfiability satisfies(Expression e, E env);
 }
