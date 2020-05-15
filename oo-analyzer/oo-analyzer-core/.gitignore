@@ -6,6 +6,6 @@ build
 
 bin
 
-analyses
+/analyses
 
 !custom-libs/*.jar
