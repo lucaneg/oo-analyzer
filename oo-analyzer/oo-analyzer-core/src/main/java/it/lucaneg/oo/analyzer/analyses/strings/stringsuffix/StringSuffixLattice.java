@@ -1,6 +1,7 @@
 package it.lucaneg.oo.analyzer.analyses.strings.stringsuffix;
 
 import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 
 /**
  * Suffix lattice, as defined in:
@@ -161,4 +162,24 @@ public class StringSuffixLattice extends BaseStringLattice<StringSuffixLattice> 
 		return "\"" + suffix + "\"";
 	}
 
+	@Override
+	public Boolean isEqualTo(AbstractLattice<?> other) {
+		if (!(other instanceof StringSuffixLattice))
+			return null;
+		
+		StringSuffixLattice o = (StringSuffixLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return getSuffix().equals(o.getSuffix());
+	}
+	
+	@Override
+	public Boolean isGreaterThan(AbstractLattice<?> other) {
+		return null;
+	}
+	
+	@Override
+	public Boolean isLessThen(AbstractLattice<?> other) {
+		return null;
+	}
 }

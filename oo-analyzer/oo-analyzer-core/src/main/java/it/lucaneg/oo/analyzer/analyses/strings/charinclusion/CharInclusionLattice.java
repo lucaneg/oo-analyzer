@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 
 /**
  * Char Inclusion domain, as defined in:
@@ -160,5 +161,26 @@ public class CharInclusionLattice extends BaseStringLattice<CharInclusionLattice
 	@Override
 	public String toString() {
 		return includedChars.toString() + "(" + possiblyIncludedChars + ")";
+	}
+
+	@Override
+	public Boolean isEqualTo(AbstractLattice<?> other) {
+		if (!(other instanceof CharInclusionLattice))
+			return null;
+		
+		CharInclusionLattice o = (CharInclusionLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return equals(o);
+	}
+	
+	@Override
+	public Boolean isGreaterThan(AbstractLattice<?> other) {
+		return null;
+	}
+	
+	@Override
+	public Boolean isLessThen(AbstractLattice<?> other) {
+		return null;
 	}
 }

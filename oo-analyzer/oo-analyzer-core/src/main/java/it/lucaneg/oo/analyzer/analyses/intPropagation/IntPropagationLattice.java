@@ -182,4 +182,37 @@ public class IntPropagationLattice extends AbstractLattice<IntPropagationLattice
 		
 		return value - other.value;
 	}
+
+	@Override
+	public Boolean isEqualTo(AbstractLattice<?> other) {
+		if (!(other instanceof IntPropagationLattice))
+			return null;
+		
+		IntPropagationLattice o = (IntPropagationLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return value == o.value;
+	}
+	
+	@Override
+	public Boolean isGreaterThan(AbstractLattice<?> other) {
+		if (!(other instanceof IntPropagationLattice))
+			return null;
+		
+		IntPropagationLattice o = (IntPropagationLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return value > o.value;
+	}
+	
+	@Override
+	public Boolean isLessThen(AbstractLattice<?> other) {
+		if (!(other instanceof IntPropagationLattice))
+			return null;
+		
+		IntPropagationLattice o = (IntPropagationLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return value < o.value;
+	}
 }

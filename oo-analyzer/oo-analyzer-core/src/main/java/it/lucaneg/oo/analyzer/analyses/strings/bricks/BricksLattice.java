@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 
 import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 
 /**
  * Bricks domain, as defined in:
@@ -329,4 +330,24 @@ public class BricksLattice extends BaseStringLattice<BricksLattice> {
 		return true;
 	}
 
+	@Override
+	public Boolean isEqualTo(AbstractLattice<?> other) {
+		if (!(other instanceof BricksLattice))
+			return null;
+		
+		BricksLattice o = (BricksLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return equals(o);
+	}
+	
+	@Override
+	public Boolean isGreaterThan(AbstractLattice<?> other) {
+		return null;
+	}
+	
+	@Override
+	public Boolean isLessThen(AbstractLattice<?> other) {
+		return null;
+	}
 }

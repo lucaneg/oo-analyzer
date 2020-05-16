@@ -1,6 +1,7 @@
 package it.lucaneg.oo.analyzer.analyses.strings.string;
 
 import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 import it.unive.strings.AutomatonString;
 
 /**
@@ -141,5 +142,26 @@ public class StringLattice extends BaseStringLattice<StringLattice> {
 	@Override
 	public String toString() {
 		return string.toString();
+	}
+
+	@Override
+	public Boolean isEqualTo(AbstractLattice<?> other) {
+		if (!(other instanceof StringLattice))
+			return null;
+		
+		StringLattice o = (StringLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return getString().isEqualTo(o.getString());
+	}
+	
+	@Override
+	public Boolean isGreaterThan(AbstractLattice<?> other) {
+		return null;
+	}
+	
+	@Override
+	public Boolean isLessThen(AbstractLattice<?> other) {
+		return null;
 	}
 }

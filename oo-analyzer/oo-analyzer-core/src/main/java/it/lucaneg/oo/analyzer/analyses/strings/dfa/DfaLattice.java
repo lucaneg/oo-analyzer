@@ -1,6 +1,7 @@
 package it.lucaneg.oo.analyzer.analyses.strings.dfa;
 
 import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 import it.univr.fsm.machine.Automaton;
 
 /**
@@ -135,5 +136,26 @@ public class DfaLattice extends BaseStringLattice<DfaLattice> {
 	@Override
 	public String toString() {
 		return string.toString();
+	}
+
+	@Override
+	public Boolean isEqualTo(AbstractLattice<?> other) {
+		if (!(other instanceof DfaLattice))
+			return null;
+		
+		DfaLattice o = (DfaLattice) other;
+		if (isTop() || other.isTop() || isBottom() || other.isBottom())
+			return null;
+		return getString().equals(o.getString());
+	}
+	
+	@Override
+	public Boolean isGreaterThan(AbstractLattice<?> other) {
+		return null;
+	}
+	
+	@Override
+	public Boolean isLessThen(AbstractLattice<?> other) {
+		return null;
 	}
 }
