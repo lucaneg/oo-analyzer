@@ -15,6 +15,20 @@ public class DfaAnalysis extends BaseStringAnalysis<DfaLattice, DfaEnvironment> 
 
 	private static final int WIDENING_SIZE_THRESHOLD = 5;
 
+	private final DfaExpressionEvaluator evaluator = new DfaExpressionEvaluator();
+
+	private final DfaSatisfiabilityEvaluator satisfiability = new DfaSatisfiabilityEvaluator();
+
+	@Override
+	public DfaExpressionEvaluator getExpressionEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	public DfaSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+		return satisfiability;
+	}
+	
 	@Override
 	public DfaEnvironment mkEmptyEnvironment() {
 		return new DfaEnvironment();

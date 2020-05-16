@@ -16,6 +16,20 @@ import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
  */
 public class StringSuffixAnalysis extends BaseStringAnalysis<StringSuffixLattice, StringSuffixEnvironment> {
 
+	private final StringSuffixExpressionEvaluator evaluator = new StringSuffixExpressionEvaluator();
+
+	private final StringSuffixSatisfiabilityEvaluator satisfiability = new StringSuffixSatisfiabilityEvaluator();
+
+	@Override
+	public StringSuffixExpressionEvaluator getExpressionEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	public StringSuffixSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+		return satisfiability;
+	}
+	
 	@Override
 	public StringSuffixEnvironment mkEmptyEnvironment() {
 		return new StringSuffixEnvironment();

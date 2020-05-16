@@ -27,6 +27,19 @@ public class BricksAnalysis extends BaseStringAnalysis<BricksLattice, BricksEnvi
 	
 	private static final int MAX_LENGTH_BEFORE_WIDENING = 20;
 	
+	private final BricksExpressionEvaluator evaluator = new BricksExpressionEvaluator();
+
+	private final BricksSatisfiabilityEvaluator satisfiability = new BricksSatisfiabilityEvaluator();
+
+	@Override
+	public BricksExpressionEvaluator getExpressionEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	public BricksSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+		return satisfiability;
+	}
 	
 	@Override
 	protected BricksLattice latticeBottom() {

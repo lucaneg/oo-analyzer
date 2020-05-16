@@ -16,6 +16,20 @@ import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
  */
 public class StringPrefixAnalysis extends BaseStringAnalysis<StringPrefixLattice, StringPrefixEnvironment> {
 
+	private final StringPrefixExpressionEvaluator evaluator = new StringPrefixExpressionEvaluator();
+
+	private final StringPrefixSatisfiabilityEvaluator satisfiability = new StringPrefixSatisfiabilityEvaluator();
+
+	@Override
+	public StringPrefixExpressionEvaluator getExpressionEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	public StringPrefixSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+		return satisfiability;
+	}
+	
 	@Override
 	public StringPrefixEnvironment mkEmptyEnvironment() {
 		return new StringPrefixEnvironment();

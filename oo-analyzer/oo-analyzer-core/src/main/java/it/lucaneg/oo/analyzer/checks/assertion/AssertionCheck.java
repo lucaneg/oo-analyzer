@@ -1,7 +1,7 @@
 package it.lucaneg.oo.analyzer.checks.assertion;
 
-import static it.lucaneg.oo.sdk.analyzer.analyses.ExpressionSatisfiabilityEvaluator.Satisfiability.NOT_SATISFIED;
-import static it.lucaneg.oo.sdk.analyzer.analyses.ExpressionSatisfiabilityEvaluator.Satisfiability.UNKNOWN;
+import static it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability.NOT_SATISFIED;
+import static it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability.UNKNOWN;
 
 import java.util.Collection;
 import java.util.SortedSet;
@@ -10,9 +10,8 @@ import java.util.TreeSet;
 import it.lucaneg.logutils.EnrichedLogger;
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
-import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionSatisfiabilityEvaluator;
 import it.lucaneg.oo.sdk.analyzer.analyses.Lattice;
-import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionSatisfiabilityEvaluator.Satisfiability;
+import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.lucaneg.oo.sdk.analyzer.checks.impl.AbstractCheck;
 import it.lucaneg.oo.sdk.analyzer.program.MCodeMember;
 import it.lucaneg.oo.sdk.analyzer.program.Program;
@@ -38,8 +37,8 @@ public class AssertionCheck extends AbstractCheck {
 		SortedSet<String> failing = new TreeSet<>();
 		SortedSet<String> possiblyFailing = new TreeSet<>();
 		for (Analysis<? extends Lattice<?>, ? extends Environment<?, ?>> analysis : analyses) {
-			ExpressionSatisfiabilityEvaluator eval = (ExpressionSatisfiabilityEvaluator) analysis.of(codeMember).at(ass);
-			Satisfiability result = eval.satisfies(ass.getAssertion());
+			Environment<?, ?> eval = analysis.of(codeMember).at(ass);
+			Satisfiability result = analysis.getSatisfiabilityEvaluator().satisfies(ass.getAssertion(), eval, analysis.getExpressionEvaluator());
 			if (result == NOT_SATISFIED)
 				failing.add(analysis.getName());
 			else if (result == UNKNOWN)

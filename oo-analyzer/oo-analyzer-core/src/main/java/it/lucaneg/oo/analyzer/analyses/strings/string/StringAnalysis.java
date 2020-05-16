@@ -14,6 +14,20 @@ public class StringAnalysis extends BaseStringAnalysis<StringLattice, StringEnvi
 
 	private static final int WIDENING_SIZE_THRESHOLD = 5;
 
+	private final StringExpressionEvaluator evaluator = new StringExpressionEvaluator();
+
+	private final StringSatisfiabilityEvaluator satisfiability = new StringSatisfiabilityEvaluator();
+
+	@Override
+	public StringExpressionEvaluator getExpressionEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	public StringSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+		return satisfiability;
+	}
+	
 	@Override
 	public StringEnvironment mkEmptyEnvironment() {
 		return new StringEnvironment();

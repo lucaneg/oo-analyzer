@@ -16,6 +16,20 @@ import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
  */
 public class CharInclusionAnalysis extends BaseStringAnalysis<CharInclusionLattice, CharInclusionEnvironment> {
 
+	private final CharInclusionExpressionEvaluator evaluator = new CharInclusionExpressionEvaluator();
+
+	private final CharInclusionSatisfiabilityEvaluator satisfiability = new CharInclusionSatisfiabilityEvaluator();
+
+	@Override
+	public CharInclusionExpressionEvaluator getExpressionEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	public CharInclusionSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+		return satisfiability;
+	}
+	
 	@Override
 	protected CharInclusionLattice latticeBottom() {
 		return CharInclusionLattice.getBottom();

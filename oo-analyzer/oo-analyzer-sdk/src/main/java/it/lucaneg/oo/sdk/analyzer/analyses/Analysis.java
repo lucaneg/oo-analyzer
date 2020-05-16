@@ -32,4 +32,18 @@ public interface Analysis<L extends Lattice<L>, E extends Environment<L, E>> ext
 	 * @return the denotation of the given method
 	 */
 	Denotation<L, E> of(MCodeMember code);
+
+	/**
+	 * Yields the expression evaluator for this analysis.
+	 * 
+	 * @return the expression evaluator
+	 */
+	ExpressionEvaluator<L> getExpressionEvaluator();
+
+	/**
+	 * Yields the expression satisfiability evaluator for this analysis.
+	 * 
+	 * @return the expression satisfiability evaluator
+	 */
+	SatisfiabilityEvaluator getSatisfiabilityEvaluator();
 }

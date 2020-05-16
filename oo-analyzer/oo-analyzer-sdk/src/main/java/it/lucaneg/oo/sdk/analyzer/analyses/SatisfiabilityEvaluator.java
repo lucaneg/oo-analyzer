@@ -7,7 +7,7 @@ import it.lucaneg.oo.ast.expression.Expression;
  * 
  * @author Luca Negrini
  */
-public interface ExpressionSatisfiabilityEvaluator {
+public interface SatisfiabilityEvaluator {
 
 	/**
 	 * The satisfiability of an expression.
