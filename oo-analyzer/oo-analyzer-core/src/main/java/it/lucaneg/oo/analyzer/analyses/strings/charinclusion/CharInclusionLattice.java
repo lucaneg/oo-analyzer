@@ -3,7 +3,7 @@ package it.lucaneg.oo.analyzer.analyses.strings.charinclusion;
 import java.util.Set;
 import java.util.TreeSet;
 
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
 
 /**
  * Char Inclusion domain, as defined in:
@@ -14,7 +14,7 @@ import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
  * 
  * @author Luca Negrini
  */
-public class CharInclusionLattice extends AbstractLattice<CharInclusionLattice> {
+public class CharInclusionLattice extends BaseStringLattice<CharInclusionLattice> {
 	
 	public static final char TOP_CHAR = '\u0372';
 

@@ -4,10 +4,9 @@ import java.util.Map;
 
 import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractEnvironment;
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 
-public abstract class BaseStringEnvironment<L extends AbstractLattice<L>, E extends BaseStringEnvironment<L, E>>
+public abstract class BaseStringEnvironment<L extends BaseStringLattice<L>, E extends BaseStringEnvironment<L, E>>
 		extends AbstractEnvironment<L, E> {
 
 	protected BaseStringEnvironment() {

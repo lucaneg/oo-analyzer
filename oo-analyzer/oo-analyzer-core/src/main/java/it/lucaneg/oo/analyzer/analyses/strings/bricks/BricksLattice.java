@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
 
 /**
  * Bricks domain, as defined in:
@@ -19,7 +19,7 @@ import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
  * 
  * @author Luca Negrini
  */
-public class BricksLattice extends AbstractLattice<BricksLattice> {
+public class BricksLattice extends BaseStringLattice<BricksLattice> {
 
 	/**
 	 * The unique top element

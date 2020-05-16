@@ -6,10 +6,9 @@ import it.lucaneg.oo.ast.expression.literal.StringLiteral;
 import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractSatisfiabilityEvaluator;
 
-public abstract class BaseStringSatisfiabilityEvaluator<L extends AbstractLattice<L>> extends AbstractSatisfiabilityEvaluator {
+public abstract class BaseStringSatisfiabilityEvaluator<L extends BaseStringLattice<L>> extends AbstractSatisfiabilityEvaluator {
 	
 	protected abstract L latticeBottom();
 

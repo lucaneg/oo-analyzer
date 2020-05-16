@@ -1,6 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.strings.string;
 
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
 import it.unive.strings.AutomatonString;
 
 /**
@@ -8,7 +8,7 @@ import it.unive.strings.AutomatonString;
  * 
  * @author Luca Negrini
  */
-public class StringLattice extends AbstractLattice<StringLattice> {
+public class StringLattice extends BaseStringLattice<StringLattice> {
 
 	/**
 	 * The unique top element

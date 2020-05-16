@@ -1,6 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.strings.dfa;
 
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
 import it.univr.fsm.machine.Automaton;
 
 /**
@@ -9,7 +9,7 @@ import it.univr.fsm.machine.Automaton;
  * 
  * @author Luca Negrini
  */
-public class DfaLattice extends AbstractLattice<DfaLattice> {
+public class DfaLattice extends BaseStringLattice<DfaLattice> {
 
 	/**
 	 * The unique top element

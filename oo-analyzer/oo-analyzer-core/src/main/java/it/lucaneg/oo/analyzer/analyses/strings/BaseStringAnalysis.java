@@ -3,7 +3,6 @@ package it.lucaneg.oo.analyzer.analyses.strings;
 import it.lucaneg.oo.ast.expression.Expression;
 import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractAnalysis;
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.ILocalWrite;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
 
@@ -12,7 +11,7 @@ import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
  * 
  * @author Luca Negrini
  */
-public abstract class BaseStringAnalysis<L extends AbstractLattice<L>, E extends BaseStringEnvironment<L, E>>
+public abstract class BaseStringAnalysis<L extends BaseStringLattice<L>, E extends BaseStringEnvironment<L, E>>
 		extends AbstractAnalysis<L, E> {
 
 	@Override

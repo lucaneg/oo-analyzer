@@ -9,9 +9,8 @@ import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractExpressionEvaluator;
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 
-public abstract class BaseStringExpressionEvaluator<L extends AbstractLattice<L>>
+public abstract class BaseStringExpressionEvaluator<L extends BaseStringLattice<L>>
 		extends AbstractExpressionEvaluator<L> {
 
 	protected abstract L latticeBottom();

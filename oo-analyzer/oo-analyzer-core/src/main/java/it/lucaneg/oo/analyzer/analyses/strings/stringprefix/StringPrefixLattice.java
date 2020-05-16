@@ -1,6 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.strings.stringprefix;
 
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.analyzer.analyses.strings.BaseStringLattice;
 
 /**
  * Prefix domain, as defined in:
@@ -11,7 +11,7 @@ import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
  * 
  * @author Luca Negrini
  */
-public class StringPrefixLattice extends AbstractLattice<StringPrefixLattice> {
+public class StringPrefixLattice extends BaseStringLattice<StringPrefixLattice> {
 
 	/**
 	 * The unique top element
