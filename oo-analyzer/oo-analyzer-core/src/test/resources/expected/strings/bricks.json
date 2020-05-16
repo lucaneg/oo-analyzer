@@ -13,33 +13,63 @@
     "message" : "according to bricks analysis, this assert never holds"
   }, {
     "filename" : "strings.java",
-    "line" : 71,
+    "line" : 16,
     "col" : 2,
     "producer" : "assertion",
-    "message" : "according to bricks analysis, this assert never holds"
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 17,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 27,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 39,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 54,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 66,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 68,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 69,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
+  }, {
+    "filename" : "strings.java",
+    "line" : 72,
+    "col" : 2,
+    "producer" : "assertion",
+    "message" : "according to bricks analysis, this assert might not hold"
   }, {
     "filename" : "strings.java",
     "line" : 73,
     "col" : 2,
     "producer" : "assertion",
-    "message" : "according to bricks analysis, this assert never holds"
-  }, {
-    "filename" : "strings.java",
-    "line" : 74,
-    "col" : 2,
-    "producer" : "assertion",
-    "message" : "according to bricks analysis, this assert never holds"
-  }, {
-    "filename" : "strings.java",
-    "line" : 77,
-    "col" : 2,
-    "producer" : "assertion",
-    "message" : "according to bricks analysis, this assert never holds"
-  }, {
-    "filename" : "strings.java",
-    "line" : 78,
-    "col" : 2,
-    "producer" : "assertion",
-    "message" : "according to bricks analysis, this assert never holds"
+    "message" : "according to bricks analysis, this assert might not hold"
   } ]
 }

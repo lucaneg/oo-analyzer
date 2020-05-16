@@ -61,13 +61,19 @@ public class CharInclusionExpressionEvaluator extends BaseStringExpressionEvalua
 
 	@Override
 	protected CharInclusionLattice evalConcat(CharInclusionLattice receiver, CharInclusionLattice parameter) {
-		if (receiver.isTop() || parameter.isTop())
+		if (receiver.isTop())
 			return latticeTop();
 
 		Set<Character> included = new TreeSet<>(receiver.getIncludedChars());
 		Set<Character> possibly = new TreeSet<>(receiver.getPossiblyIncludedChars());
-		included.addAll(parameter.getIncludedChars());
-		possibly.addAll(parameter.getPossiblyIncludedChars());
+
+		if (parameter.isTop()) 
+			possibly.add(CharInclusionLattice.TOP_CHAR);
+		else {
+			included.addAll(parameter.getIncludedChars());
+			possibly.addAll(parameter.getPossiblyIncludedChars());
+		}
+		
 		return new CharInclusionLattice(included, possibly);
 	}
 }

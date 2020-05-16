@@ -16,45 +16,129 @@ public class BricksSatisfiabilityEvaluator extends BaseStringSatisfiabilityEvalu
 
 	@Override
 	protected Satisfiability satisfiesEndsWith(BricksLattice rec, BricksLattice par) {
-		if (!par.inRelationWith(rec))
+		if (rec.isTop() || par.isTop())
+			return Satisfiability.UNKNOWN;
+		
+		if (satisfiesContains(rec, par) == Satisfiability.NOT_SATISFIED)
 			return Satisfiability.NOT_SATISFIED;
 
 		if (rec.equals(par))
 			return Satisfiability.SATISFIED;
+		
+		if (par.getBricks().size() == 1 
+				&& par.getBricks().get(0).getMin() == 1 
+				&& par.getBricks().get(0).getMax() == 1 
+				&& par.getBricks().get(0).getStrings().size() == 1) {
+			boolean may = false; 
+			boolean must = false;
+			String search = par.getBricks().get(0).getStrings().iterator().next();
+			for (Brick b : rec.getBricks()) {
+				int count = 0;
+				for (String a : b.getStrings())
+					if (a.endsWith(search))
+						count++;
+				if (count > 0)
+					may = true;
+				if (count == b.getStrings().size() && b.getMin() > 0)
+					must = true;
+			}
+			
+			if (must)
+				return Satisfiability.SATISFIED;
+			
+			if (may)
+				return Satisfiability.UNKNOWN;
+		
+			return Satisfiability.NOT_SATISFIED;
+		}
 
-		int parlen = par.getBricks().size();
-		int reclen = rec.getBricks().size();
-		for (int i = 0; i < par.getBricks().size(); i++)
-			if (!par.getBricks().get(parlen - 1 - i).equals(rec.getBricks().get(reclen - 1 - i)))
-				return Satisfiability.NOT_SATISFIED;
-
-		return Satisfiability.SATISFIED;
+		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
 	protected Satisfiability satisfiesStartsWith(BricksLattice rec, BricksLattice par) {
-		if (!par.inRelationWith(rec))
+		if (rec.isTop() || par.isTop())
+			return Satisfiability.UNKNOWN;
+		
+		if (satisfiesContains(rec, par) == Satisfiability.NOT_SATISFIED)
 			return Satisfiability.NOT_SATISFIED;
 
 		if (rec.equals(par))
 			return Satisfiability.SATISFIED;
+		
+		if (par.getBricks().size() == 1 
+				&& par.getBricks().get(0).getMin() == 1 
+				&& par.getBricks().get(0).getMax() == 1 
+				&& par.getBricks().get(0).getStrings().size() == 1) {
+			boolean may = false; 
+			boolean must = false;
+			String search = par.getBricks().get(0).getStrings().iterator().next();
+			for (Brick b : rec.getBricks()) {
+				int count = 0;
+				for (String a : b.getStrings())
+					if (a.startsWith(search))
+						count++;
+				if (count > 0)
+					may = true;
+				if (count == b.getStrings().size() && b.getMin() > 0)
+					must = true;
+			}
+			
+			if (must)
+				return Satisfiability.SATISFIED;
+			
+			if (may)
+				return Satisfiability.UNKNOWN;
+		
+			return Satisfiability.NOT_SATISFIED;
+		}
 
-		for (int i = 0; i < par.getBricks().size(); i++)
-			if (!par.getBricks().get(i).equals(rec.getBricks().get(i)))
-				return Satisfiability.NOT_SATISFIED;
-
-		return Satisfiability.SATISFIED;
+		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
 	protected Satisfiability satisfiesContains(BricksLattice rec, BricksLattice par) {
+		if (rec.isTop() || par.isTop())
+			return Satisfiability.UNKNOWN;
+		
 		if (par.inRelationWith(rec))
 			return Satisfiability.SATISFIED;
-		return Satisfiability.NOT_SATISFIED;
+		
+		if (par.getBricks().size() == 1 
+				&& par.getBricks().get(0).getMin() == 1 
+				&& par.getBricks().get(0).getMax() == 1 
+				&& par.getBricks().get(0).getStrings().size() == 1) {
+			boolean may = false; 
+			boolean must = false;
+			String search = par.getBricks().get(0).getStrings().iterator().next();
+			for (Brick b : rec.getBricks()) {
+				int count = 0;
+				for (String a : b.getStrings())
+					if (a.contains(search))
+						count++;
+				if (count > 0)
+					may = true;
+				if (count == b.getStrings().size() && b.getMin() > 0)
+					must = true;
+			}
+			
+			if (must)
+				return Satisfiability.SATISFIED;
+			
+			if (may)
+				return Satisfiability.UNKNOWN;
+		
+			return Satisfiability.NOT_SATISFIED;
+		}
+		
+		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
 	protected Satisfiability satisfiesEquals(BricksLattice rec, BricksLattice par) {
+		if (rec.isTop() || par.isTop())
+			return Satisfiability.UNKNOWN;
+		
 		if (rec.equals(par))
 			return Satisfiability.SATISFIED;
 

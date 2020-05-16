@@ -1,5 +1,5 @@
 class Strings {
-	void main() {
+	void concat() {
 		String s = "ciao";
 		s = s.concat("ciao");
 		assert (s.equals("ciaociao"));
@@ -10,7 +10,14 @@ class Strings {
 		assert (s.contains("oc"));
 	}
 	
-	void foo1(int par, String init) {
+	void replace() {
+		String stm = "test string";
+		stm = stm.replace("str", "fff");
+		assert(stm.contains("str")); // KO
+		assert(stm.contains("fff"));
+	}
+	
+	void loopWithTop(int par, String init) {
 		String result = "result";
 		for (int i = 0; i < 10; i = i + 1) { 
 			result = result.concat("id=");
@@ -20,7 +27,7 @@ class Strings {
 		assert (result.contains("f")); // KO
 	}
 	
-	void foo2(int par) {
+	void loopStartingAtEmpty(int par) {
 		String result = "";
 		for (int i = 0; i < 10; i = i + 1) { 
 			if (i == 3)
@@ -32,19 +39,7 @@ class Strings {
 		assert (result.contains("f")); // KO
 	}
 	
-	void foo3(int par) {
-		String result = "f";
-		for (int i = 0; i < 10; i = i + 1) { 
-			if (i == 3)
-				result = result.concat("foo");
-			else
-				result = result.concat("faa");
-		}
-		
-		assert (result.contains("f"));
-	}
-	
-	void whileloop(int par) {
+	void loopStartingAtNonEmpty(int par) {
 		String result = "f";
 		int i = 0;
 		while (i < 10) { 

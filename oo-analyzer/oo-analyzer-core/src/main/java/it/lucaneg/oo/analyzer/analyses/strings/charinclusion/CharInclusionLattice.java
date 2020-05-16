@@ -15,6 +15,8 @@ import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
  * @author Luca Negrini
  */
 public class CharInclusionLattice extends AbstractLattice<CharInclusionLattice> {
+	
+	public static final char TOP_CHAR = '\u0372';
 
 	/**
 	 * The unique top element
@@ -32,7 +34,7 @@ public class CharInclusionLattice extends AbstractLattice<CharInclusionLattice> 
 		
 		@Override
 		public String toString() {
-			return "\u0372";
+			return String.valueOf(TOP_CHAR);
 		}
 	};
 

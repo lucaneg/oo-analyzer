@@ -65,6 +65,7 @@ public class BricksExpressionEvaluator extends BaseStringExpressionEvaluator<Bri
 		if (first.containsTop())
 			return latticeTop();
 
+		// too many corner cases
 		return latticeTop();
 //		for (int i = 0; i < receiver.getBricks().size() - first.getBricks().size(); i++)
 //			if (receiver.getBricks().get(i).equals(first.getBricks().get(0))) {

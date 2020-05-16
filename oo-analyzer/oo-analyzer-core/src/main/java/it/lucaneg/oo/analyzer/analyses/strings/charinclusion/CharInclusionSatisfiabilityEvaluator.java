@@ -22,8 +22,8 @@ public class CharInclusionSatisfiabilityEvaluator extends BaseStringSatisfiabili
 		if (rec.isTop() || par.isTop())
 			return Satisfiability.UNKNOWN;
 
-		Set<Character> includedChars = new HashSet<>(rec.getIncludedChars());
-		includedChars.retainAll(par.getIncludedChars());
+		Set<Character> includedChars = new HashSet<>(par.getIncludedChars());
+		includedChars.removeAll(par.getPossiblyIncludedChars());
 		if (!includedChars.isEmpty())
 			return Satisfiability.NOT_SATISFIED;
 
@@ -35,8 +35,8 @@ public class CharInclusionSatisfiabilityEvaluator extends BaseStringSatisfiabili
 		if (rec.isTop() || par.isTop())
 			return Satisfiability.UNKNOWN;
 
-		Set<Character> includedChars = new HashSet<>(rec.getIncludedChars());
-		includedChars.retainAll(par.getIncludedChars());
+		Set<Character> includedChars = new HashSet<>(par.getIncludedChars());
+		includedChars.removeAll(par.getPossiblyIncludedChars());
 		if (!includedChars.isEmpty())
 			return Satisfiability.NOT_SATISFIED;
 
@@ -53,8 +53,8 @@ public class CharInclusionSatisfiabilityEvaluator extends BaseStringSatisfiabili
 			// only case when we can return true
 			return Satisfiability.SATISFIED;
 
-		Set<Character> includedChars = new HashSet<>(rec.getIncludedChars());
-		includedChars.retainAll(par.getIncludedChars());
+		Set<Character> includedChars = new HashSet<>(par.getIncludedChars());
+		includedChars.removeAll(rec.getPossiblyIncludedChars());
 		if (!includedChars.isEmpty())
 			return Satisfiability.NOT_SATISFIED;
 
