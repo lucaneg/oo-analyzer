@@ -15,7 +15,7 @@ public class StringAnalysesBaseTest extends AnalysisBasedTest {
 		List<Finding> actual = runAnalysis("charInclusion");
 		JsonAnalysisReport actualReport = new JsonAnalysisReport(actual);
 		JsonAnalysisReport expectedReport = parseReport("strings/charInclusion");		
-		checkResult(expectedReport, actualReport);
+		checkResult("charInclusion", expectedReport, actualReport);
 	}
 	
 	@Test
@@ -23,7 +23,7 @@ public class StringAnalysesBaseTest extends AnalysisBasedTest {
 		List<Finding> actual = runAnalysis("stringPrefix");
 		JsonAnalysisReport actualReport = new JsonAnalysisReport(actual);
 		JsonAnalysisReport expectedReport = parseReport("strings/stringPrefix");		
-		checkResult(expectedReport, actualReport);
+		checkResult("stringPrefix", expectedReport, actualReport);
 	}
 	
 	@Test
@@ -31,7 +31,7 @@ public class StringAnalysesBaseTest extends AnalysisBasedTest {
 		List<Finding> actual = runAnalysis("stringSuffix");
 		JsonAnalysisReport actualReport = new JsonAnalysisReport(actual);
 		JsonAnalysisReport expectedReport = parseReport("strings/stringSuffix");		
-		checkResult(expectedReport, actualReport);
+		checkResult("stringSuffix", expectedReport, actualReport);
 	}
 	
 	@Test
@@ -39,7 +39,7 @@ public class StringAnalysesBaseTest extends AnalysisBasedTest {
 		List<Finding> actual = runAnalysis("bricks");
 		JsonAnalysisReport actualReport = new JsonAnalysisReport(actual);
 		JsonAnalysisReport expectedReport = parseReport("strings/bricks");		
-		checkResult(expectedReport, actualReport);
+		checkResult("bricks", expectedReport, actualReport);
 	}
 	
 	@Test
@@ -47,6 +47,6 @@ public class StringAnalysesBaseTest extends AnalysisBasedTest {
 		List<Finding> actual = runAnalysis("string");
 		JsonAnalysisReport actualReport = new JsonAnalysisReport(actual);
 		JsonAnalysisReport expectedReport = parseReport("strings/string");		
-		checkResult(expectedReport, actualReport);
+		checkResult("string", expectedReport, actualReport);
 	}
 }

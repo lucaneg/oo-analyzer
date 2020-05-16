@@ -85,25 +85,25 @@ public class FindingsDiffBuilder {
 		}
 	}
 
-	public void printDiff(boolean deltasOnly) {
+	public void printDiff(String header, boolean deltasOnly) {
 		// Keep the output compact if there are no differences
 		if (onlyExpected.size() == 0 && onlyActual.size() == 0 && deltasOnly) {
-			logger.info("Warnings sets contain the same warnings");
+			logger.info(header + ": Warnings sets contain the same warnings");
 			return;
 		}
 
 		int i = 1;
 
-		logger.warn("Warnings only in the expected set (" + onlyExpected.size() + ")");
+		logger.warn(header + ": Warnings only in the expected set (" + onlyExpected.size() + ")");
 		for (JsonFinding f : onlyExpected) 
 			logger.warn("#" + i++ + "\t" + f);
 		
-		logger.warn("Warnings only in the actual set (" + onlyActual.size() + ")");
+		logger.warn(header + ": Warnings only in the actual set (" + onlyActual.size() + ")");
 		for (JsonFinding f : onlyActual) 
 			logger.warn("#" + i++ + "\t" + f);
 
 		if (!deltasOnly) {
-			logger.warn("Common Warnings (" + common.size() + "):");
+			logger.warn(header + ": Common Warnings (" + common.size() + "):");
 			for (Map.Entry<JsonFinding, JsonFinding> pair : common.entrySet())
 				logger.warn("#" + i++ + " - " + pair.getKey());
 		}
@@ -119,5 +119,9 @@ public class FindingsDiffBuilder {
 
 	public Map<JsonFinding, JsonFinding> getCommon() {
 		return common;
+	}
+	
+	public boolean hasDiff() {
+		return !onlyActual.isEmpty() && !onlyExpected.isEmpty(); 
 	}
 }

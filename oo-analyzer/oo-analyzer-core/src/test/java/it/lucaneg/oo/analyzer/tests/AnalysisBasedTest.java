@@ -31,10 +31,11 @@ public abstract class AnalysisBasedTest {
 		return analyzer.getFindings();
 	}
 	
-	protected void checkResult(JsonAnalysisReport expectedReport, JsonAnalysisReport actualReport) { 
+	protected void checkResult(String label, JsonAnalysisReport expectedReport, JsonAnalysisReport actualReport) { 
 		FindingsDiffBuilder diff = new FindingsDiffBuilder(expectedReport.getFindings(), actualReport.getFindings());
 		diff.computeDiff((f1, f2) -> f1.compareTo(f2));
-		diff.printDiff(true);
+		diff.printDiff(label, true);
+			
 		
 		assertTrue("Missing some expected findings", diff.getOnlyExpected().isEmpty());
 		assertTrue("Found new findings", diff.getOnlyActual().isEmpty());
