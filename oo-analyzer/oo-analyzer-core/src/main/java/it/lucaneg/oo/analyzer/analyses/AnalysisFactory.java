@@ -21,7 +21,9 @@ public class AnalysisFactory {
 	@SuppressWarnings("rawtypes")
 	private static final Map<String, Constructor<? extends Analysis>> analysesMap = new HashMap<>();
 
-	static {
+	private static boolean isInitialized = false;
+	
+	private static void fillAnalyses() {
 		Reflections reflections = new Reflections(AnalysisFactory.class.getPackageName(), new SubTypesScanner());
 		@SuppressWarnings("rawtypes")
 		Set<Class<? extends Analysis>> instances = reflections.getSubTypesOf(Analysis.class);  
@@ -36,6 +38,8 @@ public class AnalysisFactory {
 						| InvocationTargetException e) {
 					logger.warn("unable to instantiate analysis class " + analysis.getName(), e);
 				}
+		
+		isInitialized = true;
 	}
 
 	/**
@@ -44,6 +48,9 @@ public class AnalysisFactory {
 	 * @return the names of the instances
 	 */
 	public static Collection<String> getAllInstancesNames() {
+		if (!isInitialized)
+			fillAnalyses();
+		
 		return analysesMap.keySet();
 	}
 
@@ -54,6 +61,9 @@ public class AnalysisFactory {
 	 * @return the instance
 	 */
 	public static Analysis<?, ?> getInstance(String analysis) {
+		if (!isInitialized)
+			fillAnalyses();
+		
 		if (!analysesMap.containsKey(analysis))
 			throw new IllegalArgumentException("Unknown analysis: " + analysis);
 		

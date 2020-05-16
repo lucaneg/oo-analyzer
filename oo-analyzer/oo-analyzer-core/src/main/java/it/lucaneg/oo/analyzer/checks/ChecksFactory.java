@@ -19,8 +19,10 @@ public class ChecksFactory {
 	private static final EnrichedLogger logger = new EnrichedLogger(ChecksFactory.class);
 
 	private static final Map<String, Constructor<? extends Check>> checksMap = new HashMap<>();
-
-	static {
+	
+	private static boolean isInitialized = false;
+	
+	private static void fillChecks() {
 		Reflections reflections = new Reflections(ChecksFactory.class.getPackageName(), new SubTypesScanner());
 		Set<Class<? extends Check>> instances = reflections.getSubTypesOf(Check.class);
 		for (Class<? extends Check> check : instances) 
@@ -34,6 +36,8 @@ public class ChecksFactory {
 						| InvocationTargetException e) {
 					logger.warn("unable to instantiate check class " + check.getName(), e);
 				}
+		
+		isInitialized = true;
 	}
 
 	/**
@@ -42,6 +46,9 @@ public class ChecksFactory {
 	 * @return the names of the instances
 	 */
 	public static Collection<String> getAllInstancesNames() {
+		if (!isInitialized)
+			fillChecks();
+		
 		return checksMap.keySet();
 	}
 
@@ -52,6 +59,9 @@ public class ChecksFactory {
 	 * @return the instance
 	 */
 	public static Check getInstance(String check) {
+		if (!isInitialized)
+			fillChecks();
+		
 		if (!checksMap.containsKey(check))
 			throw new IllegalArgumentException("Unknown check: " + check);
 		

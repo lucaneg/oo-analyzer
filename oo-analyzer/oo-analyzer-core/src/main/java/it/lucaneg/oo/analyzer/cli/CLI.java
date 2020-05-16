@@ -43,7 +43,6 @@ public class CLI {
 		INPUT = Option.builder("i")
 					.longOpt("input-folder")
 					.desc("[REQUIRED] Sets the input folder containing the files to analyze")
-					//.required() otherwise we get an exception even with -h
 					.hasArg()
 					.argName("folder")
 					.build();
@@ -59,13 +58,13 @@ public class CLI {
 						.build();
 		CHECKS = Option.builder("c")
 				.longOpt("checks")
-				.desc("Sets the checks to be executed. Possible values:\n- " + String.join("\n- ", ChecksFactory.getAllInstancesNames()))
+				.desc("Sets the checks to be executed")
 				.hasArgs()
 				.argName("check")
 				.build();
 		ANALYSES = Option.builder("a")
 				.longOpt("analyses")
-				.desc("Sets the analyses to be executed. Possible values:\n- " + String.join("\n- ", AnalysisFactory.getAllInstancesNames()))
+				.desc("Sets the analyses to be executed")
 				.hasArgs()
 				.argName("analysis")
 				.build();
@@ -145,6 +144,8 @@ public class CLI {
 	
 	private static void printUsage(Options options) {
 		HelpFormatter hf = new HelpFormatter();
-		hf.printHelp(CLI.class.getSimpleName() + " [OPTIONS]", options);
+		String alternatives = "Available analyses:\n- " + String.join("\n- ", AnalysisFactory.getAllInstancesNames());
+		alternatives += "\n\nAvailable checks:\n- " + String.join("\n- ", ChecksFactory.getAllInstancesNames());
+		hf.printHelp(CLI.class.getSimpleName() + " [OPTIONS]", "", options, alternatives);
 	}
 }
