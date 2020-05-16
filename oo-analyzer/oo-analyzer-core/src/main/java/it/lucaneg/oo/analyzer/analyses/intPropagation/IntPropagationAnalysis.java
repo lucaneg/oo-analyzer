@@ -7,8 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import it.lucaneg.oo.analyzer.util.ExpressionUtils;
 import it.lucaneg.oo.ast.expression.Expression;
 import it.lucaneg.oo.ast.types.IntType;
-import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
-import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractAnalysis;
 import it.lucaneg.oo.sdk.analyzer.fixpoint.Fixpoint;
@@ -25,12 +23,12 @@ public class IntPropagationAnalysis extends AbstractAnalysis<IntPropagationLatti
 	private final IntPropagationSatisfiabilityEvaluator satisfiability = new IntPropagationSatisfiabilityEvaluator();
 	
 	@Override
-	public ExpressionEvaluator<IntPropagationLattice> getExpressionEvaluator() {
+	public IntPropagationExpressionEvaluator getExpressionEvaluator() {
 		return evaluator;
 	}
 	
 	@Override
-	public SatisfiabilityEvaluator getSatisfiabilityEvaluator() {
+	public IntPropagationSatisfiabilityEvaluator getSatisfiabilityEvaluator() {
 		return satisfiability;
 	}
 	
