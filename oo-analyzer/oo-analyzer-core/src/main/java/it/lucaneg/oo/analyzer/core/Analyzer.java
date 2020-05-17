@@ -37,8 +37,17 @@ public class Analyzer {
 		return options;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public ExitCode run() {
+		try {
+			return runAux();
+		} catch (Exception e) {
+			logger.error("Excecution encountered an error", e);
+			return ExitCode.EXCECUTION_ERROR;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private ExitCode runAux() {
 		// first, we parse the code
 		FileParser fileParser = new FileParser(options);
 		ExitCode ret = fileParser.parseInputs();

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.BiFunction;
 
+import it.lucaneg.logutils.EnrichedLogger;
 import it.lucaneg.oo.ast.expression.Expression;
 import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.sdk.analyzer.analyses.Denotation;
@@ -15,6 +16,8 @@ import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
 
 public abstract class AbstractFixpoint<L extends Lattice<L>, E extends Environment<L,E>> extends MCodeBlock implements Fixpoint<L,E> {
 
+	private static final EnrichedLogger logger = new EnrichedLogger(AbstractFixpoint.class);
+	
 	protected AbstractFixpoint(MCodeBlock source) {
 		super(source);
 	}
@@ -66,7 +69,12 @@ public abstract class AbstractFixpoint<L extends Lattice<L>, E extends Environme
 						"We should have always processed at least one entry point before queueing a statement in the worklist");
 
 			previousApprox = result.hasEnvironmentFor(current) ? result.at(current) : null;
-			newApprox = semantics.apply(current, entrystate);
+			try {
+				newApprox = semantics.apply(current, entrystate);
+			} catch (Exception e) {
+				logger.error("Exception while analyzing instruction '" + current + "' in method " + current.getContainer().toString(), e);
+				throw new RuntimeException(e);
+			}
 
 			newApprox = update(previousApprox, newApprox, current);
 			
