@@ -1,6 +1,5 @@
 package it.lucaneg.oo.analyzer.analyses;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -19,7 +18,7 @@ public class AnalysisFactory {
 	private static final EnrichedLogger logger = new EnrichedLogger(AnalysisFactory.class);
 	
 	@SuppressWarnings("rawtypes")
-	private static final Map<String, Constructor<? extends Analysis>> analysesMap = new HashMap<>();
+	private static final Map<String, Class<? extends Analysis>> analysesMap = new HashMap<>();
 
 	private static boolean isInitialized = false;
 	
@@ -31,7 +30,7 @@ public class AnalysisFactory {
 			if (!Modifier.isAbstract(analysis.getModifiers()))
 				try {
 					Analysis<?, ?> instance = analysis.getConstructor().newInstance();
-					analysesMap.put(instance.getName(), analysis.getConstructor());
+					analysesMap.put(instance.getName(), analysis);
 				} catch (NoSuchMethodException | SecurityException e) {
 					logger.warn("No empty constructor found for analysis class " + analysis.getName(), e);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -68,10 +67,26 @@ public class AnalysisFactory {
 			throw new IllegalArgumentException("Unknown analysis: " + analysis);
 		
 		try {
-			return analysesMap.get(analysis).newInstance();
+			return analysesMap.get(analysis).getConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			throw new IllegalStateException("Unable to instantiate analysis instance " + analysis, e);
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) { 
+			throw new IllegalStateException("Unable to instantiate analysis " + analysis, e);
 		}
+	}
+	
+	/**
+	 * Yields the class of the {@link Analysis} with the given name.
+	 * 
+	 * @param analysis the name of the analysis
+	 * @return the class
+	 */
+	public static Class<?> getClassOf(String analysis) {
+		if (!isInitialized)
+			fillAnalyses();
+		
+		if (!analysesMap.containsKey(analysis))
+			throw new IllegalArgumentException("Unknown analysis: " + analysis);
+		
+		return (Class<?>) analysesMap.get(analysis);
 	}
 }

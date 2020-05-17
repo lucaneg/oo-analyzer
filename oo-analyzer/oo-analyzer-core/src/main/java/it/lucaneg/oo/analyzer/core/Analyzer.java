@@ -14,11 +14,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import it.lucaneg.logutils.EnrichedLogger;
 import it.lucaneg.oo.analyzer.analyses.AnalysisDumper;
-import it.lucaneg.oo.analyzer.analyses.AnalysisException;
-import it.lucaneg.oo.analyzer.analyses.value.ValueAnalysis;
-import it.lucaneg.oo.analyzer.analyses.value.domains.bools.bool.BooleanLattice;
-import it.lucaneg.oo.analyzer.analyses.value.domains.ints.interval.IntervalLattice;
-import it.lucaneg.oo.analyzer.analyses.value.domains.strings.string.StringLattice;
 import it.lucaneg.oo.analyzer.options.AnalysisOptions;
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.checks.Check;
@@ -64,13 +59,6 @@ public class Analyzer {
 		Map<Class<? extends Analysis<?, ?>>, Analysis<?, ?>> analyses = new HashMap<>();
 		logger.mkTimerLogger("Executing analyses").execAction(() -> {
 			for (Analysis<?, ?> toRun : options.getAnalyses()) {
-				if (toRun instanceof ValueAnalysis)
-					try {
-						((ValueAnalysis) toRun).setDomains(BooleanLattice.class, IntervalLattice.class, StringLattice.class);
-					} catch (AnalysisException e) {
-						logger.error("Unable to configure analysis", e);
-						continue;
-					}
 				toRun.run(modelBuilder.getProgram());
 				analyses.put((Class<? extends Analysis<?, ?>>) toRun.getClass(), toRun);
 			}
