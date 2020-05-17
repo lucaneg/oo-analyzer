@@ -31,16 +31,10 @@ public abstract class AbstractAnalysis<L extends AbstractLattice<L>, E extends A
 	private final Map<MCodeMember, Denotation<L, E>> denotations;
 
 	/**
-	 * Singleton for the empty environment
-	 */
-	private final E emptyEnv;
-
-	/**
 	 * Builds a new analysis.
 	 */
 	protected AbstractAnalysis() {
 		denotations = new HashMap<>();
-		emptyEnv = mkEmptyEnvironment();
 	}
 
 	/**
@@ -58,7 +52,7 @@ public abstract class AbstractAnalysis<L extends AbstractLattice<L>, E extends A
 			if (code.getDefiningClass().isObject() || code.getDefiningClass().isString())
 				continue;
 			
-			E env = emptyEnv.copy();
+			E env = mkEmptyEnvironment();
 			for (MFormalParameter t : code.getParameters())
 				env.set(new MLocalVariable(t.getType(), t.getName()), env.defaultLatticeForType(t.getType()));
 			

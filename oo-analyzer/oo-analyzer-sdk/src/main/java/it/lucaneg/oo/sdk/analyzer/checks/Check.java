@@ -1,6 +1,6 @@
 package it.lucaneg.oo.sdk.analyzer.checks;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.SortedSet;
 
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
@@ -26,9 +26,10 @@ public interface Check {
 	 * provided by the given analyses.
 	 * 
 	 * @param program  the program to check
-	 * @param analyses the analyses that can be exploited
+	 * @param analyses the analyses that can be exploited, retrievable by their
+	 *                 class names
 	 */
-	void run(Program program, Collection<Analysis<?, ?>> analyses);
+	void run(Program program, Map<Class<? extends Analysis<?, ?>>, Analysis<?, ?>> analyses);
 
 	/**
 	 * Yields all the findings that this check raised.

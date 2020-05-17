@@ -3,14 +3,14 @@ package it.lucaneg.oo.analyzer.checks.assertion;
 import static it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability.NOT_SATISFIED;
 import static it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability.UNKNOWN;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import it.lucaneg.logutils.EnrichedLogger;
+import it.lucaneg.oo.analyzer.analyses.value.ValueAnalysis;
+import it.lucaneg.oo.analyzer.analyses.value.ValueEnvironment;
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
-import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
-import it.lucaneg.oo.sdk.analyzer.analyses.Lattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.lucaneg.oo.sdk.analyzer.checks.impl.AbstractCheck;
 import it.lucaneg.oo.sdk.analyzer.program.MCodeMember;
@@ -21,29 +21,30 @@ public class AssertionCheck extends AbstractCheck {
 	
 	private static final EnrichedLogger logger = new EnrichedLogger(AssertionCheck.class);
 	
+	private ValueAnalysis values;
+	
 	@Override
-	public void run(Program program, Collection<Analysis<?, ?>> analyses) {
+	public void run(Program program, Map<Class<? extends Analysis<?, ?>>, Analysis<?, ?>> analyses) {
+		values = (ValueAnalysis) analyses.get(ValueAnalysis.class);
 		for (MCodeMember codeMember : logger.mkIterationLogger(getName(), "methods").iterate(program.getAllCodeMembers())) {
 			codeMember.getCode()
 				.nodes()
 				.stream()
 				.filter(st -> st instanceof Assert)
 				.map(st -> (Assert) st)
-				.forEach(ass -> check(analyses, codeMember, ass));
+				.forEach(ass -> check(codeMember, ass));
 		}
 	}
 
-	private void check(Collection<Analysis<?, ?>> analyses, MCodeMember codeMember, Assert ass) {
+	private void check(MCodeMember codeMember, Assert ass) {
 		SortedSet<String> failing = new TreeSet<>();
 		SortedSet<String> possiblyFailing = new TreeSet<>();
-		for (Analysis<? extends Lattice<?>, ? extends Environment<?, ?>> analysis : analyses) {
-			Environment<?, ?> eval = analysis.of(codeMember).at(ass);
-			Satisfiability result = analysis.getSatisfiabilityEvaluator().satisfies(ass.getAssertion(), eval, analysis.getExpressionEvaluator());
-			if (result == NOT_SATISFIED)
-				failing.add(analysis.getName());
-			else if (result == UNKNOWN)
-				possiblyFailing.add(analysis.getName());
-		}
+		ValueEnvironment eval = values.of(codeMember).at(ass);
+		Satisfiability result = values.getSatisfiabilityEvaluator().satisfies(ass.getAssertion(), eval, values.getExpressionEvaluator());
+		if (result == NOT_SATISFIED)
+			failing.add(values.getName());
+		else if (result == UNKNOWN)
+			possiblyFailing.add(values.getName());
 
 		if (!failing.isEmpty()) 
 			registerFinding(new FailingAssertFinding(ass.getFileName(), ass.getLine(), ass.getPosition(), getName(), failing));

@@ -17,7 +17,7 @@ class Strings {
 		assert(stm.contains("fff"));
 	}
 	
-	void loopWithTop(int par, String init) {
+	void loopWithTop(String init) {
 		String result = "result";
 		for (int i = 0; i < 10; i = i + 1) { 
 			result = result.concat("id=");
@@ -27,7 +27,7 @@ class Strings {
 		assert (result.contains("f")); // KO
 	}
 	
-	void loopStartingAtEmpty(int par) {
+	void loopStartingAtEmpty() {
 		String result = "";
 		for (int i = 0; i < 10; i = i + 1) { 
 			if (i == 3)
@@ -39,7 +39,7 @@ class Strings {
 		assert (result.contains("f")); // KO
 	}
 	
-	void loopStartingAtNonEmpty(int par) {
+	void loopStartingAtNonEmpty() {
 		String result = "f";
 		int i = 0;
 		while (i < 10) { 

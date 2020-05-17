@@ -144,18 +144,4 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 	public final Iterator<Pair<MLocalVariable, L>> iterator() {
 		return approximations.entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue())).iterator();
 	}
-	
-	/**
-	 * Yields the bottom element of the lattice.
-	 * 
-	 * @return the bottom element
-	 */
-	protected abstract L latticeBottom();
-
-	/**
-	 * Yields the top element of the lattice.
-	 * 
-	 * @return the top element
-	 */
-	protected abstract L latticeTop();
 }

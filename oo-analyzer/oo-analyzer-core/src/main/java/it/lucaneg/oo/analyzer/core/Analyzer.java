@@ -2,7 +2,9 @@ package it.lucaneg.oo.analyzer.core;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +14,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import it.lucaneg.logutils.EnrichedLogger;
 import it.lucaneg.oo.analyzer.analyses.AnalysisDumper;
+import it.lucaneg.oo.analyzer.analyses.AnalysisException;
+import it.lucaneg.oo.analyzer.analyses.value.ValueAnalysis;
+import it.lucaneg.oo.analyzer.analyses.value.domains.bools.bool.BooleanLattice;
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.interval.IntervalLattice;
+import it.lucaneg.oo.analyzer.analyses.value.domains.strings.string.StringLattice;
 import it.lucaneg.oo.analyzer.options.AnalysisOptions;
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.checks.Check;
@@ -35,6 +42,7 @@ public class Analyzer {
 		return options;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ExitCode run() {
 		// first, we parse the code
 		FileParser fileParser = new FileParser(options);
@@ -53,9 +61,19 @@ public class Analyzer {
 			modelBuilder.dumpDotFiles(manager);
 		
 		// then, we run the analyses
+		Map<Class<? extends Analysis<?, ?>>, Analysis<?, ?>> analyses = new HashMap<>();
 		logger.mkTimerLogger("Executing analyses").execAction(() -> {
-			for (Analysis<?, ?> toRun : options.getAnalyses())
+			for (Analysis<?, ?> toRun : options.getAnalyses()) {
+				if (toRun instanceof ValueAnalysis)
+					try {
+						((ValueAnalysis) toRun).setDomains(BooleanLattice.class, IntervalLattice.class, StringLattice.class);
+					} catch (AnalysisException e) {
+						logger.error("Unable to configure analysis", e);
+						continue;
+					}
 				toRun.run(modelBuilder.getProgram());
+				analyses.put((Class<? extends Analysis<?, ?>>) toRun.getClass(), toRun);
+			}
 		});
 		
 		postAnalyses(modelBuilder.getProgram());
@@ -63,7 +81,7 @@ public class Analyzer {
 		// at last, we run the checks
 		logger.mkTimerLogger("Executing checks").execAction(() -> {
 			for (Check toRun : options.getChecks()) 
-				toRun.run(modelBuilder.getProgram(), options.getAnalyses());
+				toRun.run(modelBuilder.getProgram(), analyses);
 		});
 		
 		// time to dump the findings

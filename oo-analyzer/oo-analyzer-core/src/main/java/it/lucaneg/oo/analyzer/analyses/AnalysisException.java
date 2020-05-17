@@ -1,4 +1,4 @@
-package it.lucaneg.oo.analyzer.analyses.value;
+package it.lucaneg.oo.analyzer.analyses;
 
 public class AnalysisException extends Exception {
 

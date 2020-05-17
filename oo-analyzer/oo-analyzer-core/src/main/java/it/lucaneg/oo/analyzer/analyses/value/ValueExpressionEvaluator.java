@@ -381,7 +381,9 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		for (ValueLattice el : elements)
 			if (el.isTop())
 				return ValueLattice.getTop();
-			else if (el.isBottom() || el.getInnerElement().getClass() != top.getClass())
+			else if (el.isBottom() || !el.getInnerElement().getClass().isAssignableFrom(top.getClass()))
+				// the is assignable from is needed instead of an equality check since TOP elements are 
+				// defined as subclasses to redefine toString and other methods
 				bottom = true;
 			else if (el.getInnerElement().isTop())
 				innerTop = true;

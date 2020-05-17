@@ -52,14 +52,4 @@ public class ValueEnvironment extends AbstractEnvironment<ValueLattice, ValueEnv
 	public static boolean canProcessType(Type t) {
 		return t == IntType.INSTANCE || t == BooleanType.INSTANCE || t == Type.getStringType();
 	}
-	
-	@Override
-	protected ValueLattice latticeBottom() {
-		return ValueLattice.getBottom();
-	}
-
-	@Override
-	protected ValueLattice latticeTop() {
-		return ValueLattice.getTop();
-	}
 }

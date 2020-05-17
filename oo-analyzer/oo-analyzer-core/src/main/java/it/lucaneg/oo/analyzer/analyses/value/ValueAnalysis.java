@@ -2,6 +2,7 @@ package it.lucaneg.oo.analyzer.analyses.value;
 
 import java.lang.reflect.InvocationTargetException;
 
+import it.lucaneg.oo.analyzer.analyses.AnalysisException;
 import it.lucaneg.oo.analyzer.analyses.value.domains.bools.AbstractBooleanLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
@@ -33,8 +34,8 @@ public class ValueAnalysis extends AbstractAnalysis<ValueLattice, ValueEnvironme
 		
 		try {
 			booleanSingleton = (AbstractBooleanLattice<?>) booleans.getMethod("getTop").invoke(null);
-			intSingleton = (AbstractIntegerLattice<?>) booleans.getMethod("getTop").invoke(null);
-			stringSingleton = (AbstractStringLattice<?>) booleans.getMethod("getTop").invoke(null);
+			intSingleton = (AbstractIntegerLattice<?>) ints.getMethod("getTop").invoke(null);
+			stringSingleton = (AbstractStringLattice<?>) strings.getMethod("getTop").invoke(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
 			throw new AnalysisException("Unable to setup value analysis", e);

@@ -84,14 +84,14 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 	@Override
 	protected ValueLattice lubAux(ValueLattice other) {
 		if (innerElement.getClass() == other.innerElement.getClass())
-			innerElement.lub((SingleValueLattice) other.innerElement);
+			return new ValueLattice((SingleValueLattice) innerElement.lub((SingleValueLattice) other.innerElement));
 		return getTop();
 	}
 
 	@Override
 	protected ValueLattice wideningAux(ValueLattice other) {
 		if (innerElement.getClass() == other.innerElement.getClass())
-			innerElement.widening((SingleValueLattice) other.innerElement);
+			return new ValueLattice((SingleValueLattice) innerElement.widening((SingleValueLattice) other.innerElement));
 		return getTop();
 	}
 
