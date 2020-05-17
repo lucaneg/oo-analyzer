@@ -32,7 +32,7 @@ public class TypeChecker {
 
 	public void typeCheck() throws TypeCheckException {
 		// first step: create a type hierarchy
-		TypeCheckException ex = logger.mkTimerLogger("Building time hierarchy").execSupplier(() -> buildTypeHierarchy());
+		TypeCheckException ex = logger.mkTimerLogger("Building tipe hierarchy").execSupplier(() -> buildTypeHierarchy());
 		if (ex != null)
 			throw ex;
 

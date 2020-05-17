@@ -48,7 +48,7 @@ public abstract class AbstractAnalysis<L extends AbstractLattice<L>, E extends A
 	@Override
 	public final void run(Program program) {
 		// TODO interprocedurality, fields
-		for (MCodeMember code : logger.mkIterationLogger(getName(), "methods").iterate(program.getAllCodeMembers())) {
+		for (MCodeMember code : logger.mkIterationLogger(getName() + " analysis", "methods").iterate(program.getAllCodeMembers())) {
 			if (code.getDefiningClass().isObject() || code.getDefiningClass().isString())
 				continue;
 			
