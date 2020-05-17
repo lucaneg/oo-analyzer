@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
@@ -448,6 +449,18 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 		result.set(0, new Brick(strings, 1, 1));
 
 		return new BricksLattice(result);
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice indexOf(BricksLattice str, AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(-1).widening(singleton.mk(Integer.MAX_VALUE));
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice length(AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(0).widening(singleton.mk(Integer.MAX_VALUE));
 	}
 
 	@Override

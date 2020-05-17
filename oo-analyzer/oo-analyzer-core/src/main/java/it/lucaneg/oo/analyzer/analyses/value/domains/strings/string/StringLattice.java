@@ -1,8 +1,10 @@
 package it.lucaneg.oo.analyzer.analyses.value.domains.strings.string;
 
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.unive.strings.AutomatonString;
+import it.unive.strings.AutomatonString.Interval;
 
 /**
  * A lattice for string elements represented through automata
@@ -201,6 +203,28 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	@Override
 	public StringLattice substring(int begin, int end) {
 		return new StringLattice(getString().substring(begin, end));
+	}
+	
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public AbstractIntegerLattice indexOf(StringLattice str, AbstractIntegerLattice singleton) {
+		Interval indexOf = getString().indexOf(str.getString());
+		AbstractIntegerLattice base = singleton.mk(indexOf.getLower());
+		if (indexOf.topIsInfinity())
+			return (AbstractIntegerLattice) base.lub(singleton.mk(Integer.MAX_VALUE));
+		else
+			return (AbstractIntegerLattice) base.lub(singleton.mk(indexOf.getUpper()));
+	}
+	
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public AbstractIntegerLattice<?> length(AbstractIntegerLattice<?> singleton) {
+		Interval length = getString().length();
+		AbstractIntegerLattice base = singleton.mk(length.getLower());
+		if (length.topIsInfinity())
+			return (AbstractIntegerLattice) base.lub(singleton.mk(Integer.MAX_VALUE));
+		else
+			return (AbstractIntegerLattice) base.lub(singleton.mk(length.getUpper()));
 	}
 
 	@Override

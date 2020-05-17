@@ -1,8 +1,11 @@
 package it.lucaneg.oo.analyzer.analyses.value;
 
+import java.util.List;
+
 import it.lucaneg.oo.analyzer.analyses.value.domains.bools.AbstractBooleanLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
+import it.lucaneg.oo.ast.expression.Expression;
 import it.lucaneg.oo.ast.expression.Variable;
 import it.lucaneg.oo.ast.expression.arithmetic.Addition;
 import it.lucaneg.oo.ast.expression.arithmetic.Division;
@@ -52,79 +55,132 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 
 	@Override
 	protected ValueLattice evalCall(Call call, ValueEnvironment env) {
-		if (call.getStaticType() != Type.getStringType())
-			return env.defaultLatticeForType(call.getStaticType());
-		
 		if (call.getReceiver().asExpression().getStaticType() != Type.getStringType())
 			return new ValueLattice(stringSingleton.top());
 		
-		if (!(call.getReceiver().asExpression() instanceof Variable)) 
-			// TODO only variable supported rn
+		AbstractStringLattice rec = (AbstractStringLattice) varOrLiteral(call.getReceiver().asExpression(), env, stringSingleton.top()).getInnerElement();
+		if (rec.isTop())
 			return new ValueLattice(stringSingleton.top());
 		
-		ValueLattice original = eval(call.getReceiver().asExpression(), env);
-		AbstractStringLattice rec = (AbstractStringLattice) original.getInnerElement();
+		if (call.getName().equals("concat"))
+			return concat(call, env, rec);
+		else if (call.getName().equals("substring")) 
+			return substring(call, env, rec);
+		else if (call.getName().equals("replace")) 
+			return replace(call, env, rec);
+		else if (call.getName().equals("length")) 
+			return length(call, env, rec);
+		else if (call.getName().equals("indexOf")) 
+			return indexOf(call, env, rec);
 
-		if (call.getName().equals("concat")) {
-			AbstractStringLattice par;
-			if (call.getActuals()[0].asExpression() instanceof Variable)
-				par = (AbstractStringLattice) evalVariable((Variable) call.getActuals()[0], env).getInnerElement();
-			else if (call.getActuals()[0].asExpression() instanceof Literal) 
-				par = (AbstractStringLattice) evalLiteral((StringLiteral) call.getActuals()[0], env).getInnerElement();
-			else
-				// TODO no fields and array elements
-				return new ValueLattice(stringSingleton.top());
-				
-			if (par.isBottom())
-				// we the parameter is a non-string value
-				// that gets converted to a string. We consider
-				// its conversion as top
-				par = stringSingleton.top();
-			
-			return new ValueLattice(rec.concat(par));
-		} else if (call.getName().equals("substring")) {
-			if (!(call.getActuals()[0].asExpression() instanceof IntLiteral && call.getActuals()[1].asExpression() instanceof IntLiteral))
-				return new ValueLattice(stringSingleton.top());
+		return new ValueLattice(stringSingleton.top());
+	}
 
-			int begin = ((IntLiteral) call.getActuals()[0].asExpression()).getValue(); // TODO
-			int end = ((IntLiteral) call.getActuals()[1].asExpression()).getValue(); // TODO
-			
-			if (begin > end || begin < 0)
-				return ValueLattice.getBottom();
-			
-			return new ValueLattice(rec.substring(begin, end));
-		} else if (call.getName().equals("replace")) {
-			AbstractStringLattice first, second;
-			if (call.getActuals()[0].asExpression() instanceof Variable)
-				first = (AbstractStringLattice) evalVariable((Variable) call.getActuals()[0], env).getInnerElement();
-			else if (call.getActuals()[0].asExpression() instanceof Literal) 
-				first = (AbstractStringLattice) evalLiteral((StringLiteral) call.getActuals()[0], env).getInnerElement();
-			else
-				return new ValueLattice(stringSingleton.top());
-				
-			if (first.isBottom())
-				// we the parameter is a non-string value
-				// that gets converted to a string. We consider
-				// its conversion as top
-				first = stringSingleton.top();
-			
-			if (call.getActuals()[1].asExpression() instanceof Variable)
-				second = (AbstractStringLattice) evalVariable((Variable) call.getActuals()[1], env).getInnerElement();
-			else if (call.getActuals()[1].asExpression() instanceof Literal) 
-				second = (AbstractStringLattice) evalLiteral((StringLiteral) call.getActuals()[1], env).getInnerElement();
-			else
-				return new ValueLattice(stringSingleton.top());
-				
-			if (second.isBottom())
-				// we the parameter is a non-string value
-				// that gets converted to a string. We consider
-				// its conversion as top
-				second = stringSingleton.top();
-			
-			return new ValueLattice(rec.replace(first, second));
-		}
+	private ValueLattice indexOf(Call call, ValueEnvironment env, AbstractStringLattice rec) {
+		ValueLattice par = varOrLiteral(call.getActuals()[0].asExpression(), env, stringSingleton.top());
+		
+		if (par.isBottom())
+			return new ValueLattice(intSingleton.top());
+		
+		AbstractStringLattice parameter = (AbstractStringLattice) par.getInnerElement();
+		
+		return new ValueLattice(rec.indexOf(parameter, intSingleton));
+	}
 
-		return original;
+	private ValueLattice length(Call call, ValueEnvironment env, AbstractStringLattice rec) {
+		return new ValueLattice(rec.length(intSingleton));
+	}
+
+	private ValueLattice substring(Call call, ValueEnvironment env, AbstractStringLattice rec) {
+		AbstractIntegerLattice begin = (AbstractIntegerLattice) varOrLiteral(call.getActuals()[0].asExpression(), env,
+				intSingleton.top()).getInnerElement();
+		AbstractIntegerLattice end = (AbstractIntegerLattice) varOrLiteral(call.getActuals()[1].asExpression(), env,
+				intSingleton.top()).getInnerElement();
+		
+//		if (begin > end || begin < 0)
+			// TODO how
+//			return ValueLattice.getBottom();
+		
+		if (!begin.isFinite() || !end.isFinite())
+			return new ValueLattice(stringSingleton.top());
+
+		AbstractStringLattice partial = stringSingleton.bottom();
+		outer:
+		for (int b : (List<Integer>) begin.getIntergers())
+			for (int e : (List<Integer>) end.getIntergers()) 
+				if (b < e) {
+					partial = (AbstractStringLattice) partial.lub(rec.substring(b, e));
+					if (partial.isTop())
+						break outer;
+				}
+		return new ValueLattice(partial);
+	}
+
+	private ValueLattice replace(Call call, ValueEnvironment env, AbstractStringLattice rec) {
+		AbstractStringLattice first, second;
+		if (call.getActuals()[0].asExpression() instanceof Variable)
+			first = (AbstractStringLattice) evalVariable((Variable) call.getActuals()[0], env).getInnerElement();
+		else if (call.getActuals()[0].asExpression() instanceof Literal) 
+			first = (AbstractStringLattice) evalLiteral((StringLiteral) call.getActuals()[0], env).getInnerElement();
+		else
+			return new ValueLattice(stringSingleton.top());
+			
+		if (first.isBottom())
+			// we the parameter is a non-string value
+			// that gets converted to a string. We consider
+			// its conversion as top
+			first = stringSingleton.top();
+		
+		if (call.getActuals()[1].asExpression() instanceof Variable)
+			second = (AbstractStringLattice) evalVariable((Variable) call.getActuals()[1], env).getInnerElement();
+		else if (call.getActuals()[1].asExpression() instanceof Literal) 
+			second = (AbstractStringLattice) evalLiteral((StringLiteral) call.getActuals()[1], env).getInnerElement();
+		else
+			return new ValueLattice(stringSingleton.top());
+			
+		if (second.isBottom())
+			// we the parameter is a non-string value
+			// that gets converted to a string. We consider
+			// its conversion as top
+			second = stringSingleton.top();
+		
+		return new ValueLattice(rec.replace(first, second));
+	}
+
+	private ValueLattice concat(Call call, ValueEnvironment env, AbstractStringLattice rec) {
+		ValueLattice par = varOrLiteral(call.getActuals()[0].asExpression(), env, stringSingleton.top());
+			
+		if (par.isBottom())
+			return new ValueLattice(stringSingleton.top());
+		
+		AbstractStringLattice parameter = null;
+		if (par.getInnerElement().isTop())
+			parameter = stringSingleton.top();
+		else if (par.getInnerElement() instanceof AbstractBooleanLattice)
+			parameter = stringSingleton.mk(par.getInnerElement().toString());
+		else if (par.getInnerElement() instanceof AbstractIntegerLattice) {
+			if (((AbstractIntegerLattice) par.getInnerElement()).isFinite())
+				for (int i : (List<Integer>) ((AbstractIntegerLattice) par.getInnerElement()).getIntergers())
+					if (parameter == null)
+						parameter = stringSingleton.mk(String.valueOf(i));
+					else 
+						parameter = (AbstractStringLattice) parameter.lub(stringSingleton.mk(String.valueOf(i)));
+		} else
+			parameter = (AbstractStringLattice) par.getInnerElement();
+		
+		return new ValueLattice(rec.concat(parameter));
+	}
+
+	private ValueLattice varOrLiteral(Expression e, ValueEnvironment env, SingleValueLattice top) {
+		ValueLattice par;
+		if (e instanceof Variable)
+			par = evalVariable((Variable) e, env);
+		else if (e instanceof Literal) 
+			par = evalLiteral((Literal) e, env);
+		else
+			// TODO no fields and array elements
+			par = new ValueLattice(top);
+		return par;
 	}
 
 	@Override

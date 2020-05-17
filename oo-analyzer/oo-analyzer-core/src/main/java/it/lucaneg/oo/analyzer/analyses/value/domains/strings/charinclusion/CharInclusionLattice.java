@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
@@ -248,6 +249,18 @@ public class CharInclusionLattice extends AbstractStringLattice<CharInclusionLat
 			return getTop();
 
 		return new CharInclusionLattice(new TreeSet<>(), getPossiblyIncludedChars());
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice indexOf(CharInclusionLattice str, AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(-1).widening(singleton.mk(Integer.MAX_VALUE));
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice length(AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(0).widening(singleton.mk(Integer.MAX_VALUE));
 	}
 
 	@Override

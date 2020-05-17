@@ -1,5 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.value.domains.strings.stringprefix;
 
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
@@ -205,6 +206,18 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 			return new StringPrefixLattice(getPrefix().substring(begin));
 
 		return StringPrefixLattice.getTop();
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice indexOf(StringPrefixLattice str, AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(-1).widening(singleton.mk(Integer.MAX_VALUE));
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice length(AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(prefix.length()).widening(singleton.mk(Integer.MAX_VALUE));
 	}
 
 	@Override

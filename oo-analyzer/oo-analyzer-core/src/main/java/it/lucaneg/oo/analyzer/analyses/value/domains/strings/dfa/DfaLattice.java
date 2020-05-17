@@ -1,5 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.value.domains.strings.dfa;
 
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.univr.fsm.machine.Automaton;
@@ -198,6 +199,16 @@ public class DfaLattice extends AbstractStringLattice<DfaLattice> {
 	@Override
 	public DfaLattice substring(int begin, int end) {
 		return new DfaLattice(Automaton.substring(getString(), begin, end));
+	}
+	
+	@Override
+	public AbstractIntegerLattice<?> indexOf(DfaLattice str, AbstractIntegerLattice<?> singleton) {
+		return singleton.mk(Automaton.indexOf(getString(), str.getString()));
+	}
+	
+	@Override
+	public AbstractIntegerLattice<?> length(AbstractIntegerLattice<?> singleton) {
+		return singleton.mk(Automaton.length(getString()));
 	}
 
 	@Override

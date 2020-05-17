@@ -1,5 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.value.domains.strings.stringsuffix;
 
+import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
@@ -198,6 +199,18 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	@Override
 	public StringSuffixLattice substring(int begin, int end) {
 		return getTop();
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice indexOf(StringSuffixLattice str, AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(-1).widening(singleton.mk(Integer.MAX_VALUE));
+	}
+	
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice length(AbstractIntegerLattice singleton) {
+		return (AbstractIntegerLattice) singleton.mk(suffix.length()).widening(singleton.mk(Integer.MAX_VALUE));
 	}
 
 	@Override
