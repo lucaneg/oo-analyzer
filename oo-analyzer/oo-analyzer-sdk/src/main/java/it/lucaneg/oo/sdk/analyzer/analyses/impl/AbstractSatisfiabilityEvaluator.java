@@ -17,14 +17,14 @@ import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.ast.expression.logical.Or;
 import it.lucaneg.oo.ast.expression.typeCheck.TypeCheck;
 import it.lucaneg.oo.ast.types.BooleanType;
-import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator;
 
-public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityEvaluator {
+public abstract class AbstractSatisfiabilityEvaluator<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>>
+		implements SatisfiabilityEvaluator<L, E> {
 
 	@Override
-	public final Satisfiability satisfies(Expression e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	public final Satisfiability satisfies(Expression e, E env, ExpressionEvaluator<L, E> evaluator) {
 		if (e.getStaticType() != BooleanType.INSTANCE)
 			throw new IllegalArgumentException("Cannot evaliate satisfiability of non-boolean expression " + e);
 
@@ -42,9 +42,11 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 			return satisfiesTypeCheck((TypeCheck) e, env, evaluator);
 		else if (e instanceof Equal)
 			return satisfiesEqual((Equal) e, env, evaluator);
-		else if (e instanceof NotEqual)
-			return satisfiesNotEqual((NotEqual) e, env, evaluator);
-		else if (e instanceof Greater)
+		else if (e instanceof NotEqual) {
+			NotEqual ne = (NotEqual) e;
+			Equal eq = new Equal(ne.getSource(), ne.getLine(), ne.getPos(), ne.getLeft(), ne.getRight());
+			return satisfiesEqual(eq, env, evaluator).negate();
+		} else if (e instanceof Greater)
 			return satisfiesGreater((Greater) e, env, evaluator);
 		else if (e instanceof Less)
 			return satisfiesLess((Less) e, env, evaluator);
@@ -70,7 +72,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesLess(Less e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	protected Satisfiability satisfiesLess(Less e, E env, ExpressionEvaluator<L, E> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -82,19 +84,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesGreater(Greater e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
-		return Satisfiability.UNKNOWN;
-	}
-
-	/**
-	 * Determines whether or not a {@link NotEqual} expression is satisfied
-	 * 
-	 * @param e         the not equal
-	 * @param env       the environment
-	 * @param evaluator the expression evaluator
-	 * @return the satisfiability
-	 */
-	protected Satisfiability satisfiesNotEqual(NotEqual e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	protected Satisfiability satisfiesGreater(Greater e, E env, ExpressionEvaluator<L, E> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -106,7 +96,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesEqual(Equal e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	protected Satisfiability satisfiesEqual(Equal e, E env, ExpressionEvaluator<L, E> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -118,7 +108,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesCall(Call e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	protected Satisfiability satisfiesCall(Call e, E env, ExpressionEvaluator<L, E> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -130,8 +120,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected final Satisfiability satisfiesLiteral(Literal e, Environment<?, ?> env,
-			ExpressionEvaluator<?> evaluator) {
+	protected final Satisfiability satisfiesLiteral(Literal e, E env, ExpressionEvaluator<L, E> evaluator) {
 		if (e instanceof TrueLiteral)
 			return Satisfiability.SATISFIED;
 
@@ -149,7 +138,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesTypeCheck(TypeCheck e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	protected Satisfiability satisfiesTypeCheck(TypeCheck e, E env, ExpressionEvaluator<L, E> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -161,7 +150,7 @@ public abstract class AbstractSatisfiabilityEvaluator implements SatisfiabilityE
 	 * @param evaluator the expression evaluator
 	 * @return the satisfiability
 	 */
-	protected Satisfiability satisfiesVariable(Variable e, Environment<?, ?> env, ExpressionEvaluator<?> evaluator) {
+	protected Satisfiability satisfiesVariable(Variable e, E env, ExpressionEvaluator<L, E> evaluator) {
 		return Satisfiability.UNKNOWN;
 	}
 }

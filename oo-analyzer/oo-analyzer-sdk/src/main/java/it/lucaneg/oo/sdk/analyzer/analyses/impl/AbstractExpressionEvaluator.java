@@ -25,14 +25,12 @@ import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.ast.expression.logical.Or;
 import it.lucaneg.oo.ast.expression.typeCheck.Cast;
 import it.lucaneg.oo.ast.expression.typeCheck.TypeCheck;
-import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
 
-@SuppressWarnings("unchecked")
-public abstract class AbstractExpressionEvaluator<L extends AbstractLattice<L>> implements ExpressionEvaluator<L> {
+public abstract class AbstractExpressionEvaluator<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>> implements ExpressionEvaluator<L, E> {
 
 	@Override
-	public final L eval(Expression e, Environment<?, ?> env) {
+	public final L eval(Expression e, E env) {
 		// type expression is not needed since it is used only during parsing
 		if (e instanceof ArrayAccess)
 			return evalArrayAccess((ArrayAccess) e, env);
@@ -83,106 +81,106 @@ public abstract class AbstractExpressionEvaluator<L extends AbstractLattice<L>> 
 		else if (e instanceof LessOrEqual)
 			return evalLessOrEqual((LessOrEqual) e, env);
 		else
-			return (L) env.defaultLatticeForType(e.getStaticType());
+			return env.defaultLatticeForType(e.getStaticType());
 	}
 
-	protected L evalArrayAccess(ArrayAccess array, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(array.getStaticType());
+	protected L evalArrayAccess(ArrayAccess array, E env) {
+		return env.defaultLatticeForType(array.getStaticType());
 	}
 
-	protected L evalCall(Call call, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(call.getStaticType());
+	protected L evalCall(Call call, E env) {
+		return env.defaultLatticeForType(call.getStaticType());
 	}
 
-	protected L evalCast(Cast as, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(as.getStaticType());
+	protected L evalCast(Cast as, E env) {
+		return env.defaultLatticeForType(as.getStaticType());
 	}
 
-	protected L evalFieldAccess(FieldAccess field, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(field.getStaticType());
+	protected L evalFieldAccess(FieldAccess field, E env) {
+		return env.defaultLatticeForType(field.getStaticType());
 	}
 
-	protected L evalMinus(Minus minus, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(minus.getStaticType());
+	protected L evalMinus(Minus minus, E env) {
+		return env.defaultLatticeForType(minus.getStaticType());
 	}
 
-	protected L evalNewArray(NewArray newarr, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(newarr.getStaticType());
+	protected L evalNewArray(NewArray newarr, E env) {
+		return env.defaultLatticeForType(newarr.getStaticType());
 	}
 
-	protected L evalNewObject(NewObject newobj, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(newobj.getStaticType());
+	protected L evalNewObject(NewObject newobj, E env) {
+		return env.defaultLatticeForType(newobj.getStaticType());
 	}
 
-	protected L evalNot(Not not, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(not.getStaticType());
+	protected L evalNot(Not not, E env) {
+		return env.defaultLatticeForType(not.getStaticType());
 	}
 
-	protected L evalTypeCheck(TypeCheck is, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(is.getStaticType());
+	protected L evalTypeCheck(TypeCheck is, E env) {
+		return env.defaultLatticeForType(is.getStaticType());
 	}
 
-	protected final L evalVariable(Variable var, Environment<?, ?> env) {
+	protected final L evalVariable(Variable var, E env) {
 		String name = ((Variable) var).getName();
 		if (env.hasApproximationFor(name))
-			return (L) env.at(name);
+			return env.at(name);
 
-		return (L) env.defaultLatticeForType(var.getStaticType());
+		return env.defaultLatticeForType(var.getStaticType());
 	}
 
-	protected L evalLiteral(Literal literal, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(literal.getStaticType());
+	protected L evalLiteral(Literal literal, E env) {
+		return env.defaultLatticeForType(literal.getStaticType());
 	}
 
-	protected L evalAddition(Addition add, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(add.getStaticType());
+	protected L evalAddition(Addition add, E env) {
+		return env.defaultLatticeForType(add.getStaticType());
 	}
 
-	protected L evalDivision(Division div, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(div.getStaticType());
+	protected L evalDivision(Division div, E env) {
+		return env.defaultLatticeForType(div.getStaticType());
 	}
 
-	protected L evalModule(Module mod, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(mod.getStaticType());
+	protected L evalModule(Module mod, E env) {
+		return env.defaultLatticeForType(mod.getStaticType());
 	}
 
-	protected L evalMultiplication(Multiplication mul, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(mul.getStaticType());
+	protected L evalMultiplication(Multiplication mul, E env) {
+		return env.defaultLatticeForType(mul.getStaticType());
 	}
 
-	protected L evalSubtraction(Subtraction sub, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(sub.getStaticType());
+	protected L evalSubtraction(Subtraction sub, E env) {
+		return env.defaultLatticeForType(sub.getStaticType());
 	}
 
-	protected L evalAnd(And and, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(and.getStaticType());
+	protected L evalAnd(And and, E env) {
+		return env.defaultLatticeForType(and.getStaticType());
 	}
 
-	protected L evalOr(Or or, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(or.getStaticType());
+	protected L evalOr(Or or, E env) {
+		return env.defaultLatticeForType(or.getStaticType());
 	}
 
-	protected L evalEqual(Equal eq, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(eq.getStaticType());
+	protected L evalEqual(Equal eq, E env) {
+		return env.defaultLatticeForType(eq.getStaticType());
 	}
 
-	protected L evalNotEqual(NotEqual ne, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(ne.getStaticType());
+	protected L evalNotEqual(NotEqual ne, E env) {
+		return env.defaultLatticeForType(ne.getStaticType());
 	}
 
-	protected L evalGreater(Greater gt, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(gt.getStaticType());
+	protected L evalGreater(Greater gt, E env) {
+		return env.defaultLatticeForType(gt.getStaticType());
 	}
 
-	protected L evalGreaterOrEqual(GreaterOrEqual ge, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(ge.getStaticType());
+	protected L evalGreaterOrEqual(GreaterOrEqual ge, E env) {
+		return env.defaultLatticeForType(ge.getStaticType());
 	}
 
-	protected L evalLess(Less lt, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(lt.getStaticType());
+	protected L evalLess(Less lt, E env) {
+		return env.defaultLatticeForType(lt.getStaticType());
 	}
 
-	protected L evalLessOrEqual(LessOrEqual le, Environment<?, ?> env) {
-		return (L) env.defaultLatticeForType(le.getStaticType());
+	protected L evalLessOrEqual(LessOrEqual le, E env) {
+		return env.defaultLatticeForType(le.getStaticType());
 	}
 }

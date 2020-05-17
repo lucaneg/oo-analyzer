@@ -38,12 +38,12 @@ public interface Analysis<L extends Lattice<L>, E extends Environment<L, E>> ext
 	 * 
 	 * @return the expression evaluator
 	 */
-	ExpressionEvaluator<L> getExpressionEvaluator();
+	ExpressionEvaluator<L, E> getExpressionEvaluator();
 
 	/**
 	 * Yields the expression satisfiability evaluator for this analysis.
 	 * 
 	 * @return the expression satisfiability evaluator
 	 */
-	SatisfiabilityEvaluator getSatisfiabilityEvaluator();
+	SatisfiabilityEvaluator<L, E> getSatisfiabilityEvaluator();
 }
