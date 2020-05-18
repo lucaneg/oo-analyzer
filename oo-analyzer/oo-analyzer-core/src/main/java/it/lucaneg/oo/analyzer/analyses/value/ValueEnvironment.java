@@ -44,7 +44,7 @@ public class ValueEnvironment extends AbstractEnvironment<ValueLattice, ValueEnv
 			return new ValueLattice(booleanSingleton.top());
 		
 		if (t == Type.getStringType())
-			return new ValueLattice(stringSingleton.top());
+			return new ValueLattice(stringSingleton.mkTopString());
 		
 		return ValueLattice.getBottom();
 	}

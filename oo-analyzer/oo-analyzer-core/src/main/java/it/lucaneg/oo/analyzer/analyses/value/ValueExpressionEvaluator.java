@@ -60,8 +60,8 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			return fallback;
 		
 		AbstractStringLattice rec = (AbstractStringLattice) varOrLiteral(call.getReceiver().asExpression(), env, stringSingleton.top()).getInnerElement();
-//		if (rec.isTop())
-//			return fallback;
+		if (rec.isTop())
+			return fallback;
 		
 		if (call.getName().equals("concat"))
 			return concat(call, env, rec);
@@ -135,7 +135,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			// we the parameter is a non-string value
 			// that gets converted to a string. We consider
 			// its conversion as top
-			first = stringSingleton.top();
+			first = stringSingleton.mkTopString();
 		
 		if (call.getActuals()[1].asExpression() instanceof Variable)
 			second = (AbstractStringLattice) evalVariable((Variable) call.getActuals()[1], env).getInnerElement();
@@ -148,7 +148,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			// we the parameter is a non-string value
 			// that gets converted to a string. We consider
 			// its conversion as top
-			second = stringSingleton.top();
+			second = stringSingleton.mkTopString();
 		
 		return new ValueLattice(rec.replace(first, second));
 	}
@@ -174,6 +174,8 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		} else
 			parameter = (AbstractStringLattice) par.getInnerElement();
 		
+		if (parameter.isTop())
+			return new ValueLattice(rec.concat(stringSingleton.mkTopString()));
 		return new ValueLattice(rec.concat(parameter));
 	}
 

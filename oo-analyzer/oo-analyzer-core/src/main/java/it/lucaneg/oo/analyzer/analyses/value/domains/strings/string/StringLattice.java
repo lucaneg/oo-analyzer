@@ -16,7 +16,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	/**
 	 * The unique top element
 	 */
-	private static final StringLattice TOP = new StringLattice() {
+	private static final StringLattice TOP = new StringLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -25,6 +25,11 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 		@Override
 		public int hashCode() {
 			return "TOP".hashCode();
+		}
+		
+		@Override
+		public String toString() {
+			return "\u0372";
 		}
 	};
 
@@ -56,7 +61,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	/**
 	 * Builds a lattice element containing the top string
 	 */
-	private StringLattice() {
+	public StringLattice() {
 		this(new AutomatonString());
 	}
 
@@ -151,7 +156,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 
 	@Override
 	public String toString() {
-		return string.toString();
+		return "\"" + string.toString() + "\"";
 	}
 
 	@Override
@@ -255,5 +260,10 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	@Override
 	public Boolean isGreaterThan(StringLattice other) {
 		return null;
+	}
+	
+	@Override
+	public StringLattice mkTopString() {
+		return new StringLattice();
 	}
 }

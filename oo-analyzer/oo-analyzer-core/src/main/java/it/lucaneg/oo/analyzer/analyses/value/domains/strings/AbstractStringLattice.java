@@ -8,6 +8,10 @@ public abstract class AbstractStringLattice<L extends AbstractStringLattice<L>> 
 
 	public abstract L mk(String string);
 	
+	public L mkTopString() {
+		return top();
+	}
+	
 	public abstract Satisfiability contains(L other);  
 
 	public abstract Satisfiability startsWith(L other);  

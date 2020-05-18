@@ -45,6 +45,10 @@ public class ValueSatisfiabilityEvaluator extends AbstractSatisfiabilityEvaluato
 
 			AbstractStringLattice receiver = (AbstractStringLattice) rec.getInnerElement();
 			AbstractStringLattice parameter = (AbstractStringLattice) par.getInnerElement();
+			
+			if (receiver.isTop() || parameter.isTop())
+				return Satisfiability.UNKNOWN;
+			
 			if (e.getName().equals("equals"))
 				return receiver.isEquals(parameter);
 			else if (e.getName().equals("contains"))

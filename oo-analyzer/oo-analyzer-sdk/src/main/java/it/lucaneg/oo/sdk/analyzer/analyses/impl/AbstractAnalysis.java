@@ -3,6 +3,8 @@ package it.lucaneg.oo.sdk.analyzer.analyses.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 import it.lucaneg.logutils.EnrichedLogger;
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.Denotation;
@@ -57,7 +59,7 @@ public abstract class AbstractAnalysis<L extends AbstractLattice<L>, E extends A
 				env.set(new MLocalVariable(t.getType(), t.getName()), env.defaultLatticeForType(t.getType()));
 			
 			Fixpoint<L, E> engine = mkFixpoint(code.getCode());
-			logger.mkTimerLogger("method " + code.toString()).execAction(() -> denotations.put(code, engine.fixpoint(env, this::smallStepSemantics, this::assume)));
+			logger.mkTimerLogger("method " + code.toString()).execAction(Level.DEBUG, () -> denotations.put(code, engine.fixpoint(env, this::smallStepSemantics, this::assume)));
 		}
 	}
 	
