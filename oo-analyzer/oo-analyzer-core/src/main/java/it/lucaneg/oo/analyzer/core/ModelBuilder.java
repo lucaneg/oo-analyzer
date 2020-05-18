@@ -65,13 +65,17 @@ public class ModelBuilder {
 			for (ConstructorDefinition cs : c.getConstructors()) {
 				MConstructor constructor = new MConstructor(clazz, cs.getLine(), buildParameters(cs.getFormals()));
 				clazz.addConstructor(constructor);
-				constructor.setCode(new CodeParser(constructor).parseCode(clazz, cs.getCode(), cs.getFormals()));
+				MCodeBlock code = new CodeParser(constructor).parseCode(clazz, cs.getCode(), cs.getFormals());
+				code.simplify();
+				constructor.setCode(code);
 			}
 			
 			for (MethodDefinition ms : c.getMethods()) {
 				MMethod method = new MMethod(clazz, ms.getLine(), ms.getName(), ms.getReturnType(), buildParameters(ms.getFormals()));
 				clazz.addMethod(method);
-				method.setCode(new CodeParser(method).parseCode(clazz, ms.getCode(), ms.getFormals()));
+				MCodeBlock code = new CodeParser(method).parseCode(clazz, ms.getCode(), ms.getFormals());
+				code.simplify();
+				method.setCode(code);
 			}
 		}
 		

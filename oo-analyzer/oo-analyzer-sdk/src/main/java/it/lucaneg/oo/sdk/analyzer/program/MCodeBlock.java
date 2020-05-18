@@ -2,11 +2,15 @@ package it.lucaneg.oo.sdk.analyzer.program;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import it.lucaneg.oo.sdk.analyzer.datastructures.Graph;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.BranchingStatement;
+import it.lucaneg.oo.sdk.analyzer.program.instructions.Return;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Skip;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
 
@@ -52,7 +56,7 @@ public class MCodeBlock extends Graph<Statement> {
 	 * where the left one represents the beginning of the true block, while the
 	 * right one represents the beginning of the false block
 	 */
-	private final Map<BranchingStatement, Pair<Statement, Statement>> branches = new IdentityHashMap<>();
+	private final Map<BranchingStatement, MutablePair<Statement, Statement>> branches = new IdentityHashMap<>();
 
 	/**
 	 * Yields the first instruction of this block of code
@@ -115,14 +119,16 @@ public class MCodeBlock extends Graph<Statement> {
 		join.moveIndexBy(ifFalse.end.getIndex());
 
 		// connect the blocks to the skip
-		addEdge(ifTrue.end, join);
-		addEdge(ifFalse.end, join);
+		if (!(ifTrue.end instanceof Return))
+			addEdge(ifTrue.end, join);
+		if (!(ifFalse.end instanceof Return))
+			addEdge(ifFalse.end, join);
 
 		// mark the skip as final
 		end = join;
 
 		// save the entry points of the branch
-		branches.put(branch, Pair.of(ifTrue.start, ifFalse.start));
+		branches.put(branch, MutablePair.of(ifTrue.start, ifFalse.start));
 
 		// keep track of all branches in child blocks
 		branches.putAll(ifTrue.branches);
@@ -152,7 +158,8 @@ public class MCodeBlock extends Graph<Statement> {
 		addEdge(branch, loopBody.start);
 
 		// close the loop
-		addEdge(loopBody.end, branch);
+		if (!(loopBody.end instanceof Return))
+			addEdge(loopBody.end, branch);
 
 		// add the joining skip
 		addVertex(join);
@@ -165,7 +172,7 @@ public class MCodeBlock extends Graph<Statement> {
 		end = join;
 
 		// save the entry points of the branch
-		branches.put(branch, Pair.of(loopBody.start, join));
+		branches.put(branch, MutablePair.of(loopBody.start, join));
 
 		// keep track of all branches in loop body
 		branches.putAll(loopBody.branches);
@@ -227,7 +234,7 @@ public class MCodeBlock extends Graph<Statement> {
 
 	@Override
 	protected String provideVertexShapeIfNeeded(Statement vertex) {
-		if (vertex == start || vertex == end)
+		if (vertex == start || vertex == end || (vertex instanceof Return && followersOf(vertex).isEmpty()))
 			return "peripheries=2,";
 
 		if (vertex instanceof BranchingStatement)
@@ -246,5 +253,29 @@ public class MCodeBlock extends Graph<Statement> {
 		}
 
 		return "";
+	}
+	
+	public void simplify() {
+		Map<Skip, Statement> skips = edges.entrySet()
+				.stream()
+				.filter(pair -> pair.getKey() instanceof Skip && pair.getValue().size() == 1)
+				.map(pair -> Pair.of((Skip) pair.getKey(), pair.getValue().iterator().next()))
+				.collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+		
+		for (Entry<Skip, Statement> skip : skips.entrySet()) {
+			for (Statement s : predecessorsOf(skip.getKey())) {
+				edges.get(s).remove(skip.getKey());
+				edges.get(s).add(skip.getValue());
+			}
+			
+			for (Entry<BranchingStatement, MutablePair<Statement, Statement>> b : branches.entrySet()) {
+				if (b.getValue().getLeft() == skip.getKey())
+					b.getValue().setLeft(skip.getValue());
+				if (b.getValue().getRight() == skip.getKey())
+					b.getValue().setRight(skip.getValue());
+			}
+			
+			edges.remove(skip.getKey());
+		}
 	}
 }
