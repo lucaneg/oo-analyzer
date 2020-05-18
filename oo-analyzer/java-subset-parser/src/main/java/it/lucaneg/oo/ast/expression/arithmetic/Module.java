@@ -12,6 +12,6 @@ public class Module extends ArithmeticBinaryExpression {
 
 	@Override
 	public String toString() {
-		return getLeft() + " - " + getRight();
+		return getLeft() + " % " + getRight();
 	}
 }
