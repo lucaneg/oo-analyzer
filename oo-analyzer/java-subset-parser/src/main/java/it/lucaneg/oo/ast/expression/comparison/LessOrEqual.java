@@ -15,4 +15,10 @@ public class LessOrEqual extends NumericalComparisonExpression {
 	public String toString() {
 		return getLeft() + " <= " + getRight();
 	}
+	
+	public Greater flip() {
+		Greater gt = new Greater(getSource(), getLine(), getPos(), getLeft(), getRight());
+		gt.cloneStaticType(this);
+		return gt;
+	}
 }

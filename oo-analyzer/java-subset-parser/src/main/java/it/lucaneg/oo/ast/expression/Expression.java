@@ -1,6 +1,7 @@
 package it.lucaneg.oo.ast.expression;
 
 import it.lucaneg.oo.ast.SyntaxNode;
+import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.ast.types.BooleanType;
 import it.lucaneg.oo.ast.types.IntType;
 import it.lucaneg.oo.ast.types.Type;
@@ -34,4 +35,17 @@ public abstract class Expression extends SyntaxNode {
 	}
 
 	protected abstract Type computeExpressionTypeInternal(CheckerHelper helper) throws TypeCheckException;
+	
+	public final void cloneStaticType(Expression other) {
+		staticType = other.staticType;
+	}
+	
+	public Not negate() {
+		if (staticType != BooleanType.INSTANCE)
+			throw new IllegalArgumentException("Cannot negate a non-boolean expression");
+		
+		Not not = new Not(getSource(), getLine(), getPos(), this);
+		not.cloneStaticType(this);
+		return not;
+	}
 }

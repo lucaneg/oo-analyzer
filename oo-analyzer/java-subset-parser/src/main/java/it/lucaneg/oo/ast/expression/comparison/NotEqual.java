@@ -14,4 +14,10 @@ public class NotEqual extends EqualityComparisonExpression {
 	public String toString() {
 		return getLeft() + " != " + getRight();
 	}
+	
+	public Equal flip() {
+		Equal eq = new Equal(getSource(), getLine(), getPos(), getLeft(), getRight());
+		eq.cloneStaticType(this);
+		return eq;
+	}
 }

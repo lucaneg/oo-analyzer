@@ -29,4 +29,10 @@ public class Not extends Expression {
 		expression.mustBeBoolean(helper);
 		return BooleanType.INSTANCE;
 	}
+
+	public Expression simplify() {
+		if (expression instanceof Not)
+			return ((Not) expression).getExpression();
+		return this;
+	}
 }
