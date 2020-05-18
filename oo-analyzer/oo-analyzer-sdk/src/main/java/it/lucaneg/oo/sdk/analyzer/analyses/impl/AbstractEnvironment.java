@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,6 +14,8 @@ import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 
 public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>> implements Environment<L, E> {
 
+	private boolean unreachable;
+	
 	/**
 	 * The approximations of each local variable
 	 */
@@ -23,15 +26,32 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 	 */
 	protected AbstractEnvironment() {
 		approximations = new HashMap<>();
+		unreachable = false;
 	}
 
 	/**
 	 * Builds an environment by copying (shallow copy) the given one
 	 * 
-	 * @param approximations
+	 * @param other
 	 */
-	protected AbstractEnvironment(Map<MLocalVariable, L> approximations) {
-		this.approximations = new HashMap<>(approximations);
+	protected AbstractEnvironment(AbstractEnvironment<L, E> other) {
+		this.approximations = new HashMap<>(other.approximations);
+		this.unreachable = other.unreachable;
+	}
+	
+	@Override
+	public final boolean isUnreachable() {
+		return unreachable;
+	}
+	
+	@Override
+	public void makeUnreachable() {
+		this.unreachable = true;
+	}
+	
+	@Override
+	public final void makeReachable() {
+		this.unreachable = false;		
 	}
 
 	@Override
@@ -47,6 +67,17 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 		approximations.put(var, approx);
 	}
 
+	@Override
+	public void set(String name, L approx) {
+		if (hasApproximationFor(name)) {
+			Optional<MLocalVariable> var = approximations.keySet().stream().filter(key -> key.getName().equals(name)).findFirst();
+			set(var.get(), approx);
+			return;
+		}
+		
+		throw new IllegalArgumentException("Cannot set approximation for unknown variable " + name);
+	}
+	
 	@Override
 	public final boolean hasApproximationFor(MLocalVariable var) {
 		return approximations.containsKey(var);
@@ -92,6 +123,15 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 				result.remove(v);
 		return result;
 	}
+	
+	@Override
+	public final E only(Collection<MLocalVariable> vars) {
+		E result = copy();
+		for (Pair<MLocalVariable, L> pair : this)
+			if (!vars.contains(pair.getLeft()))
+				result.remove(pair.getLeft());
+		return result;
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -101,6 +141,11 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 
 		E join = copy();
 
+		if (isUnreachable() && other.isUnreachable())
+			join.makeUnreachable();
+		else 
+			join.makeReachable();
+		
 		for (Map.Entry<MLocalVariable, L> entry : other.approximations.entrySet())
 			if (join.hasApproximationFor(entry.getKey()))
 				join.set(entry.getKey(), elementJoiner.apply(entry.getValue(), join.at(entry.getKey())));
@@ -137,7 +182,7 @@ public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extend
 
 	@Override
 	public String toString() {
-		return approximations.toString();
+		return isUnreachable() ? "{unreachable code}" : approximations.toString();
 	}
 
 	@Override

@@ -98,6 +98,28 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 			return new ValueLattice((SingleValueLattice) innerElement.widening((SingleValueLattice) other.innerElement));
 		return getTop();
 	}
+	
+	@Override
+	public ValueLattice narrowing(ValueLattice other) {
+		// TODO implement it properly
+		if (other == null || other.isBottom())
+			return this;
+
+		if (isBottom())
+			return other;
+
+		if (isTop() || other.isTop())
+			return top();
+		
+		if (equals(other))
+			return this;
+		
+		if (innerElement.getClass().isAssignableFrom(other.innerElement.getClass())
+				|| other.innerElement.getClass().isAssignableFrom(innerElement.getClass()))
+			// need to use this form since top and bottom are subclasses
+			return new ValueLattice((SingleValueLattice) innerElement.narrowing((SingleValueLattice) other.innerElement));
+		return getTop();
+	}
 
 	@Override
 	public int hashCode() {

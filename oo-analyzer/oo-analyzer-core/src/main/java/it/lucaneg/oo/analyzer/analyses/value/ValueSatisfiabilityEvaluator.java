@@ -108,7 +108,7 @@ public class ValueSatisfiabilityEvaluator extends AbstractSatisfiabilityEvaluato
 			// different types
 			return Satisfiability.NOT_SATISFIED;
 
-		Boolean res = left.getInnerElement().isGreaterThan(right.getInnerElement());
+		Boolean res = left.getInnerElement().isGreaterThan(right.getInnerElement()); 
 		if (res == null)
 			return Satisfiability.UNKNOWN;
 		return res ? Satisfiability.SATISFIED : Satisfiability.NOT_SATISFIED;

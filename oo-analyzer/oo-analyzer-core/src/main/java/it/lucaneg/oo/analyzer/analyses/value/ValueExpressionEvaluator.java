@@ -55,12 +55,13 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 
 	@Override
 	protected ValueLattice evalCall(Call call, ValueEnvironment env) {
+		ValueLattice fallback = env.defaultLatticeForType(call.getStaticType());
 		if (call.getReceiver().asExpression().getStaticType() != Type.getStringType())
-			return new ValueLattice(stringSingleton.top());
+			return fallback;
 		
 		AbstractStringLattice rec = (AbstractStringLattice) varOrLiteral(call.getReceiver().asExpression(), env, stringSingleton.top()).getInnerElement();
-		if (rec.isTop())
-			return new ValueLattice(stringSingleton.top());
+//		if (rec.isTop())
+//			return fallback;
 		
 		if (call.getName().equals("concat"))
 			return concat(call, env, rec);
@@ -84,7 +85,8 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		
 		AbstractStringLattice parameter = (AbstractStringLattice) par.getInnerElement();
 		
-		return new ValueLattice(rec.indexOf(parameter, intSingleton));
+		AbstractIntegerLattice indexOf = rec.indexOf(parameter, intSingleton);
+		return new ValueLattice(indexOf);
 	}
 
 	private ValueLattice length(Call call, ValueEnvironment env, AbstractStringLattice rec) {
@@ -105,11 +107,15 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			return new ValueLattice(stringSingleton.top());
 
 		AbstractStringLattice partial = stringSingleton.bottom();
+		AbstractStringLattice temp;
 		outer:
 		for (int b : (List<Integer>) begin.getIntergers())
 			for (int e : (List<Integer>) end.getIntergers()) 
 				if (b < e) {
-					partial = (AbstractStringLattice) partial.lub(rec.substring(b, e));
+					temp = (AbstractStringLattice) partial.lub(rec.substring(b, e));
+					if (temp.equals(partial))
+						break outer;
+					partial = temp;
 					if (partial.isTop())
 						break outer;
 				}

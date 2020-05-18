@@ -40,6 +40,14 @@ public interface Environment<L extends Lattice<L>, E extends Environment<L, E>>
 	 * @param approx the approximation of the local variable
 	 */
 	void set(MLocalVariable var, L approx);
+	
+	/**
+	 * Sets the approximation of the local variable with the given name.
+	 * 
+	 * @param var    the name of the local variable
+	 * @param approx the approximation of the local variable
+	 */
+	void set(String varName, L approx);
 
 	/**
 	 * Yields true if and only if this environment has information about the given
@@ -91,6 +99,16 @@ public interface Environment<L extends Lattice<L>, E extends Environment<L, E>>
 	E except(Collection<String> vars);
 
 	/**
+	 * Yields a (shallow) copy of this environment where all information about
+	 * variables whose names are not contained in the given collection have been
+	 * removed.
+	 * 
+	 * @param vars the names of the variables to keep
+	 * @return a copy of this environment, only for the given variables
+	 */
+	E only(Collection<MLocalVariable> vars);
+
+	/**
 	 * Joins this environment with the given one, that is:
 	 * <ul>
 	 * <li>each variable contained only in one environment is copied as-is in the
@@ -115,4 +133,10 @@ public interface Environment<L extends Lattice<L>, E extends Environment<L, E>>
 	 * @return the appropriate default value
 	 */
 	L defaultLatticeForType(Type t);
+	
+	boolean isUnreachable();
+	
+	void makeUnreachable();
+	
+	void makeReachable();
 }

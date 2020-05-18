@@ -168,6 +168,50 @@ public class IntervalLattice extends AbstractIntegerLattice<IntervalLattice> {
 
 		return new IntervalLattice(newLow, newHigh);
 	}
+	
+	private boolean inRelationWith(IntervalLattice other) {
+		boolean lowIsFine = false;
+		if (low == other.low)
+			lowIsFine = true;
+		else if (other.lowIsMinusInfinity())
+			lowIsFine = true;
+		else if (!lowIsMinusInfinity() && low > other.low)
+			lowIsFine = true;
+		
+		boolean highIsFine = false;
+		if (high == other.high)
+			highIsFine = true;
+		else if (other.highIsPlusInfinity())
+			highIsFine = true;
+		else if (!highIsPlusInfinity() && high < other.high)
+			highIsFine = true;
+		
+		return lowIsFine && highIsFine;
+	}
+	
+	@Override
+	public IntervalLattice narrowing(IntervalLattice other) {
+		if (inRelationWith(other) && isFinite() && !other.isFinite())
+			return narrowingAux(other);
+		if (other.inRelationWith(this) && !isFinite() && other.isFinite())
+			return other.narrowingAux(this);
+		return lubAux(other);
+	}
+
+	private IntervalLattice narrowingAux(IntervalLattice other) {
+		Integer newLow, newHigh;
+		if (lowIsMinusInfinity())
+			newLow = other.getLow();
+		else
+			newLow = getLow();
+
+		if (highIsPlusInfinity())
+			newHigh = other.getHigh();
+		else
+			newHigh = getHigh();
+
+		return new IntervalLattice(newLow, newHigh);
+	}
 
 	@Override
 	public int hashCode() {
@@ -320,12 +364,26 @@ public class IntervalLattice extends AbstractIntegerLattice<IntervalLattice> {
 	
 	@Override
 	public Boolean isGreaterThan(IntervalLattice other) {
-		return null; // TODO
+		if (other.inRelationWith(this) || inRelationWith(other))
+			// one contains the other
+			return null;
+		if (other.highIsPlusInfinity() && lowIsMinusInfinity())
+			return null;// TODO
+		if (low > other.high)
+			return Boolean.TRUE;
+		return Boolean.FALSE; 
 	}
 	
 	@Override
 	public Boolean isLessThen(IntervalLattice other) {
-		return null; // TODO
+		if (other.inRelationWith(this) || inRelationWith(other))
+			// one contains the other
+			return null;
+		if (other.lowIsMinusInfinity() && highIsPlusInfinity())
+			return null; // TODO
+		if (high < other.low)
+			return Boolean.TRUE;
+		return Boolean.FALSE;
 	}
 	
 	@Override
@@ -336,5 +394,49 @@ public class IntervalLattice extends AbstractIntegerLattice<IntervalLattice> {
 	@Override
 	public IntervalLattice mk(int value) {
 		return new IntervalLattice(value, value);
+	}
+
+	@Override
+	public IntervalLattice makeGreaterThan(IntervalLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (!lowIsMinusInfinity() && low > other.high)
+			return this;
+		if (highIsPlusInfinity() || high >= other.high + 1)
+			return new IntervalLattice(other.high + 1, high);
+		return mk(other.high + 1);
+	}
+
+	@Override
+	public IntervalLattice makeGreaterOrEqualThan(IntervalLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (!lowIsMinusInfinity() && low >= other.high)
+			return this;
+		if (highIsPlusInfinity() || high >= other.high)
+			return new IntervalLattice(other.high, high);
+		return mk(other.high);
+	}
+
+	@Override
+	public IntervalLattice makeLessThan(IntervalLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (!highIsPlusInfinity() && high < other.low)
+			return this;
+		if (lowIsMinusInfinity() || low <= other.low - 1)
+			return new IntervalLattice(low, other.low - 1);
+		return mk(other.low - 1);
+	}
+
+	@Override
+	public IntervalLattice makeLessOrEqualThan(IntervalLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (!highIsPlusInfinity() && high <= other.low)
+			return this;
+		if (lowIsMinusInfinity() || low <= other.low)
+			return new IntervalLattice(low, other.low);
+		return mk(other.low);
 	}
 }

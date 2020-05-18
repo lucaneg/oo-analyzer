@@ -44,20 +44,17 @@ public abstract class AbstractSatisfiabilityEvaluator<L extends AbstractLattice<
 			return satisfiesEqual((Equal) e, env, evaluator);
 		else if (e instanceof NotEqual) {
 			NotEqual ne = (NotEqual) e;
-			Equal eq = new Equal(ne.getSource(), ne.getLine(), ne.getPos(), ne.getLeft(), ne.getRight());
-			return satisfiesEqual(eq, env, evaluator).negate();
+			return satisfiesEqual(ne.flip(), env, evaluator).negate();
 		} else if (e instanceof Greater)
 			return satisfiesGreater((Greater) e, env, evaluator);
 		else if (e instanceof Less)
 			return satisfiesLess((Less) e, env, evaluator);
 		else if (e instanceof GreaterOrEqual) {
 			GreaterOrEqual ge = (GreaterOrEqual) e;
-			Less lt = new Less(ge.getSource(), ge.getLine(), ge.getPos(), ge.getLeft(), ge.getRight());
-			return satisfiesLess(lt, env, evaluator).negate();
+			return satisfiesLess(ge.flip(), env, evaluator).negate();
 		} else if (e instanceof LessOrEqual) {
 			LessOrEqual le = (LessOrEqual) e;
-			Greater gt = new Greater(le.getSource(), le.getLine(), le.getPos(), le.getLeft(), le.getRight());
-			return satisfiesGreater(gt, env, evaluator).negate();
+			return satisfiesGreater(le.flip(), env, evaluator).negate();
 		} else if (e instanceof Variable)
 			return satisfiesVariable((Variable) e, env, evaluator);
 		else

@@ -56,4 +56,12 @@ public abstract class AbstractIntegerLattice<L extends AbstractIntegerLattice<L>
 	public abstract L mk(int value);
 	
 	public abstract boolean isFinite();
+	
+	public abstract L makeGreaterThan(L other);
+
+	public abstract L makeGreaterOrEqualThan(L other);
+	
+	public abstract L makeLessThan(L other);
+	
+	public abstract L makeLessOrEqualThan(L other);
 }

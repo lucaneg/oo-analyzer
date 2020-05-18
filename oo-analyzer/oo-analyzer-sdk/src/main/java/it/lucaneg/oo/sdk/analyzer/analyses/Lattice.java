@@ -26,6 +26,9 @@ public interface Lattice<L extends Lattice<L>> {
 	 * @return the element obtained by applying the widening operator
 	 */
 	L widening(L other);
+	
+	// TODO add also inrealationwith
+	L narrowing(L other);
 
 	/**
 	 * Yields the bottom element of the lattice.

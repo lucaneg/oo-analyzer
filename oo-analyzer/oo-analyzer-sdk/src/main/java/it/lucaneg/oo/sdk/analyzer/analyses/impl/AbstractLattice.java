@@ -15,6 +15,9 @@ public abstract class AbstractLattice<L extends AbstractLattice<L>> implements L
 
 		if (isTop() || other.isTop())
 			return top();
+		
+		if (equals(other))
+			return (L) this;
 
 		return lubAux(other);
 	}
@@ -39,8 +42,16 @@ public abstract class AbstractLattice<L extends AbstractLattice<L>> implements L
 
 		if (isTop() || other.isTop())
 			return top();
+		
+		if (equals(other))
+			return (L) this;
 
 		return wideningAux(other);
+	}
+	
+	@Override
+	public L narrowing(L other) {
+		return lub(other);
 	}
 
 	@Override

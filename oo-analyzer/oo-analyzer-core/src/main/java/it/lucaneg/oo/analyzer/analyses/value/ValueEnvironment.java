@@ -24,7 +24,7 @@ public class ValueEnvironment extends AbstractEnvironment<ValueLattice, ValueEnv
 	}
 
 	private ValueEnvironment(ValueEnvironment other) {
-		super(other.approximations);
+		super(other);
 		this.booleanSingleton = other.booleanSingleton;
 		this.intSingleton = other.intSingleton;
 		this.stringSingleton = other.stringSingleton;

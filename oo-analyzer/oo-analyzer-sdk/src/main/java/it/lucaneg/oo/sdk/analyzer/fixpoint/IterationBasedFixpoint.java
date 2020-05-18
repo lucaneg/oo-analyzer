@@ -43,17 +43,28 @@ public class IterationBasedFixpoint<L extends Lattice<L>, E extends Environment<
 	
 	@Override
 	protected E update(E previousApprox, E newApprox, Statement current) {
-		if (wideningThreshold == 0)
+		if (previousApprox == null)
+			return newApprox;
+		else if (wideningThreshold == 0)
 			newApprox = newApprox.join(previousApprox, Lattice::lub);
 		else {
 			// +1 since the first time we do lub against null and should not be considered
 			int remainingLubs = remainingLubBeforeWidening
-					.computeIfAbsent(current, st -> new AtomicInteger(wideningThreshold + 1)).getAndDecrement();
+					.computeIfAbsent(current, st -> new AtomicInteger(wideningThreshold)).getAndDecrement();
 			if (remainingLubs > 0)
 				newApprox = newApprox.join(previousApprox, Lattice::lub);
-			else
+			else if (remainingLubs == 0)
+				// we apply the widening here
 				newApprox = newApprox.join(previousApprox, Lattice::widening);
+//			else if (remainingLubs == -1)
+//				// widening already applied, we perform one last try with narrowing before stopping 
+//				newApprox = newApprox.join(previousApprox, Lattice::narrowing);
 		}
 		return newApprox;
+	}
+	
+	@Override
+	protected E updateWithNarrowing(E previousApprox, E newApprox, Statement current) {
+		return newApprox.join(previousApprox, Lattice::narrowing);
 	}
 }

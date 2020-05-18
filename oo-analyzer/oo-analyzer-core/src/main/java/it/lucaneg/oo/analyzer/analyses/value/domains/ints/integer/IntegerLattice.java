@@ -223,4 +223,40 @@ public class IntegerLattice extends AbstractIntegerLattice<IntegerLattice> {
 	public boolean isFinite() {
 		return true;
 	}
+
+	@Override
+	public IntegerLattice makeGreaterThan(IntegerLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (value > other.value)
+			return this;
+		return getTop();
+	}
+
+	@Override
+	public IntegerLattice makeGreaterOrEqualThan(IntegerLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (value >= other.value)
+			return this;
+		return getTop();
+	}
+
+	@Override
+	public IntegerLattice makeLessThan(IntegerLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (value < other.value)
+			return this;
+		return getTop();
+	}
+
+	@Override
+	public IntegerLattice makeLessOrEqualThan(IntegerLattice other) {
+		if (!other.isFinite())
+			return this;
+		if (value <= other.value)
+			return this;
+		return getTop();
+	}
 }

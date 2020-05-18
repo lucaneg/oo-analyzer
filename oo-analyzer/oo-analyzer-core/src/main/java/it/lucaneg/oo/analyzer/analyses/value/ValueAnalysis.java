@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
@@ -15,10 +16,25 @@ import it.lucaneg.oo.analyzer.cli.Parameter;
 import it.lucaneg.oo.analyzer.cli.RequiresParameters;
 import it.lucaneg.oo.analyzer.cli.SetupException;
 import it.lucaneg.oo.ast.expression.Expression;
+import it.lucaneg.oo.ast.expression.Variable;
+import it.lucaneg.oo.ast.expression.comparison.ComparisonBinaryExpression;
+import it.lucaneg.oo.ast.expression.comparison.Equal;
+import it.lucaneg.oo.ast.expression.comparison.Greater;
+import it.lucaneg.oo.ast.expression.comparison.GreaterOrEqual;
+import it.lucaneg.oo.ast.expression.comparison.Less;
+import it.lucaneg.oo.ast.expression.comparison.LessOrEqual;
+import it.lucaneg.oo.ast.expression.comparison.NotEqual;
+import it.lucaneg.oo.ast.expression.dereference.Call;
+import it.lucaneg.oo.ast.expression.literal.IntLiteral;
+import it.lucaneg.oo.ast.expression.literal.StringLiteral;
+import it.lucaneg.oo.ast.expression.logical.Not;
+import it.lucaneg.oo.ast.types.Type;
+import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractAnalysis;
 import it.lucaneg.oo.sdk.analyzer.fixpoint.Fixpoint;
 import it.lucaneg.oo.sdk.analyzer.fixpoint.IterationBasedFixpoint;
 import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
+import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.ILocalWrite;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
 
@@ -107,9 +123,114 @@ public class ValueAnalysis extends AbstractAnalysis<ValueLattice, ValueEnvironme
 		return result;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public ValueEnvironment assume(Expression expr, ValueEnvironment env) {
-		return env; // TODO
+		 // TODO
+		if (satisfiability.satisfies(expr, env, evaluator) == Satisfiability.NOT_SATISFIED) {
+			ValueEnvironment copy = env.copy();
+			for (Pair<MLocalVariable, ValueLattice> pair : env)
+				// unreachable code
+				copy.set(pair.getLeft(), ValueLattice.getBottom());
+			copy.makeUnreachable();
+			return copy;
+		}
+		
+		if (expr instanceof Call && ((Call) expr).getReceiver().asExpression().getStaticType() == Type.getStringType()) {
+			Call call = (Call) expr;
+			if (call.getName().equals("equals")) {
+				ValueEnvironment copy = env.copy();
+				if (call.getReceiver() instanceof Variable) {
+					Variable var = (Variable) call.getReceiver();
+					Expression par = call.getActuals()[0].asExpression();
+					if (par instanceof Variable)
+						copy.set(var.getName(), copy.at(((Variable) par).getName()));
+					else if (par instanceof StringLiteral)
+						copy.set(var.getName(), new ValueLattice(stringSingleton.mk(((StringLiteral) par).getValue())));
+					return copy;
+				}
+			}
+		} else if (expr instanceof ComparisonBinaryExpression) { 
+			ComparisonBinaryExpression comp = (ComparisonBinaryExpression) expr;
+			ValueLattice var;
+			AbstractIntegerLattice constant;
+			String varName;
+			if (comp.getLeft() instanceof IntLiteral && comp.getRight() instanceof Variable) {
+				constant = intSingleton.mk(((IntLiteral) comp.getLeft()).getValue());
+				varName = ((Variable) comp.getRight()).getName();
+				var = env.at(varName); 
+			} else if (comp.getRight() instanceof IntLiteral && comp.getLeft() instanceof Variable) {
+				constant = intSingleton.mk(((IntLiteral) comp.getRight()).getValue());
+				varName = ((Variable) comp.getLeft()).getName();
+				var = env.at(varName);
+			} else 
+				return env;
+			
+			ValueEnvironment copy = env.copy();
+			if (comp instanceof Equal)
+				copy.set(varName, new ValueLattice(constant));
+			else if (comp instanceof Greater)
+				copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeGreaterThan(constant)));
+			else if (comp instanceof GreaterOrEqual)
+				copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeGreaterOrEqualThan(constant)));
+			else if (comp instanceof Less)
+				copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeLessThan(constant)));
+			else if (comp instanceof LessOrEqual)
+				copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeLessOrEqualThan(constant)));
+			else 
+				return env;
+				
+			return copy;
+		} else if (expr instanceof Not) {
+			Expression e = ((Not) expr).getExpression();
+			if (e instanceof Call && ((Call) e).getReceiver().asExpression().getStaticType() == Type.getStringType()) {
+				Call call = (Call) e;
+				if (call.getName().equals("equals")) {
+					ValueEnvironment copy = env.copy();
+					if (call.getReceiver().asExpression() instanceof Variable) {
+						Expression par = call.getActuals()[0].asExpression();
+						if (par instanceof Variable && satisfiability.satisfies(e, env, evaluator) == Satisfiability.SATISFIED)
+							copy.set(call.getName(), ValueLattice.getBottom());
+						else if (par instanceof StringLiteral && satisfiability.satisfies(e, env, evaluator) == Satisfiability.SATISFIED)
+							copy.set(call.getName(), ValueLattice.getBottom());
+						return copy;
+					}
+				}
+			} else if (e instanceof ComparisonBinaryExpression) { 
+				ComparisonBinaryExpression comp = (ComparisonBinaryExpression) e;
+				ValueLattice var;
+				AbstractIntegerLattice constant;
+				String varName;
+				if (comp.getLeft() instanceof IntLiteral && comp.getRight() instanceof Variable) {
+					constant = intSingleton.mk(((IntLiteral) comp.getLeft()).getValue());
+					varName = ((Variable) comp.getRight()).getName();
+					var = env.at(varName); 
+				} else if (comp.getRight() instanceof IntLiteral && comp.getLeft() instanceof Variable) {
+					constant = intSingleton.mk(((IntLiteral) comp.getRight()).getValue());
+					varName = ((Variable) comp.getLeft()).getName();
+					var = env.at(varName);
+				} else 
+					return env;
+				
+				ValueEnvironment copy = env.copy();
+				if (comp instanceof NotEqual)
+					copy.set(varName, new ValueLattice(constant));
+				else if (comp instanceof LessOrEqual)
+					copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeGreaterThan(constant)));
+				else if (comp instanceof Less)
+					copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeGreaterOrEqualThan(constant)));
+				else if (comp instanceof GreaterOrEqual)
+					copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeLessThan(constant)));
+				else if (comp instanceof Greater)
+					copy.set(varName, new ValueLattice(((AbstractIntegerLattice) var.getInnerElement()).makeLessOrEqualThan(constant)));
+				else 
+					return env;
+
+				return copy;
+			} 
+		}
+		
+		return env;
 	}
 
 	@Override

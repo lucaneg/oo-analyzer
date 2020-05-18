@@ -57,7 +57,7 @@ public abstract class AbstractAnalysis<L extends AbstractLattice<L>, E extends A
 				env.set(new MLocalVariable(t.getType(), t.getName()), env.defaultLatticeForType(t.getType()));
 			
 			Fixpoint<L, E> engine = mkFixpoint(code.getCode());
-			denotations.put(code, engine.fixpoint(env, this::smallStepSemantics, this::assume));
+			logger.mkTimerLogger("method " + code.toString()).execAction(() -> denotations.put(code, engine.fixpoint(env, this::smallStepSemantics, this::assume)));
 		}
 	}
 	

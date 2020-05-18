@@ -80,12 +80,20 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 
 	@Override
 	protected StringLattice lubAux(StringLattice other) {
-		return new StringLattice(string.lub(other.string));
+		return decide(other);
 	}
 
 	@Override
 	protected StringLattice wideningAux(StringLattice other) {
-		return new StringLattice(string.widen(other.string));
+		return decide(other);
+	}
+
+	private StringLattice decide(StringLattice other) {
+		int MAX = 10;
+		if (string.size() > MAX || other.string.size() > MAX)
+			return new StringLattice(string.widen(other.string));
+		else
+			return new StringLattice(string.lub(other.string));
 	}
 
 	@Override
@@ -211,7 +219,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 		Interval indexOf = getString().indexOf(str.getString());
 		AbstractIntegerLattice base = singleton.mk(indexOf.getLower());
 		if (indexOf.topIsInfinity())
-			return (AbstractIntegerLattice) base.lub(singleton.mk(Integer.MAX_VALUE));
+			return (AbstractIntegerLattice) base.widening(singleton.mk(Integer.MAX_VALUE));
 		else
 			return (AbstractIntegerLattice) base.lub(singleton.mk(indexOf.getUpper()));
 	}
@@ -222,7 +230,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 		Interval length = getString().length();
 		AbstractIntegerLattice base = singleton.mk(length.getLower());
 		if (length.topIsInfinity())
-			return (AbstractIntegerLattice) base.lub(singleton.mk(Integer.MAX_VALUE));
+			return (AbstractIntegerLattice) base.widening(singleton.mk(Integer.MAX_VALUE));
 		else
 			return (AbstractIntegerLattice) base.lub(singleton.mk(length.getUpper()));
 	}
