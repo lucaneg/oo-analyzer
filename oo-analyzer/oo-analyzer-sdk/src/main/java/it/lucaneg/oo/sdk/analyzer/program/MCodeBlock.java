@@ -236,13 +236,11 @@ public class MCodeBlock extends Graph<Statement> {
 
 	@Override
 	protected String provideVertexShapeIfNeeded(Statement vertex) {
+		String shape = "shape = rect,";
 		if (vertex == start || vertex == end || (vertex instanceof Return && followersOf(vertex).isEmpty()))
-			return "peripheries=2,";
+			shape += "peripheries=2,";
 
-		if (vertex instanceof BranchingStatement)
-			return "shape = rect,";
-
-		return "";
+		return shape;
 	}
 
 	@Override
