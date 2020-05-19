@@ -3,6 +3,8 @@ package it.lucaneg.oo.sdk.analyzer.program;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -262,7 +264,9 @@ public class MCodeBlock extends Graph<Statement> {
 				.map(pair -> Pair.of((Skip) pair.getKey(), pair.getValue().iterator().next()))
 				.collect(Collectors.toMap(Pair::getKey, Pair::getValue));
 		
-		for (Entry<Skip, Statement> skip : skips.entrySet()) {
+		Set<Entry<Skip, Statement>> sorted = new TreeSet<>((e1, e2) -> Integer.compare(e1.getKey().getIndex(), e2.getKey().getIndex()));
+		sorted.addAll(skips.entrySet());
+		for (Entry<Skip, Statement> skip : sorted) {
 			for (Statement s : predecessorsOf(skip.getKey())) {
 				edges.get(s).remove(skip.getKey());
 				edges.get(s).add(skip.getValue());
@@ -275,7 +279,8 @@ public class MCodeBlock extends Graph<Statement> {
 					b.getValue().setRight(skip.getValue());
 			}
 			
-			edges.remove(skip.getKey());
 		}
+
+		skips.keySet().forEach(edges::remove);
 	}
 }
