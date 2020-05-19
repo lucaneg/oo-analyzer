@@ -106,19 +106,20 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		if (!begin.isFinite() || !end.isFinite())
 			return new ValueLattice(stringSingleton.top());
 
-		AbstractStringLattice partial = stringSingleton.bottom();
+		AbstractStringLattice partial = null; //stringSingleton.bottom();
 		AbstractStringLattice temp;
 		outer:
 		for (int b : (List<Integer>) begin.getIntergers())
-			for (int e : (List<Integer>) end.getIntergers()) 
-				if (b < e) {
-					temp = (AbstractStringLattice) partial.lub(rec.substring(b, e));
-					if (temp.equals(partial))
-						break outer;
-					partial = temp;
-					if (partial.isTop())
-						break outer;
-				}
+			if (b >= 0)
+				for (int e : (List<Integer>) end.getIntergers()) 
+					if (b < e) {
+						temp = partial == null ? rec.substring(b, e) : (AbstractStringLattice) partial.lub(rec.substring(b, e));
+						if (temp.equals(partial))
+							break outer;
+						partial = temp;
+						if (partial.isTop())
+							break outer;
+					}
 		return new ValueLattice(partial);
 	}
 
