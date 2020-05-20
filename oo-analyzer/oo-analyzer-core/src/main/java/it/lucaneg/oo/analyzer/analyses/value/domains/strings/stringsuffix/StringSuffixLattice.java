@@ -2,6 +2,7 @@ package it.lucaneg.oo.analyzer.analyses.value.domains.strings.stringsuffix;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
 /**
@@ -31,7 +32,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 		
 		@Override
 		public String toString() {
-			return "\u0372";
+			return String.valueOf(Analysis.TOP_CHAR);
 		}
 	};
 

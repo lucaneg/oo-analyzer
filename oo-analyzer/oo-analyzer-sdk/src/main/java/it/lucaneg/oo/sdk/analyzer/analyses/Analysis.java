@@ -9,6 +9,11 @@ import it.lucaneg.oo.sdk.analyzer.program.Program;
  * @author Luca Negrini
  */
 public interface Analysis<L extends Lattice<L>, E extends Environment<L, E>> extends SemanticDomain<L, E> {
+	
+	/**
+	 * The character to use to represent top values
+	 */
+	public static final char TOP_CHAR = '\u0372';
 
 	/**
 	 * Yields the name of the analysis.

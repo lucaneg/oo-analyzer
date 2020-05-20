@@ -1,5 +1,6 @@
 package it.lucaneg.oo.analyzer.analyses.value;
 
+import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -18,7 +19,7 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 
 		@Override
 		public String toString() {
-			return "T";
+			return String.valueOf(Analysis.TOP_CHAR);
 		}
 	};
 

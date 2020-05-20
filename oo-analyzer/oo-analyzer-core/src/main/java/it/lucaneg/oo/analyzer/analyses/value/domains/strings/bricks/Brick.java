@@ -5,6 +5,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
+import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
+
 /**
  * A Brick, as defined in:
  * 
@@ -19,7 +21,7 @@ public class Brick {
 	/**
 	 * The unique top element
 	 */
-	static final Brick TOP = new Brick("\u0372", 1, 1) {
+	static final Brick TOP = new Brick(String.valueOf(Analysis.TOP_CHAR), 1, 1) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -32,7 +34,7 @@ public class Brick {
 		
 //		@Override
 //		public String toString() {
-//			return "\u0372";
+//			return String.valueOf(Analysis.TOP_CHAR);
 //		}
 	};
 

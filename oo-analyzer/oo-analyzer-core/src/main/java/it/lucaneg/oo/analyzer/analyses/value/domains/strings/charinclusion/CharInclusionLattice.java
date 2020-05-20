@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
 /**
@@ -19,8 +20,6 @@ import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiabilit
  */
 public class CharInclusionLattice extends AbstractStringLattice<CharInclusionLattice> {
 	
-	public static final char TOP_CHAR = '\u0372';
-
 	/**
 	 * The unique top element
 	 */
@@ -37,7 +36,7 @@ public class CharInclusionLattice extends AbstractStringLattice<CharInclusionLat
 		
 		@Override
 		public String toString() {
-			return String.valueOf(TOP_CHAR);
+			return String.valueOf(Analysis.TOP_CHAR);
 		}
 	};
 
@@ -234,7 +233,7 @@ public class CharInclusionLattice extends AbstractStringLattice<CharInclusionLat
 		Set<Character> possibly = new TreeSet<>(getPossiblyIncludedChars());
 
 		if (other.isTop()) 
-			possibly.add(CharInclusionLattice.TOP_CHAR);
+			possibly.add(Analysis.TOP_CHAR);
 		else {
 			included.addAll(other.getIncludedChars());
 			possibly.addAll(other.getPossiblyIncludedChars());
