@@ -1,4 +1,4 @@
-package it.lucaneg.oo.analyzer.analyses.value.domains.strings.string;
+package it.lucaneg.oo.analyzer.analyses.value.domains.strings.tarsis;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
@@ -11,12 +11,12 @@ import it.unive.strings.AutomatonString.Interval;
  * 
  * @author Luca Negrini
  */
-public class StringLattice extends AbstractStringLattice<StringLattice> {
+public class TarsisLattice extends AbstractStringLattice<TarsisLattice> {
 
 	/**
 	 * The unique top element
 	 */
-	private static final StringLattice TOP = new StringLattice(null) {
+	private static final TarsisLattice TOP = new TarsisLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -36,7 +36,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	/**
 	 * The unique bottom element
 	 */
-	private static final StringLattice BOTTOM = new StringLattice(null) {
+	private static final TarsisLattice BOTTOM = new TarsisLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -61,7 +61,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	/**
 	 * Builds a lattice element containing the top string
 	 */
-	public StringLattice() {
+	public TarsisLattice() {
 		this(new AutomatonString());
 	}
 
@@ -70,7 +70,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	 * 
 	 * @param string the string
 	 */
-	public StringLattice(AutomatonString string) {
+	public TarsisLattice(AutomatonString string) {
 		this.string = string;
 	}
 
@@ -84,30 +84,30 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	protected StringLattice lubAux(StringLattice other) {
+	protected TarsisLattice lubAux(TarsisLattice other) {
 		return decide(other);
 	}
 
 	@Override
-	protected StringLattice wideningAux(StringLattice other) {
+	protected TarsisLattice wideningAux(TarsisLattice other) {
 		return decide(other);
 	}
 
-	private StringLattice decide(StringLattice other) {
+	private TarsisLattice decide(TarsisLattice other) {
 		int MAX = 10;
 		if (string.size() > MAX || other.string.size() > MAX)
-			return new StringLattice(string.widen(other.string));
+			return new TarsisLattice(string.widen(other.string));
 		else
-			return new StringLattice(string.lub(other.string));
+			return new TarsisLattice(string.lub(other.string));
 	}
 
 	@Override
-	public StringLattice bottom() {
+	public TarsisLattice bottom() {
 		return getBottom();
 	}
 
 	@Override
-	public StringLattice top() {
+	public TarsisLattice top() {
 		return getTop();
 	}
 
@@ -116,7 +116,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	 * 
 	 * @return the bottom element
 	 */
-	public static StringLattice getBottom() {
+	public static TarsisLattice getBottom() {
 		return BOTTOM;
 	}
 
@@ -125,7 +125,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	 * 
 	 * @return the top element
 	 */
-	public static StringLattice getTop() {
+	public static TarsisLattice getTop() {
 		return TOP;
 	}
 
@@ -145,7 +145,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StringLattice other = (StringLattice) obj;
+		TarsisLattice other = (TarsisLattice) obj;
 		if (string == null) {
 			if (other.string != null)
 				return false;
@@ -160,12 +160,12 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	public StringLattice mk(String string) {
-		return new StringLattice(new AutomatonString(string));
+	public TarsisLattice mk(String string) {
+		return new TarsisLattice(new AutomatonString(string));
 	}
 
 	@Override
-	public Satisfiability contains(StringLattice other) {
+	public Satisfiability contains(TarsisLattice other) {
 		if (getString().contains(other.getString()))
 			return Satisfiability.SATISFIED;
 
@@ -176,7 +176,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	public Satisfiability startsWith(StringLattice other) {
+	public Satisfiability startsWith(TarsisLattice other) {
 		if (getString().startsWith(other.getString()))
 			return Satisfiability.SATISFIED;
 
@@ -187,7 +187,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	public Satisfiability endsWith(StringLattice other) {
+	public Satisfiability endsWith(TarsisLattice other) {
 		if (getString().endsWith(other.getString()))
 			return Satisfiability.SATISFIED;
 
@@ -198,7 +198,7 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	public Satisfiability isEquals(StringLattice other) {
+	public Satisfiability isEquals(TarsisLattice other) {
 		if (getString().isEqualTo(other.getString()))
 			return Satisfiability.SATISFIED;
 
@@ -209,18 +209,18 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	public StringLattice concat(StringLattice other) {
-		return new StringLattice(getString().concat(other.getString()));
+	public TarsisLattice concat(TarsisLattice other) {
+		return new TarsisLattice(getString().concat(other.getString()));
 	}
 
 	@Override
-	public StringLattice substring(int begin, int end) {
-		return new StringLattice(getString().substring(begin, end));
+	public TarsisLattice substring(int begin, int end) {
+		return new TarsisLattice(getString().substring(begin, end));
 	}
 	
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public AbstractIntegerLattice indexOf(StringLattice str, AbstractIntegerLattice singleton) {
+	public AbstractIntegerLattice indexOf(TarsisLattice str, AbstractIntegerLattice singleton) {
 		Interval indexOf = getString().indexOf(str.getString());
 		AbstractIntegerLattice base = singleton.mk(indexOf.getLower());
 		if (indexOf.topIsInfinity())
@@ -241,29 +241,29 @@ public class StringLattice extends AbstractStringLattice<StringLattice> {
 	}
 
 	@Override
-	public StringLattice replace(StringLattice toReplace, StringLattice str) {
-		return new StringLattice(getString().replace(toReplace.getString(), str.getString()));
+	public TarsisLattice replace(TarsisLattice toReplace, TarsisLattice str) {
+		return new TarsisLattice(getString().replace(toReplace.getString(), str.getString()));
 	}
 
 	@Override
-	public Boolean isEqualTo(StringLattice other) {
+	public Boolean isEqualTo(TarsisLattice other) {
 		if (isTop() || other.isTop() || isBottom() || other.isBottom())
 			return null;
 		return getString().isEqualTo(other.getString());
 	}
 
 	@Override
-	public Boolean isLessThen(StringLattice other) {
+	public Boolean isLessThen(TarsisLattice other) {
 		return null;
 	}
 
 	@Override
-	public Boolean isGreaterThan(StringLattice other) {
+	public Boolean isGreaterThan(TarsisLattice other) {
 		return null;
 	}
 	
 	@Override
-	public StringLattice mkTopString() {
-		return new StringLattice();
+	public TarsisLattice mkTopString() {
+		return new TarsisLattice();
 	}
 }
