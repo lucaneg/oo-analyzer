@@ -53,7 +53,7 @@ public class IterationBasedFixpoint<L extends Lattice<L>, E extends Environment<
 					.computeIfAbsent(current, st -> new AtomicInteger(wideningThreshold)).getAndDecrement();
 			if (remainingLubs > 0)
 				newApprox = newApprox.join(previousApprox, Lattice::lub);
-			else if (remainingLubs == 0)
+			else //if (remainingLubs == 0)
 				// we apply the widening here
 				newApprox = newApprox.join(previousApprox, Lattice::widening);
 //			else if (remainingLubs == -1)
