@@ -26,7 +26,7 @@ public class AssertionCheck extends AbstractCheck {
 	@Override
 	public void run(Program program, Map<Class<? extends Analysis<?, ?>>, Analysis<?, ?>> analyses) {
 		values = (ValueAnalysis) analyses.get(ValueAnalysis.class);
-		for (MCodeMember codeMember : logger.mkIterationLogger(getName(), "methods").iterate(program.getAllCodeMembers())) {
+		for (MCodeMember codeMember : logger.mkIterationLogger(getName(), "methods").iterate(program.getAllSubmittedCodeMembers())) {
 			codeMember.getCode()
 				.nodes()
 				.stream()

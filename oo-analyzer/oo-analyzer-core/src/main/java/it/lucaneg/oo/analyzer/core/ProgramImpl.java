@@ -18,8 +18,15 @@ public class ProgramImpl implements Program {
 	}
 
 	@Override
-	public Collection<MCodeMember> getAllCodeMembers() {
+	public final Collection<MCodeMember> getAllCodeMembers() {
 		return classes.stream().flatMap(c -> Stream.concat(c.getConstructors().stream(), c.getMethods().stream())).collect(Collectors.toList());
 	}
 
+	@Override
+	public final Collection<MCodeMember> getAllSubmittedCodeMembers() {
+		return classes.stream()
+				.flatMap(c -> Stream.concat(c.getConstructors().stream(), c.getMethods().stream()))
+				.filter(code -> !code.getDefiningClass().isObject() && !code.getDefiningClass().isString())
+				.collect(Collectors.toList());
+	}
 }

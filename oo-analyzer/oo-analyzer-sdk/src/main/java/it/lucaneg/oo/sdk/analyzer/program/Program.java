@@ -26,4 +26,12 @@ public interface Program {
 	 * @return the collection of method and constructors
 	 */
 	Collection<MCodeMember> getAllCodeMembers();
+
+	/**
+	 * Yields an unmodifiable view of all the methods and constructors that are part
+	 * of the program to analyze, excluding ones from the String and Object classes.
+	 * 
+	 * @return the collection of method and constructors
+	 */
+	Collection<MCodeMember> getAllSubmittedCodeMembers();
 }
