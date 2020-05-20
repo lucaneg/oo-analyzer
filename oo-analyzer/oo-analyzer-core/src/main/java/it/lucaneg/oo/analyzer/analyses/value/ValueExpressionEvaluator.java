@@ -175,7 +175,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		} else
 			parameter = (AbstractStringLattice) par.getInnerElement();
 		
-		if (parameter.isTop())
+		if (parameter == null || parameter.isTop())
 			return new ValueLattice(rec.concat(stringSingleton.mkTopString()));
 		return new ValueLattice(rec.concat(parameter));
 	}
