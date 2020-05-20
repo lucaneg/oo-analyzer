@@ -170,6 +170,8 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 
 	@Override
 	public Satisfiability contains(StringPrefixLattice other) {
+		if (other.prefix.length() == 1)
+			return Satisfiability.fromBoolean(prefix.contains(other.prefix));
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -206,7 +208,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 		else if (begin < getPrefix().length())
 			return new StringPrefixLattice(getPrefix().substring(begin));
 
-		return StringPrefixLattice.getTop();
+		return new StringPrefixLattice("");
 	}
 	
 	@Override

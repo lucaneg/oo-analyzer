@@ -174,15 +174,11 @@ public class CharInclusionLattice extends AbstractStringLattice<CharInclusionLat
 		if (isTop() || other.isTop())
 			return Satisfiability.UNKNOWN;
 
-		if (other.getIncludedChars().size() == 1 && other.getPossiblyIncludedChars().equals(other.getIncludedChars())
-				&& getIncludedChars().containsAll(other.getIncludedChars()))
-			// only case when we can return true
-			return Satisfiability.SATISFIED;
-
-		Set<Character> includedChars = new HashSet<>(other.getIncludedChars());
-		includedChars.removeAll(getPossiblyIncludedChars());
-		if (!includedChars.isEmpty())
-			return Satisfiability.NOT_SATISFIED;
+		if (other.getIncludedChars().size() == 1 && other.getPossiblyIncludedChars().equals(other.getIncludedChars())) 
+			if (getIncludedChars().containsAll(other.getIncludedChars()))
+				return Satisfiability.SATISFIED;
+			else if (!getPossiblyIncludedChars().containsAll(other.getIncludedChars()))
+				return Satisfiability.NOT_SATISFIED;
 
 		return Satisfiability.UNKNOWN;
 	}

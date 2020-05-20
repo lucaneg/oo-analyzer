@@ -171,6 +171,8 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 
 	@Override
 	public Satisfiability contains(StringSuffixLattice other) {
+		if (other.suffix.length() == 1)
+			return Satisfiability.fromBoolean(suffix.contains(other.suffix));
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -199,7 +201,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 
 	@Override
 	public StringSuffixLattice substring(int begin, int end) {
-		return getTop();
+		return new StringSuffixLattice("");
 	}
 	
 	@Override

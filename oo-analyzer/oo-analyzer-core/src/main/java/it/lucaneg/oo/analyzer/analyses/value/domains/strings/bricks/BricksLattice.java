@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
-import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
 /**
@@ -30,19 +29,19 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 	 * The K_L index, that is, the limit on the length of the list of bricks after
 	 * which the widening returns top
 	 */
-	static final int K_L = 5;
+	static final int K_L = 20;
 	
 	/**
 	 * The K_I index, that is, the limit on the number of repetitions (max - min)
 	 * after which the widening turns max into infinity
 	 */
-	static final int K_I = 5;
+	static final int K_I = 20;
 
 	/**
 	 * The K_S index, that is, the limit on the number of strings in the brick 
 	 * after which the widening returns top
 	 */
-	static final int K_S = 5;
+	static final int K_S = 50;
 	
 	/**
 	 * The unique top element
@@ -58,10 +57,10 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 			return "TOP".hashCode();
 		}
 		
-		@Override
-		public String toString() {
-			return String.valueOf(Analysis.TOP_CHAR);
-		}
+//		@Override
+//		public String toString() {
+//			return String.valueOf(Analysis.TOP_CHAR);
+//		}
 	};
 
 	/**
@@ -98,21 +97,21 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 	public BricksLattice(List<Brick> bricks) {
 		this();
 		this.bricks.addAll(bricks);
-		normalize();
+		//normalize();
 	}
 	
 	public BricksLattice(Brick... bricks) {
 		this();
 		for (Brick b : bricks)
 			this.bricks.add(b);
-		normalize();
+		//normalize();
 	}
 	
 	public List<Brick> getBricks() {
 		return bricks;
 	}
 	
-	private void normalize() {
+	private BricksLattice normalize() {
 		List<Brick> normal;
 		List<Brick> work = new ArrayList<>(bricks);
 		
@@ -126,8 +125,7 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 			rule5(work);
 		} while (!work.equals(normal));
 		
-		bricks.clear();
-		bricks.addAll(normal);
+		return new BricksLattice(normal);
 	}
 
 	private void rule1(List<Brick> work) { 
@@ -275,7 +273,7 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 		for (int i = 0; i < first.size(); i++)
 			lub.add(first.get(i).lub(second.get(i)));
 		
-		return new BricksLattice(lub);
+		return new BricksLattice(lub).normalize();
 	}
 	
 	boolean inRelationWith(BricksLattice other) {
@@ -324,7 +322,7 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 		for (int i = 0; i < first.size(); i++)
 			widen.add(first.get(i).widening(second.get(i)));
 		
-		return new BricksLattice(widen);
+		return new BricksLattice(widen).normalize();
 	}
 
 	@Override
@@ -359,7 +357,33 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 
 	@Override
 	public Satisfiability contains(BricksLattice other) {
-		return process(other, String::contains);
+		// paper implementation:
+		if (other.getBricks().size() != 1)
+			return Satisfiability.UNKNOWN;
+		
+		if (other.getBricks().get(0).getStrings().size() != 1)
+			return Satisfiability.UNKNOWN;
+		
+		if (other.getBricks().get(0).getStrings().iterator().next().length() != 1)
+			return Satisfiability.UNKNOWN;
+		
+		String c = other.getBricks().get(0).getStrings().iterator().next();
+		
+		boolean res = bricks.stream()
+				.filter(b -> b.getMin() > 0)
+				.map(b -> b.getStrings())
+				.anyMatch(set -> set.stream().allMatch(s -> s.contains(c)));
+		if (res)
+			return Satisfiability.SATISFIED;
+		
+		res = bricks.stream()
+				.map(b -> b.getStrings())
+				.allMatch(set -> set.stream().allMatch(s -> !s.contains(c)));
+		if (res)
+			return Satisfiability.NOT_SATISFIED;
+		
+		return Satisfiability.UNKNOWN;
+		//return process(other, String::contains);
 	}
 
 	@Override
@@ -425,11 +449,11 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 
 	@Override
 	public BricksLattice concat(BricksLattice other) {
-		if (isTop() || other.isTop())
-			return getTop();
+//		if (isTop() || other.isTop())
+//			return getTop();
 		List<Brick> result = new ArrayList<>(getBricks());
 		result.addAll(other.getBricks());
-		return new BricksLattice(result);
+		return new BricksLattice(result).normalize();
 	}
 
 	@Override
@@ -437,17 +461,17 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 		if (isTop())
 			return getTop();
 
-		Brick first = getBricks().get(0);
+		Brick first = normalize().getBricks().get(0);
 		if (first == Brick.TOP || first.getMin() != 1 || first.getMax() != 1)
 			return getTop();
 
 		if (first.getStrings().parallelStream().anyMatch(s -> s.length() < end))
 			return getTop();
 
-		List<Brick> result = new ArrayList<>(getBricks());
+		List<Brick> result = new ArrayList<>();
 		Set<String> strings = first.getStrings().parallelStream().map(s -> s.substring(begin, end))
 				.collect(Collectors.toSet());
-		result.set(0, new Brick(strings, 1, 1));
+		result.add(0, new Brick(strings, 1, 1));
 
 		return new BricksLattice(result);
 	}
