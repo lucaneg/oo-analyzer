@@ -9,3 +9,4 @@ bin
 /analyses
 
 !custom-libs/*.jar
+/logs/

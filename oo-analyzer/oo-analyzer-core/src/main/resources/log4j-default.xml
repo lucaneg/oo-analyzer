@@ -2,8 +2,17 @@
 <Configuration status="WARN" name="DefaultLoggingConf">
 	<Appenders>
 		<Console name="console">
-			<PatternLayout pattern="%d %5level %c - %equals{[%marker] }{[] }{}%m %ex%n"/>
+			<PatternLayout pattern="%d %5level %c{1.} - %equals{[%marker] }{[] }{}%m %ex%n"/>
 		</Console>
+		<RollingFile name="file" fileName="logs/oo-analyzer.log"
+			filePattern="logs/oo-analyzer-%d{yyyy-MM}-%i.log.gz">
+			<PatternLayout pattern="%d %5level %c - %equals{[%marker] }{[] }{}%m %ex%n" />
+			<Policies>
+				<OnStartupTriggeringPolicy  />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
 	</Appenders>
 
 	<Loggers>
@@ -11,6 +20,7 @@
 		
 		<Root level="DEBUG">
 			<AppenderRef ref="console" level="INFO"/>
+			<AppenderRef ref="file" level="DEBUG"/>
 		</Root>
 	</Loggers>
 </Configuration>
