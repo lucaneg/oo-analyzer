@@ -1,4 +1,4 @@
-package it.lucaneg.oo.analyzer.analyses.value.domains.strings.stringprefix;
+package it.lucaneg.oo.analyzer.analyses.value.domains.strings.prefix;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
@@ -14,12 +14,12 @@ import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiabilit
  * 
  * @author Luca Negrini
  */
-public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLattice> {
+public class PrefixLattice extends AbstractStringLattice<PrefixLattice> {
 
 	/**
 	 * The unique top element
 	 */
-	private static final StringPrefixLattice TOP = new StringPrefixLattice(null) {
+	private static final PrefixLattice TOP = new PrefixLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -39,7 +39,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	/**
 	 * The unique bottom element
 	 */
-	private static final StringPrefixLattice BOTTOM = new StringPrefixLattice(null) {
+	private static final PrefixLattice BOTTOM = new PrefixLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -66,7 +66,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	 * 
 	 * @param prefix the prefix
 	 */
-	public StringPrefixLattice(String prefix) {
+	public PrefixLattice(String prefix) {
 		this.prefix = prefix;
 	}
 
@@ -80,7 +80,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	}
 
 	@Override
-	protected StringPrefixLattice lubAux(StringPrefixLattice other) {
+	protected PrefixLattice lubAux(PrefixLattice other) {
 		if (prefix.equals(other.prefix))
 			return this;
 		
@@ -97,21 +97,21 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 			else 
 				break;
 		
-		return new StringPrefixLattice(common);
+		return new PrefixLattice(common);
 	}
 
 	@Override
-	protected StringPrefixLattice wideningAux(StringPrefixLattice other) {
+	protected PrefixLattice wideningAux(PrefixLattice other) {
 		return lubAux(other);
 	}
 
 	@Override
-	public StringPrefixLattice bottom() {
+	public PrefixLattice bottom() {
 		return getBottom();
 	}
 
 	@Override
-	public StringPrefixLattice top() {
+	public PrefixLattice top() {
 		return getTop();
 	}
 
@@ -120,7 +120,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	 * 
 	 * @return the bottom element
 	 */
-	public static StringPrefixLattice getBottom() {
+	public static PrefixLattice getBottom() {
 		return BOTTOM;
 	}
 
@@ -129,7 +129,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	 * 
 	 * @return the top element
 	 */
-	public static StringPrefixLattice getTop() {
+	public static PrefixLattice getTop() {
 		return TOP;
 	}
 
@@ -149,7 +149,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StringPrefixLattice other = (StringPrefixLattice) obj;
+		PrefixLattice other = (PrefixLattice) obj;
 		if (prefix == null) {
 			if (other.prefix != null)
 				return false;
@@ -164,19 +164,19 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	}
 
 	@Override
-	public StringPrefixLattice mk(String string) {
-		return new StringPrefixLattice(string);
+	public PrefixLattice mk(String string) {
+		return new PrefixLattice(string);
 	}
 
 	@Override
-	public Satisfiability contains(StringPrefixLattice other) {
+	public Satisfiability contains(PrefixLattice other) {
 		if (other.prefix.length() == 1 && prefix.contains(other.prefix))
 			return Satisfiability.SATISFIED;
 		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
-	public Satisfiability startsWith(StringPrefixLattice other) {
+	public Satisfiability startsWith(PrefixLattice other) {
 		if (!isTop() && !other.isTop() && getPrefix().startsWith(other.getPrefix()))
 			return Satisfiability.SATISFIED;
 
@@ -184,36 +184,36 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	}
 
 	@Override
-	public Satisfiability endsWith(StringPrefixLattice other) {
+	public Satisfiability endsWith(PrefixLattice other) {
 		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
-	public Satisfiability isEquals(StringPrefixLattice other) {
+	public Satisfiability isEquals(PrefixLattice other) {
 		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
-	public StringPrefixLattice concat(StringPrefixLattice other) {
+	public PrefixLattice concat(PrefixLattice other) {
 		return this;
 	}
 
 	@Override
-	public StringPrefixLattice substring(int begin, int end) {
+	public PrefixLattice substring(int begin, int end) {
 		if (isTop())
 			return this;
 
 		if (end <= getPrefix().length())
-			return new StringPrefixLattice(getPrefix().substring(begin, end));
+			return new PrefixLattice(getPrefix().substring(begin, end));
 		else if (begin < getPrefix().length())
-			return new StringPrefixLattice(getPrefix().substring(begin));
+			return new PrefixLattice(getPrefix().substring(begin));
 
-		return new StringPrefixLattice("");
+		return new PrefixLattice("");
 	}
 	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public AbstractIntegerLattice indexOf(StringPrefixLattice str, AbstractIntegerLattice singleton) {
+	public AbstractIntegerLattice indexOf(PrefixLattice str, AbstractIntegerLattice singleton) {
 		return (AbstractIntegerLattice) singleton.mk(-1).widening(singleton.mk(Integer.MAX_VALUE));
 	}
 	
@@ -224,7 +224,7 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 	}
 
 	@Override
-	public StringPrefixLattice replace(StringPrefixLattice toReplace, StringPrefixLattice str) {
+	public PrefixLattice replace(PrefixLattice toReplace, PrefixLattice str) {
 		if (isTop() || toReplace.isTop() || str.isTop())
 			return getTop();
 
@@ -235,23 +235,23 @@ public class StringPrefixLattice extends AbstractStringLattice<StringPrefixLatti
 		if (!target.contains(replace))
 			return this;
 
-		return new StringPrefixLattice(target.replace(replace, string));
+		return new PrefixLattice(target.replace(replace, string));
 	}
 
 	@Override
-	public Boolean isEqualTo(StringPrefixLattice other) {
+	public Boolean isEqualTo(PrefixLattice other) {
 		if (isTop() || other.isTop() || isBottom() || other.isBottom())
 			return null;
 		return getPrefix().equals(other.getPrefix());
 	}
 
 	@Override
-	public Boolean isLessThen(StringPrefixLattice other) {
+	public Boolean isLessThen(PrefixLattice other) {
 		return null;
 	}
 
 	@Override
-	public Boolean isGreaterThan(StringPrefixLattice other) {
+	public Boolean isGreaterThan(PrefixLattice other) {
 		return null;
 	}
 }

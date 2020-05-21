@@ -1,4 +1,4 @@
-package it.lucaneg.oo.analyzer.analyses.value.domains.strings.stringsuffix;
+package it.lucaneg.oo.analyzer.analyses.value.domains.strings.suffix;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
@@ -14,12 +14,12 @@ import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiabilit
  * 
  * @author Luca Negrini
  */
-public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLattice> {
+public class SuffixLattice extends AbstractStringLattice<SuffixLattice> {
 
 	/**
 	 * The unique top element
 	 */
-	private static final StringSuffixLattice TOP = new StringSuffixLattice(null) {
+	private static final SuffixLattice TOP = new SuffixLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -39,7 +39,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	/**
 	 * The unique bottom element
 	 */
-	private static final StringSuffixLattice BOTTOM = new StringSuffixLattice(null) {
+	private static final SuffixLattice BOTTOM = new SuffixLattice(null) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -66,7 +66,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	 * 
 	 * @param suffix the suffix
 	 */
-	public StringSuffixLattice(String suffix) {
+	public SuffixLattice(String suffix) {
 		this.suffix = suffix;
 	}
 
@@ -80,7 +80,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	}
 
 	@Override
-	protected StringSuffixLattice lubAux(StringSuffixLattice other) {
+	protected SuffixLattice lubAux(SuffixLattice other) {
 		if (suffix.equals(other.suffix))
 			return this;
 		
@@ -98,21 +98,21 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 				break;
 		
 		common.reverse();
-		return new StringSuffixLattice(common.toString());
+		return new SuffixLattice(common.toString());
 	}
 
 	@Override
-	protected StringSuffixLattice wideningAux(StringSuffixLattice other) {
+	protected SuffixLattice wideningAux(SuffixLattice other) {
 		return lubAux(other);
 	}
 
 	@Override
-	public StringSuffixLattice bottom() {
+	public SuffixLattice bottom() {
 		return getBottom();
 	}
 
 	@Override
-	public StringSuffixLattice top() {
+	public SuffixLattice top() {
 		return getTop();
 	}
 
@@ -121,7 +121,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	 * 
 	 * @return the bottom element
 	 */
-	public static StringSuffixLattice getBottom() {
+	public static SuffixLattice getBottom() {
 		return BOTTOM;
 	}
 
@@ -130,7 +130,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	 * 
 	 * @return the top element
 	 */
-	public static StringSuffixLattice getTop() {
+	public static SuffixLattice getTop() {
 		return TOP;
 	}
 
@@ -150,7 +150,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StringSuffixLattice other = (StringSuffixLattice) obj;
+		SuffixLattice other = (SuffixLattice) obj;
 		if (suffix == null) {
 			if (other.suffix != null)
 				return false;
@@ -165,24 +165,24 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	}
 
 	@Override
-	public StringSuffixLattice mk(String string) {
-		return new StringSuffixLattice(string);
+	public SuffixLattice mk(String string) {
+		return new SuffixLattice(string);
 	}
 
 	@Override
-	public Satisfiability contains(StringSuffixLattice other) {
+	public Satisfiability contains(SuffixLattice other) {
 		if (other.suffix.length() == 1 && suffix.contains(other.suffix))
 			return Satisfiability.SATISFIED;
 		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
-	public Satisfiability startsWith(StringSuffixLattice other) {
+	public Satisfiability startsWith(SuffixLattice other) {
 		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
-	public Satisfiability endsWith(StringSuffixLattice other) {
+	public Satisfiability endsWith(SuffixLattice other) {
 		if (!isTop() && !other.isTop() && getSuffix().endsWith(other.getSuffix()))
 			return Satisfiability.SATISFIED;
 
@@ -190,23 +190,23 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	}
 
 	@Override
-	public Satisfiability isEquals(StringSuffixLattice other) {
+	public Satisfiability isEquals(SuffixLattice other) {
 		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
-	public StringSuffixLattice concat(StringSuffixLattice other) {
+	public SuffixLattice concat(SuffixLattice other) {
 		return other;
 	}
 
 	@Override
-	public StringSuffixLattice substring(int begin, int end) {
-		return new StringSuffixLattice("");
+	public SuffixLattice substring(int begin, int end) {
+		return new SuffixLattice("");
 	}
 	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public AbstractIntegerLattice indexOf(StringSuffixLattice str, AbstractIntegerLattice singleton) {
+	public AbstractIntegerLattice indexOf(SuffixLattice str, AbstractIntegerLattice singleton) {
 		return (AbstractIntegerLattice) singleton.mk(-1).widening(singleton.mk(Integer.MAX_VALUE));
 	}
 	
@@ -217,7 +217,7 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 	}
 
 	@Override
-	public StringSuffixLattice replace(StringSuffixLattice toReplace, StringSuffixLattice str) {
+	public SuffixLattice replace(SuffixLattice toReplace, SuffixLattice str) {
 		if (isTop() || toReplace.isTop() || str.isTop())
 			return getTop();
 
@@ -228,23 +228,23 @@ public class StringSuffixLattice extends AbstractStringLattice<StringSuffixLatti
 		if (!target.contains(replace))
 			return this;
 
-		return new StringSuffixLattice(target.replace(replace, string));
+		return new SuffixLattice(target.replace(replace, string));
 	}
 
 	@Override
-	public Boolean isEqualTo(StringSuffixLattice other) {
+	public Boolean isEqualTo(SuffixLattice other) {
 		if (isTop() || other.isTop() || isBottom() || other.isBottom())
 			return null;
 		return getSuffix().equals(other.getSuffix());
 	}
 
 	@Override
-	public Boolean isLessThen(StringSuffixLattice other) {
+	public Boolean isLessThen(SuffixLattice other) {
 		return null;
 	}
 
 	@Override
-	public Boolean isGreaterThan(StringSuffixLattice other) {
+	public Boolean isGreaterThan(SuffixLattice other) {
 		return null;
 	}
 }
