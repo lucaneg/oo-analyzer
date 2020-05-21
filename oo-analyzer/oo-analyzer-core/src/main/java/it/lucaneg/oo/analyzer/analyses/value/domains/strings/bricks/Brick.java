@@ -21,7 +21,7 @@ public class Brick {
 	/**
 	 * The unique top element
 	 */
-	static final Brick TOP = new Brick(String.valueOf(Analysis.TOP_CHAR), 1, 1) {
+	static final Brick TOP = new Brick(String.valueOf(Analysis.TOP_CHAR), 0, -1) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -41,7 +41,7 @@ public class Brick {
 	/**
 	 * The unique bottom element
 	 */
-	static final Brick BOTTOM = new Brick("_|_", 1, 1) {
+	static final Brick BOTTOM = new Brick("_|_", 0, 0) {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -60,9 +60,12 @@ public class Brick {
 	
 	private final Set<String> strings;
 	private final int min;
-	private final int max; // -1 means infinity
+	/**
+	 * -1 means infinity
+	 */
+	private final int max; 
 	
-	private Brick(int min, int max) {
+	Brick(int min, int max) {
 		this.strings = new TreeSet<>();
 		this.min = min;
 		this.max = max;
@@ -90,27 +93,11 @@ public class Brick {
 		return strings;
 	}
 	
-	boolean inRelationWith(Brick other) {
+	boolean lessOrEqual(Brick other) {
 		if (this == BOTTOM || other == TOP)
 			return true;
 		
-		if (min < other.min)
-			return false;
-		
-		if (max > other.max)
-			return false;
-		
-		if (other.strings.containsAll(strings))
-			return true;
-		
-		// Extra condition: if the strings are different, but each string is contained
-		// in all of the strings of other, than other is more general than this
-		for (String s : strings)
-			for (String ss : other.strings)
-				if (!ss.contains(s))
-					return false;
-		
-		return true; 
+		return other.strings.containsAll(strings) && min >= other.min && max <= other.max;
 	}
 	
 	Brick lub(Brick other) {
@@ -141,12 +128,10 @@ public class Brick {
 			return TOP;
 		
 		int min = Math.min(this.min, other.min);
-		if (max == -1 || other.max == -1)
-			return new Brick(result, min, -1);
-		
-		int max = Math.max(this.max, other.max);
-		if (max - min > BricksLattice.K_I)
-			return new Brick(result, min, -1);
+		int max = (this.max == -1 || other.max == -1) ? -1 : Math.max(this.max, other.max);
+
+		if (max == -1 || max - min > BricksLattice.K_I)
+			return new Brick(result, 0, -1);
 		
 		return new Brick(result, min, max);
 	}
