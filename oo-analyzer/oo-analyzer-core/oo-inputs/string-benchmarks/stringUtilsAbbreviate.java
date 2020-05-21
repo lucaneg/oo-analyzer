@@ -9,7 +9,7 @@ class StringUtilsAbbreviate {
 		}
 		
 		assert (stm.endsWith("..."));
-		assert (stm.endsWith("string"));
+		assert (stm.endsWith("string")); // KO
 	}
 	
 	void doNotAbbreviate() {
@@ -21,7 +21,7 @@ class StringUtilsAbbreviate {
 			stm = stm.concat("...");
 		}
 		
-		assert (stm.endsWith("..."));
+		assert (stm.endsWith("...")); // KO
 		assert (stm.endsWith("string"));
 	}
 	
@@ -33,7 +33,7 @@ class StringUtilsAbbreviate {
 			stm = stm.concat("...");
 		}
 		
-		assert (stm.endsWith("..."));
-		assert (stm.endsWith("string"));
+		assert (stm.endsWith("...")); // KO - might
+		assert (stm.endsWith("string")); // KO - might
 	}
 }

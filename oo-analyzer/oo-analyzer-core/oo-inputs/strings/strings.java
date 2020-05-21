@@ -29,14 +29,16 @@ class Strings {
 	
 	void loopStartingAtEmpty() {
 		String result = "";
-		for (int i = 0; i < 10; i = i + 1) { 
+		int y = 0;
+		for (int i = 0; i < 10; i = i + 1) {
+			y = y + 1;
 			if (i == 3)
 				result = result.concat("foo");
 			else
 				result = result.concat("faa");
 		}
 		
-		assert (result.contains("f")); // KO
+		assert (result.contains("f")); // KO - might
 	}
 	
 	void loopStartingAtNonEmpty() {
@@ -63,14 +65,14 @@ class Strings {
 		
 		result = result.substring(2, 8);
 		assert(result.contains("ova"));
-		assert(result.contains("ri")); // KO
+		assert(result.contains("ri")); // KO - might
 		assert(result.startsWith("ova"));
-		assert(result.startsWith("ovari")); // KO
-		assert(result.startsWith("ovafa")); // KO
+		assert(result.startsWith("ovari")); // KO - might
+		assert(result.startsWith("ovafa")); // KO - might
 		
 		result = result.concat("ok");
-		assert(result.endsWith("riuok")); // KO
-		assert(result.endsWith("falok")); // KO
+		assert(result.endsWith("riuok")); // KO - might
+		assert(result.endsWith("falok")); // KO - might
 		assert(result.endsWith("ok"));
 	}
 }

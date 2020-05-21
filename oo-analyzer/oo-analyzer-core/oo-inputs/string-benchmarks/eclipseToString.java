@@ -22,7 +22,7 @@ class EclipseToString {
 		
 		assert(result.startsWith("People"));
 		assert(result.endsWith("}"));
-		assert(result.contains("age="));
-		assert(result.contains("surely not contained"));
+		assert(result.contains("age=")); // KO - might
+		assert(result.contains("surely not contained")); // // KO
 	}
 }
