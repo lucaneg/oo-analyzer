@@ -82,6 +82,12 @@ public class CLI {
 			return;
 		}
 		
+		if (!cmd.getArgList().isEmpty()) {
+			printUsage(options);
+			logger.error("Arguments are not supported: " + cmd.getArgList());
+			return;
+		}
+		
 		if (!cmd.hasOption(INPUT.getLongOpt())) {
 			printUsage(options);
 			logger.error("Skipping further processing since option --" + INPUT.getLongOpt() + " was not given");
