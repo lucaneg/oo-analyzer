@@ -207,8 +207,15 @@ public class DfaLattice extends AbstractStringLattice<DfaLattice> {
 	}
 	
 	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public AbstractIntegerLattice<?> length(AbstractIntegerLattice<?> singleton) {
-		return singleton.mk(Automaton.length(getString()));
+		int length = Automaton.length(getString());
+		if (length == -1) {
+			AbstractIntegerLattice inf = singleton.mk(Integer.MAX_VALUE);
+			AbstractIntegerLattice mk = singleton.mk(0);
+			return (AbstractIntegerLattice) mk.widening(inf);
+		}
+		return singleton.mk(length);
 	}
 
 	@Override
