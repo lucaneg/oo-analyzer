@@ -2,7 +2,6 @@ package it.lucaneg.oo.analyzer.analyses.value.domains.strings.suffix;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
-import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
 /**
@@ -19,7 +18,7 @@ public class SuffixLattice extends AbstractStringLattice<SuffixLattice> {
 	/**
 	 * The unique top element
 	 */
-	private static final SuffixLattice TOP = new SuffixLattice(null) {
+	private static final SuffixLattice TOP = new SuffixLattice("") {
 		@Override
 		public boolean equals(Object obj) {
 			return this == obj;
@@ -30,10 +29,10 @@ public class SuffixLattice extends AbstractStringLattice<SuffixLattice> {
 			return "TOP".hashCode();
 		}
 		
-		@Override
-		public String toString() {
-			return String.valueOf(Analysis.TOP_CHAR);
-		}
+//		@Override
+//		public String toString() {
+//			return String.valueOf(Analysis.TOP_CHAR);
+//		}
 	};
 
 	/**

@@ -177,7 +177,7 @@ public class CharInclusionLattice extends AbstractStringLattice<CharInclusionLat
 		if (other.getIncludedChars().size() == 1 && other.getPossiblyIncludedChars().equals(other.getIncludedChars())) 
 			if (getIncludedChars().containsAll(other.getIncludedChars()))
 				return Satisfiability.SATISFIED;
-			else if (!getPossiblyIncludedChars().containsAll(other.getIncludedChars()))
+			else if (!getPossiblyIncludedChars().containsAll(other.getIncludedChars()) && !getPossiblyIncludedChars().contains(Analysis.TOP_CHAR))
 				return Satisfiability.NOT_SATISFIED;
 
 		return Satisfiability.UNKNOWN;

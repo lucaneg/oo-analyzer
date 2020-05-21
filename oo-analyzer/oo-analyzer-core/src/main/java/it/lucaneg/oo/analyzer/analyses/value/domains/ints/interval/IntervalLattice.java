@@ -28,10 +28,10 @@ public class IntervalLattice extends AbstractIntegerLattice<IntervalLattice> {
 			return "TOP".hashCode();
 		}
 
-		@Override
-		public String toString() {
-			return "T";
-		}
+//		@Override
+//		public String toString() {
+//			return "T";
+//		}
 	};
 
 	private static final IntervalLattice BOTTOM = new IntervalLattice() {
