@@ -32,7 +32,7 @@ import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractAnalysis;
 import it.lucaneg.oo.sdk.analyzer.fixpoint.Fixpoint;
-import it.lucaneg.oo.sdk.analyzer.fixpoint.IterationBasedFixpoint;
+import it.lucaneg.oo.sdk.analyzer.fixpoint.FixpointImpl;
 import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.ILocalWrite;
@@ -240,7 +240,7 @@ public class ValueAnalysis extends AbstractAnalysis<ValueLattice, ValueEnvironme
 
 	@Override
 	protected Fixpoint<ValueLattice, ValueEnvironment> mkFixpoint(MCodeBlock code) {
-		return new IterationBasedFixpoint<>(code, WIDENING_THRESHOLD);
+		return new FixpointImpl<>(code, WIDENING_THRESHOLD);
 	}
 
 }

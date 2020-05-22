@@ -1,9 +1,11 @@
 package it.lucaneg.oo.sdk.analyzer.fixpoint;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 import it.lucaneg.logutils.EnrichedLogger;
@@ -15,15 +17,56 @@ import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.BranchingStatement;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
 
-public abstract class AbstractFixpoint<L extends Lattice<L>, E extends Environment<L,E>> extends MCodeBlock implements Fixpoint<L,E> {
+/**
+ * A fixpoint algorithm that applies widening after a given number of lub
+ * iterations.
+ * 
+ * @author Luca Negrini
+ */
+public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> extends MCodeBlock implements Fixpoint<L,E> {
 
-	private static final EnrichedLogger logger = new EnrichedLogger(AbstractFixpoint.class);
+	private static final EnrichedLogger logger = new EnrichedLogger(FixpointImpl.class);
 	
-	protected AbstractFixpoint(MCodeBlock source) {
+	/**
+	 * The threshold to reach before applying widening
+	 */
+	private final int wideningThreshold;
+	
+	private Map<Statement, AtomicInteger> remainingLubBeforeWidening;
+
+	/**
+	 * Builds the fixpoint engine.
+	 * 
+	 * @param source            the block of code to iterate over
+	 * @param wideningThreshold the threshold to reach before applying widening (0
+	 *                          means never widen)
+	 */
+	public FixpointImpl(MCodeBlock source, int wideningThreshold) {
 		super(source);
+		this.wideningThreshold = wideningThreshold;
 	}
 	
-	protected abstract void setup();
+	protected E update(E previousApprox, E newApprox, Statement current) {
+		if (previousApprox == null)
+			return newApprox;
+		else if (wideningThreshold == 0)
+			newApprox = previousApprox.join(newApprox, Lattice::lub);
+		else {
+			// we multiply by the number of predecessors since if we have more than one
+			// the threshold will be reached faster
+			int remainingLubs = remainingLubBeforeWidening
+					.computeIfAbsent(current, st -> new AtomicInteger(wideningThreshold * predecessorsOf(current).size())).getAndDecrement();
+			if (remainingLubs > 0)
+				newApprox = previousApprox.join(newApprox, Lattice::lub);
+			else
+				newApprox = previousApprox.join(newApprox, Lattice::widening);
+		}
+		return newApprox;
+	}
+	
+	protected E updateWithNarrowing(E previousApprox, E newApprox, Statement current) {
+		return previousApprox.join(newApprox, Lattice::narrowing);
+	}
 	
 	@Override
 	public final Denotation<L, E> fixpoint(E initialstate, BiFunction<Statement, E, E> semantics,
@@ -38,7 +81,7 @@ public abstract class AbstractFixpoint<L extends Lattice<L>, E extends Environme
 
 	private void loop(E initialstate, BiFunction<Statement, E, E> semantics, BiFunction<Expression, E, E> assume,
 			Denotation<L, E> result, boolean applyNarrowing) {
-		setup();
+		remainingLubBeforeWidening = new HashMap<>(getVertexCount());
 		Queue<Statement> nextInstructions = new LinkedList<>();
 		nextInstructions.add(getRootNode());
 		Map<Statement, Boolean> seen = new IdentityHashMap<>();
@@ -77,7 +120,6 @@ public abstract class AbstractFixpoint<L extends Lattice<L>, E extends Environme
 
 			if (entrystate.isUnreachable()) {
 				// this is unreachable code
-				// TODO write this better
 				newApprox = entrystate.only(current.getVariables());
 				// make sure this is unreachable
 				newApprox.makeUnreachable();
@@ -110,11 +152,5 @@ public abstract class AbstractFixpoint<L extends Lattice<L>, E extends Environme
 				result.set(current, newApprox);
 			}
 		}
-	}
-
-	protected abstract E update(E previousApprox, E newApprox, Statement current);
-	
-	protected E updateWithNarrowing(E previousApprox, E newApprox, Statement current) {
-		return update(previousApprox, newApprox, current);
 	}
 }
