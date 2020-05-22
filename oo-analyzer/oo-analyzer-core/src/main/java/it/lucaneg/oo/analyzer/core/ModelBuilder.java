@@ -38,6 +38,7 @@ import it.lucaneg.oo.sdk.analyzer.program.instructions.Command;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.FieldWrite;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.LocalAssignment;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.LocalDeclaration;
+import it.lucaneg.oo.sdk.analyzer.program.instructions.LoopStatement;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Return;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Skip;
 
@@ -247,7 +248,7 @@ public class ModelBuilder {
 			
 			MCodeBlock init = parseStatement(_for.getInitialisation(), variables);
 			
-			BranchingStatement branch = new BranchingStatement(codeMember, line, pos, variables.all(), _for.getCondition());
+			LoopStatement branch = new LoopStatement(codeMember, line, pos, variables.all(), _for.getCondition());
 			
 			MCodeBlock loopBody = parseStatement(_for.getBody(), variables);
 			loopBody.concat(parseStatement(_for.getUpdate(), variables));
@@ -264,7 +265,7 @@ public class ModelBuilder {
 			int line = _while.getLine();
 			int pos = _while.getPos();
 			
-			BranchingStatement branch = new BranchingStatement(codeMember, line, pos, variables.all(), _while.getCondition());
+			LoopStatement branch = new LoopStatement(codeMember, line, pos, variables.all(), _while.getCondition());
 
 			MCodeBlock loopBody = parseStatement(_while.getBody(), variables);
 			
