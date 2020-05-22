@@ -50,22 +50,22 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 		if (previousApprox == null)
 			return newApprox;
 		else if (wideningThreshold == 0)
-			newApprox = previousApprox.join(newApprox, Lattice::lub);
+			newApprox = newApprox.join(previousApprox, Lattice::lub);
 		else {
 			// we multiply by the number of predecessors since if we have more than one
 			// the threshold will be reached faster
 			int remainingLubs = remainingLubBeforeWidening
 					.computeIfAbsent(current, st -> new AtomicInteger(wideningThreshold * predecessorsOf(current).size())).getAndDecrement();
 			if (remainingLubs > 0)
-				newApprox = previousApprox.join(newApprox, Lattice::lub);
+				newApprox = newApprox.join(previousApprox, Lattice::lub);
 			else
-				newApprox = previousApprox.join(newApprox, Lattice::widening);
+				newApprox = newApprox.join(previousApprox, Lattice::widening);
 		}
 		return newApprox;
 	}
 	
 	protected E updateWithNarrowing(E previousApprox, E newApprox, Statement current) {
-		return previousApprox.join(newApprox, Lattice::narrowing);
+		return newApprox.join(previousApprox, Lattice::narrowing);
 	}
 	
 	@Override
