@@ -46,7 +46,7 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 		this.wideningThreshold = wideningThreshold;
 	}
 	
-	protected E update(E previousApprox, E newApprox, Statement current) {
+	protected E lubOrWidening(E previousApprox, E newApprox, Statement current) {
 		if (previousApprox == null)
 			return newApprox;
 		else if (wideningThreshold == 0)
@@ -64,7 +64,7 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 		return newApprox;
 	}
 	
-	protected E updateWithNarrowing(E previousApprox, E newApprox, Statement current) {
+	protected E narrowing(E previousApprox, E newApprox, Statement current) {
 		return newApprox.join(previousApprox, Lattice::narrowing);
 	}
 	
@@ -85,38 +85,17 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 		Queue<Statement> nextInstructions = new LinkedList<>();
 		nextInstructions.add(getRootNode());
 		Map<Statement, Boolean> seen = new IdentityHashMap<>();
+		
 		E previousApprox = null, newApprox;
 		while (nextInstructions.size() != 0) {
 			Statement current = nextInstructions.poll();
 			if (current == null)
 				throw new IllegalStateException("Unknown instruction encountered during fixpoint execution");
 
-			E entrystate = current == getRootNode() ? initialstate : null;
-			for (Statement pred : predecessorsOf(current)) {
-				E state = result.hasEnvironmentFor(pred) ? result.at(pred) : null;
-				if (state != null && pred instanceof BranchingStatement) {
-					BranchingStatement branch = (BranchingStatement) pred;
-					if (isStartOfTrueBlockFor(branch, current))
-						// beginning of the true block: filter the environment
-						state = assume.apply(branch.getCondition(), state);
-					else if (isStartOfFalseBlockFor(branch, current))
-						// beginning of the false block: negate and filter the environment
-						state = assume.apply(branch.getCondition().negate().simplify(), state);
-					else
-						throw new IllegalStateException(current + " is a follower of " + branch
-								+ " but it is neither the then nor the else block");
-				}
-
-				if (state != null)
-					if (entrystate == null)
-						entrystate = state;
-					else
-						entrystate = entrystate.join(state, Lattice::lub);
-			}
+			E entrystate = createEntryState(assume, result, current, initialstate);
 
 			if (entrystate == null)
-				throw new IllegalStateException(
-						"We should have always processed at least one entry point before queueing a statement in the worklist");
+				throw new IllegalStateException(current + " does not have an entry state");
 
 			if (entrystate.isUnreachable()) {
 				// this is unreachable code
@@ -128,17 +107,7 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 				entrystate = entrystate.only(current.getVariables());
 				
 				previousApprox = result.hasEnvironmentFor(current) ? result.at(current) : null;
-				try {
-					newApprox = semantics.apply(current, entrystate);
-				} catch (Exception e) {
-					logger.error("Exception while analyzing instruction '" + current + "' in method " + current.getContainer().toString(), e);
-					throw new RuntimeException(e);
-				}
-	
-				if (applyNarrowing) 
-					newApprox = updateWithNarrowing(previousApprox, newApprox, current);
-				else
-					newApprox = update(previousApprox, newApprox, current);
+				newApprox = semantics(semantics, applyNarrowing, previousApprox, current, entrystate);
 
 				// make sure this is reachable
 				newApprox.makeReachable();
@@ -152,5 +121,51 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 				result.set(current, newApprox);
 			}
 		}
+	}
+
+	private E semantics(BiFunction<Statement, E, E> semantics, boolean applyNarrowing, E previousApprox, Statement current, E entrystate) {
+		E newApprox;
+		
+		try {
+			newApprox = semantics.apply(current, entrystate);
+		} catch (Exception e) {
+			logger.error("Exception while analyzing instruction '" + current + "' in method " + current.getContainer().toString(), e);
+			throw new RuntimeException(e);
+		}
+
+		if (applyNarrowing) 
+			newApprox = narrowing(previousApprox, newApprox, current);
+		else
+			newApprox = lubOrWidening(previousApprox, newApprox, current);
+		
+		return newApprox;
+	}
+
+	private E createEntryState(BiFunction<Expression, E, E> assume, Denotation<L, E> result, Statement current, E initialstate) {
+		E entrystate = current == getRootNode() ? initialstate : null;
+		
+		for (Statement pred : predecessorsOf(current)) {
+			E state = result.hasEnvironmentFor(pred) ? result.at(pred) : null;
+			if (state != null && pred instanceof BranchingStatement) {
+				BranchingStatement branch = (BranchingStatement) pred;
+				if (isStartOfTrueBlockFor(branch, current))
+					// beginning of the true block: filter the environment
+					state = assume.apply(branch.getCondition(), state);
+				else if (isStartOfFalseBlockFor(branch, current))
+					// beginning of the false block: negate and filter the environment
+					state = assume.apply(branch.getCondition().negate().simplify(), state);
+				else
+					throw new IllegalStateException(current + " is a follower of " + branch
+							+ " but it is neither the then nor the else block");
+			}
+
+			if (state != null)
+				if (entrystate == null)
+					entrystate = state;
+				else
+					entrystate = entrystate.join(state, Lattice::lub);
+		}
+		
+		return entrystate;
 	}
 }
