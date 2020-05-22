@@ -15,7 +15,7 @@ import it.lucaneg.oo.sdk.analyzer.program.MFormalParameter;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 import it.lucaneg.oo.sdk.analyzer.program.Program;
 
-public abstract class AbstractAnalysis<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>> implements Analysis<L, E> {
+public abstract class AbstractAnalysis<L extends AbstractValue<L>, E extends AbstractEnvironment<L, E>> implements Analysis<L, E> {
 
 	private static final EnrichedLogger logger = new EnrichedLogger(AbstractAnalysis.class);
 

@@ -63,10 +63,10 @@ public class ValueAnalysis extends AbstractAnalysis<ValueLattice, ValueEnvironme
 		if (parameters == null || parameters.length != 3)
 			throw new SetupException("Incorrect number of parameters");
 		
-		Reflections reflections = new Reflections(SingleValueLattice.class, new SubTypesScanner());
-		Set<Class<? extends SingleValueLattice>> instances = reflections.getSubTypesOf(SingleValueLattice.class); 
+		Reflections reflections = new Reflections(SingleAbstractValue.class, new SubTypesScanner());
+		Set<Class<? extends SingleAbstractValue>> instances = reflections.getSubTypesOf(SingleAbstractValue.class); 
 		try {
-			for (Class<? extends SingleValueLattice> candidate : instances) 
+			for (Class<? extends SingleAbstractValue> candidate : instances) 
 				if (!Modifier.isAbstract(candidate.getModifiers()) && !candidate.isAnonymousClass())
 					if (candidate.getSimpleName().equals(parameters[0]))
 						booleanSingleton = (AbstractBooleanLattice<?>) candidate.getMethod("getTop").invoke(null);

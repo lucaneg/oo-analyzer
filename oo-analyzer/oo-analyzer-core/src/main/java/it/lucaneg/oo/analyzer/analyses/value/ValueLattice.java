@@ -1,10 +1,10 @@
 package it.lucaneg.oo.analyzer.analyses.value;
 
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractValue;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class ValueLattice extends AbstractLattice<ValueLattice> {
+public class ValueLattice extends AbstractValue<ValueLattice> {
 
 	private static final ValueLattice TOP = new ValueLattice() {
 		@Override
@@ -40,17 +40,17 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 		}
 	};
 
-	private final SingleValueLattice innerElement;
+	private final SingleAbstractValue innerElement;
 
 	private ValueLattice() {
 		innerElement = null;
 	}
 
-	public ValueLattice(SingleValueLattice innerElement) {
+	public ValueLattice(SingleAbstractValue innerElement) {
 		this.innerElement = innerElement;
 	}
 
-	public SingleValueLattice getInnerElement() {
+	public SingleAbstractValue getInnerElement() {
 		return innerElement;
 	}
 
@@ -87,7 +87,7 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 		if (innerElement.getClass().isAssignableFrom(other.innerElement.getClass())
 				|| other.innerElement.getClass().isAssignableFrom(innerElement.getClass()))
 			// need to use this form since top and bottom are subclasses
-			return new ValueLattice((SingleValueLattice) innerElement.lub((SingleValueLattice) other.innerElement));
+			return new ValueLattice((SingleAbstractValue) innerElement.lub((SingleAbstractValue) other.innerElement));
 		return getTop();
 	}
 
@@ -96,7 +96,7 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 		if (innerElement.getClass().isAssignableFrom(other.innerElement.getClass())
 				|| other.innerElement.getClass().isAssignableFrom(innerElement.getClass()))
 			// need to use this form since top and bottom are subclasses
-			return new ValueLattice((SingleValueLattice) innerElement.widening((SingleValueLattice) other.innerElement));
+			return new ValueLattice((SingleAbstractValue) innerElement.widening((SingleAbstractValue) other.innerElement));
 		return getTop();
 	}
 	
@@ -118,7 +118,7 @@ public class ValueLattice extends AbstractLattice<ValueLattice> {
 		if (innerElement.getClass().isAssignableFrom(other.innerElement.getClass())
 				|| other.innerElement.getClass().isAssignableFrom(innerElement.getClass()))
 			// need to use this form since top and bottom are subclasses
-			return new ValueLattice((SingleValueLattice) innerElement.narrowing((SingleValueLattice) other.innerElement));
+			return new ValueLattice((SingleAbstractValue) innerElement.narrowing((SingleAbstractValue) other.innerElement));
 		return getTop();
 	}
 

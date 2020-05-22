@@ -1,10 +1,10 @@
 package it.lucaneg.oo.analyzer.analyses.value.domains.strings;
 
-import it.lucaneg.oo.analyzer.analyses.value.SingleValueLattice;
+import it.lucaneg.oo.analyzer.analyses.value.SingleAbstractValue;
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 
-public abstract class AbstractStringLattice<L extends AbstractStringLattice<L>> extends SingleValueLattice<L> {
+public abstract class AbstractStringLattice<L extends AbstractStringLattice<L>> extends SingleAbstractValue<L> {
 
 	public abstract L mk(String string);
 	

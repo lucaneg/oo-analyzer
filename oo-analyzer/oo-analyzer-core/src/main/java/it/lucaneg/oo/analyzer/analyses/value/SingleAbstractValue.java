@@ -1,8 +1,8 @@
 package it.lucaneg.oo.analyzer.analyses.value;
 
-import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractValue;
 
-public abstract class SingleValueLattice<L extends SingleValueLattice<L>> extends AbstractLattice<L> {
+public abstract class SingleAbstractValue<L extends SingleAbstractValue<L>> extends AbstractValue<L> {
 
 	/**
 	 * Compares this lattice element with the given one, testing if they are equal.

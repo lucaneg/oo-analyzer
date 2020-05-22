@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import it.lucaneg.oo.sdk.analyzer.analyses.Environment;
 import it.lucaneg.oo.sdk.analyzer.program.MLocalVariable;
 
-public abstract class AbstractEnvironment<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>> implements Environment<L, E> {
+public abstract class AbstractEnvironment<L extends AbstractValue<L>, E extends AbstractEnvironment<L, E>> implements Environment<L, E> {
 
 	private boolean unreachable;
 	

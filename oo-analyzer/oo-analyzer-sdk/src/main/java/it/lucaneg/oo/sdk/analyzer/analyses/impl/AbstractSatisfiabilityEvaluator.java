@@ -20,7 +20,7 @@ import it.lucaneg.oo.ast.types.BooleanType;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator;
 
-public abstract class AbstractSatisfiabilityEvaluator<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>>
+public abstract class AbstractSatisfiabilityEvaluator<L extends AbstractValue<L>, E extends AbstractEnvironment<L, E>>
 		implements SatisfiabilityEvaluator<L, E> {
 
 	@Override

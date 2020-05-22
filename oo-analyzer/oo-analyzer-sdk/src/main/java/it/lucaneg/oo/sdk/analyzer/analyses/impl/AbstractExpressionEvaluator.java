@@ -27,7 +27,7 @@ import it.lucaneg.oo.ast.expression.typeCheck.Cast;
 import it.lucaneg.oo.ast.expression.typeCheck.TypeCheck;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
 
-public abstract class AbstractExpressionEvaluator<L extends AbstractLattice<L>, E extends AbstractEnvironment<L, E>> implements ExpressionEvaluator<L, E> {
+public abstract class AbstractExpressionEvaluator<L extends AbstractValue<L>, E extends AbstractEnvironment<L, E>> implements ExpressionEvaluator<L, E> {
 
 	@Override
 	public final L eval(Expression e, E env) {

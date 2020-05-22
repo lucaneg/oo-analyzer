@@ -2,7 +2,7 @@ package it.lucaneg.oo.sdk.analyzer.analyses.impl;
 
 import it.lucaneg.oo.sdk.analyzer.analyses.Lattice;
 
-public abstract class AbstractLattice<L extends AbstractLattice<L>> implements Lattice<L> {
+public abstract class AbstractValue<L extends AbstractValue<L>> implements Lattice<L> {
 
 	@Override
 	@SuppressWarnings("unchecked")

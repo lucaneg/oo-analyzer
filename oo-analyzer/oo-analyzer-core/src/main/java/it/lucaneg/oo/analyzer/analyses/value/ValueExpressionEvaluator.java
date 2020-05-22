@@ -180,7 +180,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		return new ValueLattice(rec.concat(parameter));
 	}
 
-	private ValueLattice varOrLiteral(Expression e, ValueEnvironment env, SingleValueLattice top) {
+	private ValueLattice varOrLiteral(Expression e, ValueEnvironment env, SingleAbstractValue top) {
 		ValueLattice par;
 		if (e instanceof Variable)
 			par = evalVariable((Variable) e, env);
@@ -441,7 +441,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		return new ValueLattice(booleanSingleton.getFalse());
 	}
 
-	private ValueLattice baseCases(SingleValueLattice<?> top, ValueLattice... elements) {
+	private ValueLattice baseCases(SingleAbstractValue<?> top, ValueLattice... elements) {
 		boolean bottom = false, innerTop = false;
 		for (ValueLattice el : elements)
 			if (el.isTop())

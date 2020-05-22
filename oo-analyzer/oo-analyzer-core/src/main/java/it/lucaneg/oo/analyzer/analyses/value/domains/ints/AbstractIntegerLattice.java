@@ -2,9 +2,9 @@ package it.lucaneg.oo.analyzer.analyses.value.domains.ints;
 
 import java.util.List;
 
-import it.lucaneg.oo.analyzer.analyses.value.SingleValueLattice;
+import it.lucaneg.oo.analyzer.analyses.value.SingleAbstractValue;
 
-public abstract class AbstractIntegerLattice<L extends AbstractIntegerLattice<L>> extends SingleValueLattice<L> {
+public abstract class AbstractIntegerLattice<L extends AbstractIntegerLattice<L>> extends SingleAbstractValue<L> {
 	/**
 	 * Plus operation.
 	 * 
