@@ -231,6 +231,10 @@ public class TokenList {
 		return tokens.getFirst();
 	}
 	
+	public int numberOfConditions() {
+		return (int) tokens.stream().filter(t -> t instanceof ConditionalToken).count();
+	}
+	
 	public boolean headIsGeneralLoop() {
 		return getHead() instanceof GeneralLoopToken && !((GeneralLoopToken) getHead()).isFirstIteration();
 	}

@@ -33,6 +33,10 @@ import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
 public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> extends MCodeBlock
 		implements Fixpoint<L, E> {
 
+	private static final int MAX_LOOP_ITERATIONS = 5;
+
+	private static final int MAX_CONDITIONS = 5;
+
 	private static final EnrichedLogger logger = new EnrichedLogger(FixpointImpl.class);
 
 	/**
@@ -147,9 +151,12 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 							}
 						} else 
 							nextInstructions.add(Pair.of(instr, tok));
-					} else if (st instanceof BranchingStatement)
-						nextInstructions.add(Pair.of(instr, tok.push(mkConditionalToken((BranchingStatement) st, instr))));
-					else  
+					} else if (st instanceof BranchingStatement) {
+						if (tok.numberOfConditions() < MAX_CONDITIONS)
+							nextInstructions.add(Pair.of(instr, tok.push(mkConditionalToken((BranchingStatement) st, instr))));
+						else 
+							nextInstructions.add(Pair.of(instr, tok));
+					} else  
 						nextInstructions.add(Pair.of(instr, tok));
 				}
 
@@ -168,7 +175,7 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 			return new TokenList.LoopIterationToken(st, 1);
 
 		LoopIterationToken li = (LoopIterationToken) head;
-		if (li.getIteration() < 5)
+		if (li.getIteration() < MAX_LOOP_ITERATIONS)
 			return new TokenList.LoopIterationToken(st, li.getIteration() + 1);
 		
 		return new TokenList.GeneralLoopToken(st);
@@ -235,9 +242,17 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 								: null;
 				} else 
 					state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens) : null;
-			} else if (pred instanceof BranchingStatement)
-				state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens.pop()) : null;
-			else
+			} else if (pred instanceof BranchingStatement) {
+				if (result.hasEnvironmentFor(pred)) {
+					if (tokens.numberOfConditions() < MAX_CONDITIONS)
+						state = result.at(pred).get(tokens.pop());
+					else if (result.at(pred).get(tokens.pop()) != null)
+						state = result.at(pred).get(tokens.pop());
+					else 
+						state = result.at(pred).get(tokens);
+				} else 
+					state = null;
+			}else
 				state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens) : null;
 
 			if (state != null && pred instanceof BranchingStatement) {
