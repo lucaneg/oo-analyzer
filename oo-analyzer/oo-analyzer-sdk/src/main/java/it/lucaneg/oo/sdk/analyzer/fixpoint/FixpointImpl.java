@@ -88,7 +88,7 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 		Denotation<L, E> result = new Denotation<>(getVertexCount());
 
 		loop(initialstate, semantics, assume, result, false);
-		loop(initialstate, semantics, assume, result, true);
+		//loop(initialstate, semantics, assume, result, true);
 
 		return result;
 	}
