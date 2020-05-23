@@ -1,7 +1,7 @@
 class StringUtilsCountMatches {
 	
 	int countMatchesWithEquals() {
-		String str = "the match";//"this is a search string that we use to test the matches count";
+		String str = "this is a search string that we use to test the matches count";
 		String sub = "th";
         int count = 0;
         int len = sub.length();
@@ -18,7 +18,7 @@ class StringUtilsCountMatches {
     }
 	
 	int countMatchesWithContains(String sub, boolean b) {
-		String str = "the match";//"this is a search string that we use to test the matches count";
+		String str = "this is a search string that we use to test the matches count";
 		String sub = "th";
         int count = 0;
         int len = sub.length(); // the match
