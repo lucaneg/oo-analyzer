@@ -16,8 +16,8 @@ public abstract class NumericalComparisonExpression extends ComparisonBinaryExpr
 
 	@Override
 	public Type computeExpressionTypeInternal(CheckerHelper helper) throws TypeCheckException {
-		Type leftType = getLeft().computeExpressionTypeInternal(helper);
-		Type rightType = getRight().computeExpressionTypeInternal(helper);
+		Type leftType = getLeft().computeExpressionType(helper);
+		Type rightType = getRight().computeExpressionType(helper);
 
 		if ((leftType != IntType.INSTANCE && leftType != FloatType.INSTANCE	) ||
 				(rightType != IntType.INSTANCE && rightType != FloatType.INSTANCE))

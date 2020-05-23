@@ -33,7 +33,7 @@ public class ArrayAccess extends Expression implements Argument, Assignable {
 
 	@Override
 	public Type computeExpressionTypeInternal(CheckerHelper helper) throws TypeCheckException {
-		Type arrayType = array.computeExpressionTypeInternal(helper);
+		Type arrayType = array.computeExpressionType(helper);
 
 		for (Index index : indexes)
 			index.asExpression().mustBeInt(helper);
