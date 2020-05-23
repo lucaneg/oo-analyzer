@@ -234,6 +234,14 @@ public class TokenList {
 	public boolean headIsGeneralLoop() {
 		return getHead() instanceof GeneralLoopToken && !((GeneralLoopToken) getHead()).isFirstIteration();
 	}
+	
+	public Token lastLoopToken() {
+		for (Token tok : tokens)
+			if (tok instanceof GeneralLoopToken || tok instanceof LoopIterationToken)
+				return tok;
+		
+		return null;
+	}
 
 	@Override
 	public int hashCode() {

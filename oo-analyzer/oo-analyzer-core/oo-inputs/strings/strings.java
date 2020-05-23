@@ -24,7 +24,7 @@ class Strings {
 			result = result.concat(init);
 		}
 		
-		assert (result.contains("f")); // KO
+		assert (result.contains("f")); // KO - might
 	}
 	
 	void loopStartingAtEmpty() {

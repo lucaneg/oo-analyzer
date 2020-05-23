@@ -17,6 +17,7 @@ import it.lucaneg.oo.sdk.analyzer.analyses.Lattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.TokenList;
 import it.lucaneg.oo.sdk.analyzer.analyses.TokenList.GeneralLoopToken;
 import it.lucaneg.oo.sdk.analyzer.analyses.TokenList.LoopIterationToken;
+import it.lucaneg.oo.sdk.analyzer.analyses.TokenList.StartingToken;
 import it.lucaneg.oo.sdk.analyzer.analyses.TokenList.Token;
 import it.lucaneg.oo.sdk.analyzer.program.MCodeBlock;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.BranchingStatement;
@@ -131,15 +132,20 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 					if (tok.headIsGeneralLoop() && isPartOfLoop((LoopStatement) ((GeneralLoopToken) tok.getHead()).getStatement(), instr))
 						nextInstructions.add(Pair.of(instr, tok));
 					else if (st instanceof LoopStatement) {
-						if (isPartOfLoop((LoopStatement) st, instr))
+						if (isPartOfLoop((LoopStatement) st, instr)) {
 							if (tok.getHead() instanceof GeneralLoopToken) {
 								((GeneralLoopToken) tok.getHead()).iterate();
 								nextInstructions.add(Pair.of(instr, tok));
 							} else if (tok.getHead() instanceof LoopIterationToken)
 								nextInstructions.add(Pair.of(instr, tok.pop().push(mkLoopIterationToken((LoopStatement) st, tok.getHead()))));
-							else
-								nextInstructions.add(Pair.of(instr, tok.push(mkLoopIterationToken((LoopStatement) st, tok.getHead()))));
-						else 
+							else {
+								Token lastLoop = tok.lastLoopToken();
+								if (lastLoop == null || lastLoop.getStatement() != st)
+									nextInstructions.add(Pair.of(instr, tok.push(mkLoopIterationToken((LoopStatement) st, tok.getHead()))));
+								else 
+									nextInstructions.add(Pair.of(instr, tok.push(mkLoopIterationToken((LoopStatement) st, lastLoop))));
+							}
+						} else 
 							nextInstructions.add(Pair.of(instr, tok));
 					} else if (st instanceof BranchingStatement)
 						nextInstructions.add(Pair.of(instr, tok.push(mkConditionalToken((BranchingStatement) st, instr))));
@@ -153,6 +159,11 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 	}
 
 	private Token mkLoopIterationToken(LoopStatement st, Token head) {
+		if (head instanceof GeneralLoopToken) {
+			((GeneralLoopToken) head).iterate();
+			return head;
+		}
+
 		if (!(head instanceof LoopIterationToken))
 			return new TokenList.LoopIterationToken(st, 1);
 
@@ -194,12 +205,19 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 		
 		for (Statement pred : predecessorsOf(st)) {
 			E state;
-			if (tokens.getHead() instanceof GeneralLoopToken
-					&& !((GeneralLoopToken) tokens.getHead()).isFirstIteration())
-				state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens) : null;
-			else if (pred instanceof LoopStatement) {
-				if (isPartOfLoop((LoopStatement) pred, st))
-					if (tokens.getHead() instanceof LoopIterationToken)
+			if (tokens.getHead() instanceof GeneralLoopToken && !((GeneralLoopToken) tokens.getHead()).isFirstIteration()) {
+				if (result.hasEnvironmentFor(pred)) {
+					if (result.at(pred).get(tokens) != null)
+						state = result.at(pred).get(tokens);
+					else
+						state = result.at(pred).get(tokens.pop());
+				} else 
+					state = null;
+			} else if (pred instanceof LoopStatement) {
+				if (isPartOfLoop((LoopStatement) pred, st)) {
+					if (!(tokens.pop().getHead() instanceof StartingToken) && isPartOfLoop((LoopStatement) pred, tokens.pop().getHead().getStatement()))
+						state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens.pop()) : null;
+					else if (tokens.getHead() instanceof LoopIterationToken)
 						if (((LoopIterationToken) tokens.getHead()).getIteration() == 1)
 							state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens.pop()) : null;
 						else
@@ -215,7 +233,7 @@ public class FixpointImpl<L extends Lattice<L>, E extends Environment<L, E>> ext
 						state = result.hasEnvironmentFor(pred)
 								? result.at(pred).get(tokens.pop().push(new LoopIterationToken((LoopStatement) pred, 5)))
 								: null;
-				else 
+				} else 
 					state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens) : null;
 			} else if (pred instanceof BranchingStatement)
 				state = result.hasEnvironmentFor(pred) ? result.at(pred).get(tokens.pop()) : null;

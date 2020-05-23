@@ -359,7 +359,7 @@ public class IntervalLattice extends AbstractIntegerLattice<IntervalLattice> {
 	public Boolean isEqualTo(IntervalLattice other) {
 		if (isTop() || other.isTop() || isBottom() || other.isBottom())
 			return null;
-		if (other.inRelationWith(this) || inRelationWith(other))
+		if (!equals(other) && (other.inRelationWith(this) || inRelationWith(other)))
 			// one contains the other
 			return null;
 		return equals(other);
