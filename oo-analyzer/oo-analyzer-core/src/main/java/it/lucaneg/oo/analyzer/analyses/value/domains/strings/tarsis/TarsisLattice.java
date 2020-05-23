@@ -4,6 +4,7 @@ import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
+import it.unive.automata.Automata;
 import it.unive.strings.AutomatonString;
 import it.unive.strings.AutomatonString.Interval;
 
@@ -96,6 +97,13 @@ public class TarsisLattice extends AbstractStringLattice<TarsisLattice> {
 
 	private TarsisLattice decide(TarsisLattice other) {
 		int MAX = 10;
+
+		if (other.string.size() <= MAX && Automata.isContained(string.getAutomaton(), other.string.getAutomaton()))
+			return other;
+		
+		if (string.size() <= MAX && Automata.isContained(other.string.getAutomaton(), string.getAutomaton()))
+			return this;
+		
 		if (string.size() > MAX || other.string.size() > MAX)
 			return new TarsisLattice(string.widen(other.string));
 		else
