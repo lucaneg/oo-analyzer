@@ -1,9 +1,11 @@
 package it.lucaneg.oo.sdk.analyzer.program;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import it.lucaneg.oo.sdk.analyzer.datastructures.Graph;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.BranchingStatement;
+import it.lucaneg.oo.sdk.analyzer.program.instructions.LoopStatement;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Return;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Skip;
 import it.lucaneg.oo.sdk.analyzer.program.instructions.Statement;
@@ -227,6 +230,29 @@ public class MCodeBlock extends Graph<Statement> {
 	 */
 	protected boolean isStartOfFalseBlockFor(BranchingStatement st, Statement follower) {
 		return branches.containsKey(st) && branches.get(st).getRight() == follower;
+	}
+	
+	protected boolean isPartOfLoop(LoopStatement st, Statement instr) {
+		if (!branches.containsKey(st))
+			return false;
+		
+		Stack<Statement> worklist = new Stack<>();
+		Set<Statement> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+		seen.add(st);// avoid re-evaluating the loop guard
+		worklist.add(branches.get(st).getLeft());
+		
+		while (!worklist.isEmpty()) {
+			Statement current = worklist.pop();
+			if (!seen.add(current))
+				continue;
+			
+			if (current == instr)
+				return true;
+			
+			followersOf(current).forEach(worklist::push);
+		}
+		
+		return false;
 	}
 
 	@Override

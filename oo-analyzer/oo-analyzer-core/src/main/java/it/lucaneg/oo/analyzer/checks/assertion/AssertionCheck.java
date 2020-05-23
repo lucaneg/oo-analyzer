@@ -39,7 +39,10 @@ public class AssertionCheck extends AbstractCheck {
 	private void check(MCodeMember codeMember, Assert ass) {
 		SortedSet<String> failing = new TreeSet<>();
 		SortedSet<String> possiblyFailing = new TreeSet<>();
-		ValueEnvironment eval = values.of(codeMember).at(ass);
+		if (!values.of(codeMember).hasEnvironmentFor(ass))
+			// unreachable
+			return;
+		ValueEnvironment eval = values.of(codeMember).lubAt(ass);
 		Satisfiability result = values.getSatisfiabilityEvaluator().satisfies(ass.getAssertion(), eval, values.getExpressionEvaluator());
 		if (result == NOT_SATISFIED)
 			failing.add(values.getName());

@@ -16,10 +16,10 @@ public final class Denotation<L extends Lattice<L>, E extends Environment<L, E>>
 	/**
 	 * The map between statements and their approximations
 	 */
-	private final Map<Statement, E> environments;
+	private final Map<Statement, Map<TokenList, E>> environments;
 
 	/**
-	 * Builds an emptu denotation
+	 * Builds an empty denotation
 	 */
 	public Denotation() {
 		environments = new HashMap<>();
@@ -45,9 +45,24 @@ public final class Denotation<L extends Lattice<L>, E extends Environment<L, E>>
 	 * @throws IllegalArgumentException if the statement is not (yet) part of this
 	 *                                  denotation
 	 */
-	public E at(Statement st) {
+	public Map<TokenList, E> at(Statement st) {
 		if (hasEnvironmentFor(st))
 			return environments.get(st);
+
+		throw new IllegalArgumentException("No denotation found for " + st);
+	}
+	
+	public E lubAt(Statement st) {
+		if (hasEnvironmentFor(st)) {
+			Map<TokenList, E> map = environments.get(st);
+			E result = null;
+			for (E env : map.values())
+				if (result == null)
+					result = env;
+				else 
+					result = result.join(env, Lattice::lub);
+			return result;
+		}
 
 		throw new IllegalArgumentException("No denotation found for " + st);
 	}
@@ -58,8 +73,8 @@ public final class Denotation<L extends Lattice<L>, E extends Environment<L, E>>
 	 * @param st  the statement
 	 * @param env the approximation of the statement
 	 */
-	public void set(Statement st, E env) {
-		environments.put(st, env);
+	public void set(Statement st, TokenList tokens, E env) {
+		environments.computeIfAbsent(st, s -> new HashMap<>()).put(tokens, env);
 	}
 
 	/**
