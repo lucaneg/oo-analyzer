@@ -1,9 +1,12 @@
 package it.lucaneg.oo.analyzer.analyses.value.domains.strings.dfa;
 
+import java.util.HashSet;
+
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
 import it.lucaneg.oo.analyzer.analyses.value.domains.strings.AbstractStringLattice;
 import it.lucaneg.oo.sdk.analyzer.analyses.SatisfiabilityEvaluator.Satisfiability;
 import it.univr.fsm.machine.Automaton;
+import it.univr.fsm.machine.State;
 
 /**
  * A lattice for string elements represented through dfa
@@ -136,7 +139,10 @@ public class DfaLattice extends AbstractStringLattice<DfaLattice> {
 
 	@Override
 	public String toString() {
-		return string.toString();
+		string.minimize();
+		if (string.isSingleString())
+			return string.getSingleString();
+		return string.automatonPrint();
 	}
 
 	@Override
@@ -203,7 +209,90 @@ public class DfaLattice extends AbstractStringLattice<DfaLattice> {
 	
 	@Override
 	public AbstractIntegerLattice<?> indexOf(DfaLattice str, AbstractIntegerLattice<?> singleton) {
-		return singleton.mk(Automaton.indexOf(getString(), str.getString()));
+		return indexOf(singleton, str.string);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private AbstractIntegerLattice<?> mkInterval(AbstractIntegerLattice<?> singleton, Integer low, Integer high) {
+		AbstractIntegerLattice base = singleton.mk(low);
+		if (high == null)
+			return (AbstractIntegerLattice) base.widening(singleton.mk(Integer.MAX_VALUE));
+		else
+			return (AbstractIntegerLattice) base.lub(singleton.mk(high));
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public AbstractIntegerLattice<?> indexOf(AbstractIntegerLattice<?> singleton, Automaton search) {
+		if (string.hasCycle())
+			return mkInterval(singleton, -1, null);
+
+		if (string.isSingleString() && search.isSingleString()) {
+			String first = string.getSingleString();
+			String second = search.getSingleString();
+
+			if (first.contains(second)) {
+				int i = first.indexOf(second);
+				return mkInterval(singleton, i, i);
+			} else {
+				return mkInterval(singleton, -1, -1);
+			}
+
+		} else if (!string.hasCycle() && !search.hasCycle()) {
+			HashSet<String> first = string.getLanguage();
+			HashSet<String> second = search.getLanguage();
+
+			AbstractIntegerLattice result = null;
+			for (String f1 : first) {
+				for (String f2 : second) {
+					AbstractIntegerLattice partial;
+
+					if (f1.contains(f2)) {
+						int i = f1.indexOf(f2);
+						partial = mkInterval(singleton, i, i);
+					} else {
+						partial = mkInterval(singleton, -1, -1);
+					}
+					result = result == null ? partial : (AbstractIntegerLattice) partial.lub(result);
+				}
+			}
+
+			return result;
+		}
+
+		Automaton build = string.isSingleString() ? Automaton.makeRealAutomaton(string.getSingleString())
+				: string.clone();
+		Automaton search_clone = search.isSingleString() ? Automaton.makeRealAutomaton(search.getSingleString())
+				: search.clone();
+
+		Automaton original = string.isSingleString() ? Automaton.makeRealAutomaton(string.getSingleString())
+				: string.clone();
+
+		HashSet<Integer> indexesOf = new HashSet<>();
+
+		for (State s : build.getStates()) {
+			if (s.isInitialState())
+				s.setInitialState(false);
+			s.setFinalState(true);
+		}
+
+		for (State q : build.getStates()) {
+			q.setInitialState(true);
+
+			if (!Automaton.isEmptyLanguageAccepted(Automaton.intersection(build, search_clone)))
+				indexesOf.add(original.maximumDijkstra(q).size() - 1);
+
+			q.setInitialState(false);
+		}
+
+		// No state in the automaton can read search
+		if (indexesOf.isEmpty())
+			return mkInterval(singleton, -1, -1);
+		else if (search_clone.recognizesExactlyOneString() && original.recognizesExactlyOneString())
+			return mkInterval(singleton, indexesOf.stream().mapToInt(i -> i).min().getAsInt(),
+					indexesOf.stream().mapToInt(i -> i).max().getAsInt());
+		else
+			return mkInterval(singleton, -1, indexesOf.stream().mapToInt(i -> i).max().getAsInt());
+
 	}
 	
 	@Override
