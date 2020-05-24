@@ -28,6 +28,7 @@ import it.lucaneg.oo.ast.expression.literal.TrueLiteral;
 import it.lucaneg.oo.ast.expression.logical.And;
 import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.ast.expression.logical.Or;
+import it.lucaneg.oo.ast.expression.string.StringJoin;
 import it.lucaneg.oo.ast.types.IntType;
 import it.lucaneg.oo.ast.types.Type;
 import it.lucaneg.oo.sdk.analyzer.analyses.impl.AbstractExpressionEvaluator;
@@ -196,7 +197,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 	protected ValueLattice evalMinus(Minus minus, ValueEnvironment env) {
 		ValueLattice expr = eval(minus.getExpression(), env);
 		
-		ValueLattice result = baseCases(intSingleton.top(), expr);
+		ValueLattice result = baseCases(intSingleton.top(), false, expr);
 		if (result != null)
 			return result;
 
@@ -208,7 +209,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 	protected ValueLattice evalNot(Not not, ValueEnvironment env) {
 		ValueLattice inner = eval(not.getExpression(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), inner);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, inner);
 		if (result != null)
 			return result;
 
@@ -230,11 +231,25 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 	}
 
 	@Override
+	protected ValueLattice evalStringJoin(StringJoin join, ValueEnvironment env) {
+		ValueLattice left = eval(join.getLeft(), env);
+		ValueLattice right = eval(join.getRight(), env); 
+		
+		ValueLattice result = baseCases(stringSingleton.top(), true, left, right);
+		if (result != null)
+			return result;
+		
+		AbstractStringLattice lapprox = (AbstractStringLattice) left.getInnerElement();
+		AbstractStringLattice rapprox = (AbstractStringLattice) right.getInnerElement();
+		return new ValueLattice(lapprox.concat(rapprox));
+	}
+	
+	@Override
 	protected ValueLattice evalAddition(Addition add, ValueEnvironment env) {
 		ValueLattice left = eval(add.getLeft(), env);
 		ValueLattice right = eval(add.getRight(), env);
 		
-		ValueLattice result = baseCases(intSingleton.top(), left, right);
+		ValueLattice result = baseCases(intSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 		
@@ -248,7 +263,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(div.getLeft(), env);
 		ValueLattice right = eval(div.getRight(), env);
 		
-		ValueLattice result = baseCases(intSingleton.top(), left, right);
+		ValueLattice result = baseCases(intSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 		
@@ -263,7 +278,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(mod.getLeft(), env);
 		ValueLattice right = eval(mod.getRight(), env);
 		
-		ValueLattice result = baseCases(intSingleton.top(), left, right);
+		ValueLattice result = baseCases(intSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 		
@@ -278,7 +293,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(mul.getLeft(), env);
 		ValueLattice right = eval(mul.getRight(), env);
 		
-		ValueLattice result = baseCases(intSingleton.top(), left, right);
+		ValueLattice result = baseCases(intSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 		
@@ -292,7 +307,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(sub.getLeft(), env);
 		ValueLattice right = eval(sub.getRight(), env);
 		
-		ValueLattice result = baseCases(intSingleton.top(), left, right);
+		ValueLattice result = baseCases(intSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 		
@@ -306,7 +321,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(and.getLeft(), env);
 		ValueLattice right = eval(and.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), true, left, right);
 		if (result != null)
 			return result;
 
@@ -314,6 +329,10 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 				|| right.getInnerElement() == booleanSingleton.getFalse())
 			return new ValueLattice(booleanSingleton.getFalse());
 
+		if (left.getInnerElement() == booleanSingleton.top()
+				|| right.getInnerElement() == booleanSingleton.top())
+			return new ValueLattice(booleanSingleton.top());
+		
 		return new ValueLattice(booleanSingleton.getTrue());
 	}
 
@@ -322,15 +341,19 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(or.getLeft(), env);
 		ValueLattice right = eval(or.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), true, left, right);
 		if (result != null)
 			return result;
 
-		if (left.getInnerElement() == booleanSingleton.getFalse()
-				&& right.getInnerElement() == booleanSingleton.getFalse())
-			return new ValueLattice(booleanSingleton.getFalse());
+		if (left.getInnerElement() == booleanSingleton.getTrue()
+				|| right.getInnerElement() == booleanSingleton.getTrue())
+			return new ValueLattice(booleanSingleton.getTrue());
 
-		return new ValueLattice(booleanSingleton.getTrue());
+		if (left.getInnerElement() == booleanSingleton.top()
+				|| right.getInnerElement() == booleanSingleton.top())
+			return new ValueLattice(booleanSingleton.top());
+		
+		return new ValueLattice(booleanSingleton.getFalse());
 	}
 
 	@Override
@@ -338,7 +361,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(eq.getLeft(), env);
 		ValueLattice right = eval(eq.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 
@@ -356,7 +379,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(ne.getLeft(), env);
 		ValueLattice right = eval(ne.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 
@@ -374,7 +397,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(gt.getLeft(), env);
 		ValueLattice right = eval(gt.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 
@@ -392,7 +415,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(ge.getLeft(), env);
 		ValueLattice right = eval(ge.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 
@@ -410,7 +433,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(lt.getLeft(), env);
 		ValueLattice right = eval(lt.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 
@@ -428,7 +451,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		ValueLattice left = eval(le.getLeft(), env);
 		ValueLattice right = eval(le.getRight(), env);
 
-		ValueLattice result = baseCases(booleanSingleton.top(), left, right);
+		ValueLattice result = baseCases(booleanSingleton.top(), false, left, right);
 		if (result != null)
 			return result;
 
@@ -441,7 +464,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		return new ValueLattice(booleanSingleton.getFalse());
 	}
 
-	private ValueLattice baseCases(SingleAbstractValue<?> top, ValueLattice... elements) {
+	private ValueLattice baseCases(SingleAbstractValue<?> top, boolean allowTop, ValueLattice... elements) {
 		boolean bottom = false, innerTop = false;
 		for (ValueLattice el : elements)
 			if (el.isTop())
@@ -456,7 +479,7 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 		if (bottom)
 			return ValueLattice.getBottom();
 
-		if (innerTop)
+		if (innerTop && !allowTop)
 			return new ValueLattice(top);
 
 		return null;

@@ -13,7 +13,7 @@ public class Assignment extends Statement {
 
     private final Assignable target;
 
-    private final Expression expression;
+    private Expression expression;
 
 	public Assignment(String source, int line, int pos, Assignable target, Expression expression) {
 		super(source, line, pos);
@@ -40,5 +40,11 @@ public class Assignment extends Statement {
 	@Override
 	public boolean allPathsEndWithReturn() {
 		return false;
+	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
+		return helper;
 	}
 }

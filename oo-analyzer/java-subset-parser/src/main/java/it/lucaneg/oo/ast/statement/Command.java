@@ -32,4 +32,10 @@ public class Command extends Statement {
 	public boolean allPathsEndWithReturn() throws TypeCheckException {
 		return false;
 	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
+		return helper;
+	}
 }

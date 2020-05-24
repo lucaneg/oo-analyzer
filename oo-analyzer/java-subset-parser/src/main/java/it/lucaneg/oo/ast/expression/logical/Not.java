@@ -12,7 +12,7 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class Not extends Expression {
 
-	private final Expression expression;
+	private Expression expression;
 	
 	public Not(String source, int line, int pos, Expression expression) {
 		super(source, line, pos);
@@ -33,6 +33,12 @@ public class Not extends Expression {
 	public Expression simplify() {
 		if (expression instanceof Not)
 			return ((Not) expression).getExpression();
+		return this;
+	}
+
+	@Override
+	public Expression transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
 		return this;
 	}
 }

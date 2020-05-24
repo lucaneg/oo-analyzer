@@ -163,7 +163,7 @@ public class TypeChecker {
 
 		// the main method is the only static method, where there is no this variable
 //		if (code instanceof MethodDefinition && !((MethodDefinition) code).isMain())
-//			helper = helper.putVar("this", ClassType.get(clazz.getName()));
+//			helper = helper.putVar("this", ClassType.get(clazz.getName())); TODO
 
 		// we enrich the type-checker with the formal parameters
 		if (code.getFormals() != null)
@@ -175,6 +175,8 @@ public class TypeChecker {
 			code.getCode().typeCheck(helper);
 			// we check that there is no dead-code in the body of the method
 			code.getCode().allPathsEndWithReturn();
+			// we transform additions of string elements into string join expressions
+			code.getCode().transformStringJoins(helper);
 		} catch (TypeCheckException e) {
 			return new TypeCheckException(errorPrefix + "type check failed", e);
 		}

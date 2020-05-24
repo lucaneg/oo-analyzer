@@ -4,12 +4,12 @@ class Arrays {
 		
 		for (int i = 0; i < this.length(names); i = i + 1) {
 			String name = names[i];
-			result = result.concat(name);
+			result = result + name;
 			
 			if (i != this.length(names) - 1)
-				result = result.concat(",");
+				result = result + ",";
 		}
-		result = result.concat("}");
+		result = result + "}";
 		
 		assert(result.contains("People"));
 		assert(result.contains("}"));

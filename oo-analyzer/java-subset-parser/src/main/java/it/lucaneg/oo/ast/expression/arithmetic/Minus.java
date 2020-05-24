@@ -13,7 +13,7 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class Minus extends Expression {
 
-	private final Expression expression;
+	private Expression expression;
 	
 	public Minus(String source, int line, int pos, Expression expression) {
 		super(source, line, pos);
@@ -37,5 +37,11 @@ public class Minus extends Expression {
 			typeCheckError("integer or float expected");
 
 		return type;
+	}
+
+	@Override
+	public Expression transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
+		return this;
 	}
 }

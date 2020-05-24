@@ -12,7 +12,7 @@ public class For extends Statement {
 
     private final Statement initialisation;
 
-    private final Expression condition;
+    private Expression condition;
 
     private final Assignment update;
 
@@ -56,4 +56,13 @@ public class For extends Statement {
 
     	return false;
     }
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		condition = condition.transformStringJoins(helper);
+		helper = initialisation.transformStringJoins(helper);
+		helper = body.transformStringJoins(helper);
+		helper = update.transformStringJoins(helper);
+		return helper;
+	}
 }

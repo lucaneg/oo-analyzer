@@ -13,7 +13,7 @@ public class Cast extends Expression {
 
     private final Type type;
 
-    private final Expression expression;
+    private Expression expression;
     
     public Cast(String source, int line, int pos, Type type, Expression expression) {
     	super(source, line, pos);
@@ -37,5 +37,11 @@ public class Cast extends Expression {
     		typeCheckError(fromType + " cannot be cast into " + type);
 
     	return type;
+	}
+
+	@Override
+	public Expression transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
+		return this;
 	}
 }

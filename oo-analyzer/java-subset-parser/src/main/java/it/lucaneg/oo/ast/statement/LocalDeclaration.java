@@ -15,7 +15,7 @@ public class LocalDeclaration extends Statement {
 	
 	private final String name;
 	
-	private final Expression initialization;
+	private Expression initialization;
 	
 	public LocalDeclaration(String source, int line, int pos, Type type, String name, Expression initialization) {
 		super(source, line, pos);
@@ -44,5 +44,11 @@ public class LocalDeclaration extends Statement {
 	@Override
 	public boolean allPathsEndWithReturn() throws TypeCheckException {
 		return false;
+	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		initialization = initialization.transformStringJoins(helper);
+		return helper;
 	}
 }

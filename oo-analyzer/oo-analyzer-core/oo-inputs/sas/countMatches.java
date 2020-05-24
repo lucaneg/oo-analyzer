@@ -5,7 +5,7 @@ class CountMatches {
 		if (nondet) 
 			str = "this is the thing";
 		else 
-			str = "the thing";
+			str = "the throat";
 		String sub = "th";
         int count = 0;
         int len = sub.length(); 

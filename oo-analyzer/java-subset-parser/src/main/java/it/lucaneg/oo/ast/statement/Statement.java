@@ -14,5 +14,7 @@ public abstract class Statement extends SyntaxNode {
 
 	public abstract boolean allPathsEndWithReturn() throws TypeCheckException;
 	
-	public abstract CheckerHelper typeCheck(CheckerHelper helper) throws TypeCheckException; 
+	public abstract CheckerHelper typeCheck(CheckerHelper helper) throws TypeCheckException;
+
+	protected abstract CheckerHelper transformStringJoins(CheckerHelper helper); 
 }

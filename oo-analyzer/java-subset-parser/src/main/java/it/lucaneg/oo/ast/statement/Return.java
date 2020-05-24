@@ -46,4 +46,10 @@ public class Return extends Statement {
 	public boolean allPathsEndWithReturn() throws TypeCheckException {
 		return true;
 	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		returned = returned == null ? null : returned.transformStringJoins(helper);
+		return helper;
+	}
 }

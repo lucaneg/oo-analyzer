@@ -30,6 +30,11 @@ public abstract class Expression extends SyntaxNode {
 			typeCheckError("integer expected");
 	}
 	
+	public void mustBeString(CheckerHelper checker) throws TypeCheckException {
+		if (computeExpressionType(checker) != Type.getStringType())
+			typeCheckError("string expected");
+	}
+	
 	public Type computeExpressionType(CheckerHelper helper) throws TypeCheckException { 
 		return staticType == null ? staticType = computeExpressionTypeInternal(helper) : staticType;
 	}
@@ -47,5 +52,9 @@ public abstract class Expression extends SyntaxNode {
 		Not not = new Not(getSource(), getLine(), getPos(), this);
 		not.cloneStaticType(this);
 		return not;
+	}
+
+	public Expression transformStringJoins(CheckerHelper helper) {
+		return this;
 	}
 }

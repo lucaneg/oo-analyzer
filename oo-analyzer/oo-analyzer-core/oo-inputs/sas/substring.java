@@ -2,9 +2,9 @@ class Substring {
 	void substring(boolean nondet) {
 		String result = "substring test";
 		if (nondet)
-			result = result.concat(" passed");
+			result = result + " passed";
 		else
-			result = result.concat(" failed");
+			result = result + " failed";
 		
 		result = result.substring(5, 18);
 		assert (result.contains("g"));

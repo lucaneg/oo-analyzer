@@ -50,5 +50,11 @@ public class AnalysisDumper {
 			return "unreachable code";
 
 		return sorted.get().toString();
+//		if (!denotation.hasEnvironmentFor(st))
+//			return "unreahcable code";
+//		List<?> sorted = denotation.at(st).entrySet().stream()
+//				.sorted((e1, e2) -> e1.getKey().toString().compareTo(e2.getKey().toString()))
+//				.collect(Collectors.toList());
+//		return StringUtils.join(sorted, "\n");
 	}
 }

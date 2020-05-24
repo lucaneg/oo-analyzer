@@ -10,7 +10,7 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class Assert extends Statement {
 
-	private final Expression expression;
+	private Expression expression;
 
 	public Assert(String source, int line, int pos, Expression expression) {
 		super(source, line, pos);
@@ -32,5 +32,11 @@ public class Assert extends Statement {
 	@Override
 	public boolean allPathsEndWithReturn() {
 		return false;
+	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
+		return helper;
 	}
 }

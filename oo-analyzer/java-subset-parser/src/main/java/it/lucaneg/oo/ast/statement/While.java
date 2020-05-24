@@ -10,7 +10,7 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class While extends Statement {
 
-	private final Expression condition;
+	private Expression condition;
 
 	private final Statement body;
 
@@ -36,5 +36,12 @@ public class While extends Statement {
 	public boolean allPathsEndWithReturn() throws TypeCheckException {
 		body.allPathsEndWithReturn();
 		return false;
+	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		condition = condition.transformStringJoins(helper);
+		helper = body.transformStringJoins(helper);
+		return helper;
 	}
 }

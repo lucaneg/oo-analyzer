@@ -10,7 +10,7 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class If extends Statement {
 
-	private final Expression condition;
+	private Expression condition;
 
 	private final Statement then;
 
@@ -43,5 +43,13 @@ public class If extends Statement {
 	@Override
 	public boolean allPathsEndWithReturn() throws TypeCheckException {
 		return then.allPathsEndWithReturn() & _else.allPathsEndWithReturn();
+	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		condition = condition.transformStringJoins(helper);
+		helper = then.transformStringJoins(helper);
+		helper = _else.transformStringJoins(helper);
+		return helper;
 	}
 }

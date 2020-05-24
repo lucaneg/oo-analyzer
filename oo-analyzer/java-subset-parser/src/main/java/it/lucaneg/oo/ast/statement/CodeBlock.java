@@ -44,4 +44,12 @@ public class CodeBlock extends Statement {
 		
 		return last;
 	}
+	
+	public CheckerHelper transformStringJoins(CheckerHelper helper) {
+		CheckerHelper last = helper;
+		for (Statement st : statements)
+			last = st.transformStringJoins(last);
+		
+		return last;
+	}
 }

@@ -14,7 +14,7 @@ public class TypeCheck extends Expression {
 
     private final Type type;
 
-    private final Expression expression;
+    private Expression expression;
     
     public TypeCheck(String source, int line, int pos, Type type, Expression expression) {
     	super(source, line, pos);
@@ -38,5 +38,11 @@ public class TypeCheck extends Expression {
     		typeCheckError(target + " can never be a " + type);
 
 		return BooleanType.INSTANCE;
+	}
+
+	@Override
+	public Expression transformStringJoins(CheckerHelper helper) {
+		expression = expression.transformStringJoins(helper);
+		return this;
 	}
 }

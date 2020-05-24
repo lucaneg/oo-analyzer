@@ -25,4 +25,9 @@ public class Nop extends Statement {
 	public boolean allPathsEndWithReturn() throws TypeCheckException {
 		return false;
 	}
+	
+	@Override
+	protected CheckerHelper transformStringJoins(CheckerHelper helper) {
+		return helper;
+	}
 }

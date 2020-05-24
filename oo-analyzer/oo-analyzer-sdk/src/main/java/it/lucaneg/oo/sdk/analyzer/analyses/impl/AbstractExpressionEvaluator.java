@@ -23,6 +23,7 @@ import it.lucaneg.oo.ast.expression.literal.Literal;
 import it.lucaneg.oo.ast.expression.logical.And;
 import it.lucaneg.oo.ast.expression.logical.Not;
 import it.lucaneg.oo.ast.expression.logical.Or;
+import it.lucaneg.oo.ast.expression.string.StringJoin;
 import it.lucaneg.oo.ast.expression.typeCheck.Cast;
 import it.lucaneg.oo.ast.expression.typeCheck.TypeCheck;
 import it.lucaneg.oo.sdk.analyzer.analyses.ExpressionEvaluator;
@@ -80,10 +81,16 @@ public abstract class AbstractExpressionEvaluator<L extends AbstractValue<L>, E 
 			return evalLess((Less) e, env);
 		else if (e instanceof LessOrEqual)
 			return evalLessOrEqual((LessOrEqual) e, env);
+		else if (e instanceof StringJoin)
+			return evalStringJoin((StringJoin) e, env);
 		else
 			return env.defaultLatticeForType(e.getStaticType());
 	}
 
+	protected L evalStringJoin(StringJoin join, E env) {
+		return env.defaultLatticeForType(join.getStaticType());
+	}
+	
 	protected L evalArrayAccess(ArrayAccess array, E env) {
 		return env.defaultLatticeForType(array.getStaticType());
 	}
