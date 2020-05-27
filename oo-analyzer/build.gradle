@@ -30,8 +30,8 @@ subprojects {
 		jar.doFirst {
 		    manifest {
 		    	 attributes(
-		            'Implementation-Title': project.name,
-		            'Implementation-Version': rootProject.version,
+		            'Implementation-Title': rootProject.name,
+		            'Implementation-Version': project.version,
 		            'Implementation-Vendor': 'Luca Negrini',
 		            'Created-By': "Gradle ${gradle.gradleVersion}",
 		            'Built-By': System.properties['user.name'],
