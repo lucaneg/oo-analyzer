@@ -34,6 +34,7 @@ public class CLI {
 	
 	private static Option HELP;
 	private static Option CALLGRAPH;
+	private static Option SINGLETRACE;
 	private static Option INPUT;
 	private static Option OUTPUT;
 	private static Option CHECKS;
@@ -90,6 +91,10 @@ public class CLI {
 		options.addOption(CALLGRAPH = Option.builder("cg")
 				.longOpt("dump-call-graph")
 				.desc("If set, the analyzer will dump the call graph of each method")
+				.build());
+		options.addOption(SINGLETRACE = Option.builder("st")
+				.longOpt("dump-single-trace")
+				.desc("If set, the analyzer will compress all the traces produced during the analysis before dumping them")
 				.build());
 		options.addOption(HELP = Option.builder("h")
 				.longOpt("help")
@@ -148,6 +153,8 @@ public class CLI {
 		opt.setInputFolder(new File(cmd.getOptionValue(INPUT.getLongOpt())));
 		if (cmd.hasOption(CALLGRAPH.getLongOpt()))
 			opt.setDumpCallGraph(true);
+		if (cmd.hasOption(SINGLETRACE.getLongOpt()))
+			opt.setDumpSingleTrace(true);
 		if (cmd.hasOption(OUTPUT.getLongOpt()))
 			opt.setOutputFolder(new File(cmd.getOptionValue(OUTPUT.getLongOpt())));
 		for (String check : cmd.getOptionValues(CHECKS.getLongOpt()))

@@ -12,6 +12,8 @@ public class AnalysisOptions {
 	private static final File BASE_OUTPUT_DIR = new File("analyses");
 	
 	private boolean dumpCallGraph;
+	
+	private boolean dumpSingleTrace;
 
 	private File inputFolder;
 	
@@ -33,9 +35,17 @@ public class AnalysisOptions {
 	public boolean dumpCallGraph() {
 		return dumpCallGraph;
 	}
+	
+	public boolean dumpSingleTrace() {
+		return dumpSingleTrace;
+	}
 
 	public void setDumpCallGraph(boolean dumpCallGraph) {
 		this.dumpCallGraph = dumpCallGraph;
+	}
+	
+	public void setDumpSingleTrace(boolean dumpSingleTrace) {
+		this.dumpSingleTrace = dumpSingleTrace;
 	}
 
 	public File getInputFolder() {
@@ -66,9 +76,14 @@ public class AnalysisOptions {
 		return "Analysis Options: "
 				+ "\n\tinput folder: '" + inputFolder + "'"
 				+ "\n\toutput folder: '" + outputFolder + "'"
-				+ "\n\tdump call graph: " + (dumpCallGraph ? "yes" : "no")
+				+ "\n\tdump call graph: " + dumpBoolean(dumpCallGraph)
+				+ "\n\tdump single trace: " + dumpBoolean(dumpSingleTrace)
 				+ "\n\tchecks to execute: [" + String.join(", ", checks.stream().map(Check::getName).toArray(String[]::new)) + "]"
 				+ "\n\tanalyses to execute: [" + String.join(", ", analyses.stream().map(Analysis::getName).toArray(String[]::new)) + "]";
+	}
+
+	private static String dumpBoolean(boolean value) {
+		return value ? "yes" : "no";
 	}
 
 	@Override

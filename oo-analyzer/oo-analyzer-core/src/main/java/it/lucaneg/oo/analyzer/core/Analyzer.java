@@ -113,7 +113,7 @@ public class Analyzer {
 		// we dump the results of the analyses
 		logger.mkTimerLogger("Dumping analyses graphs").execAction(() -> {
 			for (Analysis<?, ?> toRun : options.getAnalyses())
-				AnalysisDumper.dumpDotFiles(program, toRun, manager);
+				AnalysisDumper.dumpDotFiles(program, toRun, manager, options.dumpSingleTrace());
 		});
 	}
 }
