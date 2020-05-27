@@ -197,11 +197,11 @@ public abstract class Graph<T> {
 			int id = codes.get(current);
 			String extraLabel = labelGenerator.apply(current);
 			if (!extraLabel.isEmpty())
-				extraLabel = "\\n" + dotEscape(extraLabel);
+				extraLabel = "<BR/>" + dotEscape(extraLabel);
 
 			writer.write("node" + id + " [");
 			writer.write(provideVertexShapeIfNeeded(current));
-			writer.write("label = \"" + dotEscape(current.toString()) + extraLabel + "\"];\n");
+			writer.write("label = <" + dotEscape(current.toString()) + extraLabel + ">];\n");
 
 			for (T follower : followersOf(current)) {
 				if (!codes.containsKey(follower))
@@ -223,7 +223,9 @@ public abstract class Graph<T> {
 	}
 
 	private String dotEscape(String extraLabel) {
-		return StringEscapeUtils.escapeHtml4(extraLabel).replace("\\", "\\\\");
+		String escapeHtml4 = StringEscapeUtils.escapeHtml4(extraLabel);
+		String replace = escapeHtml4.replaceAll("\\n", "<BR/>");
+		return replace.replace("\\", "\\\\");
 	}
 
 	/**
