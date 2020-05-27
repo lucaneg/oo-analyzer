@@ -51,6 +51,7 @@ subprojects {
         shadowJar.doFirst {
 		    manifest {
 		    	 attributes(
+		    	 	"Multi-Release": true,
 		            'Implementation-Title': project.name,
 		            'Implementation-Version': project.version,
 		            'Implementation-Vendor': 'Luca Negrini',
