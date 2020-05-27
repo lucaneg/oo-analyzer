@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import it.lucaneg.oo.analyzer.analyses.value.domains.ints.AbstractIntegerLattice;
+import it.lucaneg.oo.sdk.analyzer.analyses.Analysis;
 
 /**
  * Integer interval lattice.
@@ -246,7 +247,7 @@ public class IntervalLattice extends AbstractIntegerLattice<IntervalLattice> {
 
 	@Override
 	public String toString() {
-		return "[" + (lowIsMinusInfinity() ? "-∞" : low) + ", " + (highIsPlusInfinity() ? "+∞" : high) + "]";
+		return "[" + (lowIsMinusInfinity() ? "-" + Analysis.INFINITY_CHAR : low) + ", " + (highIsPlusInfinity() ? "+" + Analysis.INFINITY_CHAR : high) + "]";
 	}
 
 	@Override

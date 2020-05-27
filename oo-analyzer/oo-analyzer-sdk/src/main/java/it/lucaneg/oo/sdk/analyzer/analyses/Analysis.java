@@ -14,6 +14,11 @@ public interface Analysis<L extends Lattice<L>, E extends Environment<L, E>> ext
 	 * The character to use to represent top values
 	 */
 	public static final char TOP_CHAR = '\u0372';
+	
+	/**
+	 * The character to use to represent infinity
+	 */
+	public static final char INFINITY_CHAR = '\u221E';
 
 	/**
 	 * Yields the name of the analysis.
