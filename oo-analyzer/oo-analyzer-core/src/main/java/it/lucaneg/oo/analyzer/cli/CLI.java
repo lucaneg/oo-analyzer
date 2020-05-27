@@ -1,9 +1,7 @@
 package it.lucaneg.oo.analyzer.cli;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,11 +17,6 @@ import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
@@ -46,23 +39,6 @@ public class CLI {
 	private static Option CHECKS;
 
 	public static void main(String[] args) {
-		LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-
-		if (context.getConfiguration() instanceof DefaultConfiguration) {
-			// Force a reconfiguration using the embedded configuration file
-			try {
-				URL internalLogConfigFile = CLI.class.getResource("/log4j-default.xml");
-				if (internalLogConfigFile != null)
-					context.setConfigLocation(internalLogConfigFile.toURI());
-				else 
-					try (InputStream internalLogConfigStream = CLI.class.getResourceAsStream("/log4j-default.xml")) {
-						context.setConfiguration(new XmlConfiguration(context, new ConfigurationSource(internalLogConfigStream)));
-					}
-			} catch (Exception e) {
-				System.err.println("Unable to reconfigure logging system using embedded configuration");
-			}
-		}		
-		
 		Options options = new Options(); 
 		Map<Option, String> analyses = fillOptions(options);
 		
