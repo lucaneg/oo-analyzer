@@ -61,8 +61,12 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			return fallback;
 		
 		AbstractStringLattice rec = (AbstractStringLattice) varOrLiteral(call.getReceiver().asExpression(), env, stringSingleton.top()).getInnerElement();
-		if (rec.isTop())
+		try {
+			if (rec.isTop())
 			return fallback;
+		} catch (Exception e) {
+			System.out.println();
+		}
 		
 		if (call.getName().equals("concat"))
 			return concat(call, env, rec);
@@ -108,19 +112,22 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			return new ValueLattice(stringSingleton.top());
 
 		AbstractStringLattice partial = null; //stringSingleton.bottom();
-		AbstractStringLattice temp;
+		AbstractStringLattice temp = null;
 		outer:
 		for (int b : (List<Integer>) begin.getIntergers())
 			if (b >= 0)
-				for (int e : (List<Integer>) end.getIntergers()) 
-					if (b < e) {
+				for (int e : (List<Integer>) end.getIntergers()) { 
+					if (b < e) 
 						temp = partial == null ? rec.substring(b, e) : (AbstractStringLattice) partial.lub(rec.substring(b, e));
-						if (temp.equals(partial))
-							break outer;
-						partial = temp;
-						if (partial.isTop())
-							break outer;
-					}
+					else if (b == e) 
+						temp = partial == null ? stringSingleton.mk("") : (AbstractStringLattice) partial.lub(stringSingleton.mk(""));
+
+					if (temp.equals(partial))
+						break outer;
+					partial = temp;
+					if (partial.isTop())
+						break outer;
+				}
 		return new ValueLattice(partial);
 	}
 
