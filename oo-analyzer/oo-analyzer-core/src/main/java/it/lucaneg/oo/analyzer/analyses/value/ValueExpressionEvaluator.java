@@ -61,12 +61,8 @@ public class ValueExpressionEvaluator extends AbstractExpressionEvaluator<ValueL
 			return fallback;
 		
 		AbstractStringLattice rec = (AbstractStringLattice) varOrLiteral(call.getReceiver().asExpression(), env, stringSingleton.top()).getInnerElement();
-		try {
-			if (rec.isTop())
+		if (rec.isTop())
 			return fallback;
-		} catch (Exception e) {
-			System.out.println();
-		}
 		
 		if (call.getName().equals("concat"))
 			return concat(call, env, rec);
