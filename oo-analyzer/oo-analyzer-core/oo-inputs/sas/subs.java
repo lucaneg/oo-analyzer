@@ -1,4 +1,4 @@
-class Substring {
+class Subs {
 	void substring(boolean nondet) {
 		String result = "substring test";
 		if (nondet)

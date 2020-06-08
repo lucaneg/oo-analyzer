@@ -1,16 +1,15 @@
-class Arrays {
+class ToString {
 	void toString(String[] names) {
 		String result = "People: {";
-		
-		for (int i = 0; i < this.length(names); i = i + 1) {
+		int i = 0;
+		while (i < this.length(names)) {
 			String name = names[i];
 			result = result + name;
-			
 			if (i != this.length(names) - 1)
 				result = result + ",";
+			i = i + 1;
 		}
 		result = result + "}";
-		
 		assert(result.contains("People"));
 		assert(result.contains("}"));
 		assert(result.contains(",")); // might fail

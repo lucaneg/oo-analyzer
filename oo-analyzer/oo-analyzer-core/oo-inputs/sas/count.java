@@ -1,6 +1,6 @@
-class CountMatches {
+class count {
 	
-	void countMatches(boolean nondet) {
+	void count(boolean nondet) {
 		String str = "";
 		if (nondet) 
 			str = "this is the thing";
