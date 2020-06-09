@@ -11,7 +11,6 @@ class ToString {
 		}
 		result = result + "}";
 		assert(result.contains("People"));
-		assert(result.contains("}"));
 		assert(result.contains(",")); // might fail
 		assert(result.contains("not")); // might fail
 	}

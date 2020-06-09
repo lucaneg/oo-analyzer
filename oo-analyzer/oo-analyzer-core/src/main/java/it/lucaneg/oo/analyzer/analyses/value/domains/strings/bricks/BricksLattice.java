@@ -337,10 +337,10 @@ public class BricksLattice extends AbstractStringLattice<BricksLattice> {
 		if (isTop())
 			return getTop();
 
-		Brick first = getBricks().get(0);
+		Brick first = BricksNormalizer.normalize(this).getBricks().get(0);
 		if (first == Brick.TOP || first.getMin() != 1 || first.getMax() != 1)
 			return getTop();
-
+		
 		if (first.getStrings().parallelStream().anyMatch(s -> s.length() < end))
 			return getTop();
 
